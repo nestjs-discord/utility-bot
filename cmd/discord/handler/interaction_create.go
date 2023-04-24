@@ -16,20 +16,33 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Msg("event: interaction create")
 
 	// check cache if the tag exists
-	if true {
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+	cmd, cmdExist := config.GetConfig().Commands[name]
+	if cmdExist {
+		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: name,
+				Content: cmd.Content,
 			},
 		})
-	} else {
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: "Content not found.",
-			},
-		})
-		_ = s.ApplicationCommandDelete(s.State.User.ID, config.GetConfig().GuildID, i.ID)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("name", name).
+				Str("guild-id", i.GuildID).
+				Str("channel-id", i.ChannelID).
+				Str("user-id", i.Member.User.ID).
+				Msg("failed to respond to interaction")
+		}
+		return
 	}
+
+	// Delete the slash if it doesn't have any registered handler
+
+	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: "Content not found.",
+		},
+	})
+	_ = s.ApplicationCommandDelete(s.State.User.ID, config.GetConfig().GuildID, i.ID)
 }

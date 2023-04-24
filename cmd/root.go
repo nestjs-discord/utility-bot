@@ -7,6 +7,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
+	"strings"
 )
 
 var (
@@ -63,5 +65,22 @@ func initConfig() {
 
 	if err := config.Unmarshal(); err != nil {
 		log.Fatal().Err(err).Msg("config unmarshal failed")
+	}
+
+	// Cache local content on memory
+	for _, c := range config.GetConfig().Commands {
+		// Ignore non markdown files
+		if !strings.HasSuffix(c.Content, ".md") {
+			continue
+		}
+
+		p := c.Content
+		data, err := os.ReadFile(p)
+		if err != nil {
+			log.Error().Err(err).Str("path", p).Msg("failed to read file content")
+		}
+
+		c.Content = string(data)
+		log.Debug().Str("path", p).Msg("loaded file content")
 	}
 }

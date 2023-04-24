@@ -1,5 +1,9 @@
 guild_id: 977977381526593587
 commands:
+  codeblocks:
+    description: "Letting people know how to show their code in a markdown code block"
+    content: "./content/codeblocks.md"
+
   undefined:
     description: "Uncaught TypeError: Cannot read properties of undefined (reading 'foo')"
     content: "./content/undefined.md"

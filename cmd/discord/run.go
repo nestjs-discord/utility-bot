@@ -16,7 +16,7 @@ import (
 var removeSlashCommands bool
 
 func init() {
-	RunCmd.PersistentFlags().BoolVarP(&removeSlashCommands, "remove-slash-commands", "", true, "remove slash commands before exiting")
+	RunCmd.PersistentFlags().BoolVarP(&removeSlashCommands, "remove-slash-commands", "", true, "remove all slash commands before shutting down")
 }
 
 var RunCmd = &cobra.Command{
@@ -67,11 +67,7 @@ var RunCmd = &cobra.Command{
 		// Cleanly close down the Discord session
 		return dg.Close()
 	},
-	PostRunE: func(cmd *cobra.Command, args []string) error {
-
-		return nil
-	},
-	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+	PostRun: func(cmd *cobra.Command, args []string) {
 		log.Warn().Msg("discord session closed")
 	},
 }

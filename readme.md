@@ -17,7 +17,3 @@ Placeholder.
 ## Notes
 
 It does not matter in what order commands are defined in `config.yml`; Discord will sort them alphabetically once they're registered.
-
-## TODO
-
-- [ ] Cache markdown content on memory
