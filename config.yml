@@ -1,8 +1,24 @@
 guild_id: 977977381526593587
 commands:
+  async:
+    description: "Use promise chaining .then() or async/await to handle JavaScript's asynchronous actions"
+    content: "./content/async.md"
+
+  awesome:
+    description: "A curated list of awesome things related to NestJS"
+    content: "./content/awesome.md"
+
+  dm:
+    description: "Use server to get help on NestJS; don't DM other members."
+    content: "./content/dm.md"
+
   codeblocks:
     description: "Letting people know how to show their code in a markdown code block"
     content: "./content/codeblocks.md"
+
+  js-error:
+    description: "How to interpret JavaScript errors"
+    content: "./content/js-error.md"
 
   undefined:
     description: "Uncaught TypeError: Cannot read properties of undefined (reading 'foo')"

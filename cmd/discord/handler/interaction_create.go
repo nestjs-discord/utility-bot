@@ -36,7 +36,7 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
-	// Delete the slash if it doesn't have any registered handler
+	// Delete the slash command when it doesn't have any registered handler
 
 	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
