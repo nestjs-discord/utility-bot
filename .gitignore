@@ -1,0 +1,8 @@
+# IDE
+.idea/
+
+# Build output
+build/
+
+# ENV file
+.env
