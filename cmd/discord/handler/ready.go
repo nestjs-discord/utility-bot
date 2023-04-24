@@ -24,7 +24,7 @@ func Ready(s *discordgo.Session, m *discordgo.Ready) {
 			log.Error().Err(err).Str("name", cmd).Msg("failed to create application command")
 		}
 
-		commands.Commands = append(commands.Commands, c)
+		commands.RegisteredCommands = append(commands.RegisteredCommands, c)
 		log.Debug().Str("name", c.Name).Msg("registered slash command")
 	}
 

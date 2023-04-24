@@ -54,7 +54,7 @@ var RunCmd = &cobra.Command{
 
 		if removeSlashCommands {
 			// Remove registered slash command before exiting
-			for _, c := range commands.Commands {
+			for _, c := range commands.RegisteredCommands {
 				err := dg.ApplicationCommandDelete(dg.State.User.ID, guildId, c.ID)
 				if err != nil {
 					log.Error().Err(err).Str("name", c.Name).Msg("failed to remove slash command")
