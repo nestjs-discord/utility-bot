@@ -13,15 +13,15 @@ import (
 // SearchOptions represents options for searching NPM packages.
 type SearchOptions struct {
 	Text        string  `url:"text"`                  // Text does full-text search
-	Size        int     `url:"size,omitempty"`        // Size sets how many results should be returned (default 20, max 250)
-	From        int     `url:"from,omitempty"`        // From offset to return results from
+	Size        int64   `url:"size,omitempty"`        // Size sets how many results should be returned (default 20, max 250)
+	From        int64   `url:"from,omitempty"`        // From offset to return results from
 	Quality     float64 `url:"quality,omitempty"`     // Quality how much of an effect should quality have
 	Popularity  float64 `url:"popularity,omitempty"`  // Popularity how much of an effect should popularity have
 	Maintenance float64 `url:"maintenance,omitempty"` // Maintenance how much of an effect should maintenance have
 }
 
 type SearchResponse struct {
-	Total   int `json:"total"` // Total is the total number of packages matching the search
+	Total   int64 `json:"total"` // Total is the total number of packages matching the search
 	Objects []struct {
 		Package struct {
 			Name        string    `json:"name"`        // Name is the name of the NPM package.

@@ -12,10 +12,10 @@ commands:
 #    description: "Use server to get help on NestJS; don't DM other members."
 #    content: "./content/dm.md"
 #
-#  codeblocks:
-#    description: "Letting people know how to show their code in a Markdown code block"
-#    content: "./content/codeblocks.md"
-#
+  codeblocks:
+    description: "Letting people know how to show their code in a Markdown code block"
+    content: "./content/codeblocks.md"
+
 #  js-error:
 #    description: "How to interpret JavaScript errors"
 #    content: "./content/js-error.md"
@@ -23,7 +23,7 @@ commands:
 #  undefined:
 #    description: "Uncaught TypeError: Cannot read properties of undefined (reading 'foo')"
 #    content: "./content/undefined.md"
-#
+
 #  screenshot:
 #    description: "When someone posts a screenshot instead of sharing their code"
 #    content: "./content/screenshot.md"

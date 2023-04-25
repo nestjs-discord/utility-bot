@@ -7,13 +7,15 @@ import (
 	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command/npm"
 	npmAPI "github.com/erosdesire/discord-nestjs-utility-bot/internal/npm"
 	"github.com/olekukonko/tablewriter"
+	"github.com/rs/zerolog/log"
 	"github.com/uniplaces/carbon"
 	"strings"
+	"time"
 )
 
 func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := &npmAPI.SearchOptions{
-		Size: 15,
+		Size: 20,
 	}
 	for _, option := range i.ApplicationCommandData().Options {
 		switch option.Name {
@@ -27,32 +29,50 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	data, err := npmAPI.Search(options)
 	if err != nil {
-		_, _ = s.FollowupMessageCreate(i.Interaction, true, &discordgo.WebhookParams{
-			Content: "Something went wrong",
-			Flags:   discordgo.MessageFlagsEphemeral,
+		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "Something went wrong",
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
 		})
 		return
 	}
 
 	if data.Total <= 0 || len(data.Objects) <= 0 {
-		_, _ = s.FollowupMessageCreate(i.Interaction, true, &discordgo.WebhookParams{
-			Content: "0 packages found",
-			Flags:   discordgo.MessageFlagsEphemeral,
+		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "No results were found with the entered information.",
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
 		})
 		return
 	}
 
-	content := fmt.Sprintf("Total results: %v\n```ansi\n", data.Total)
-
 	tableString := &strings.Builder{}
 	table := tablewriter.NewWriter(tableString)
+	table.SetAutoFormatHeaders(false)
 
 	// Markdown table format
-	table.SetAutoFormatHeaders(false)
-	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
+	//table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+	//table.SetCenterSeparator("|")
+
 	//table.SetBorder(false)
-	table.SetHeader([]string{"Package name", "Version", "Last publish"})
+
+	table.SetAutoWrapText(false)
+	table.SetAutoFormatHeaders(true)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetHeaderLine(false)
+	table.SetBorder(false)
+	table.SetTablePadding("\t") // pad with tabs
+	table.SetNoWhiteSpace(true)
+
+	//table.SetHeader([]string{"Package name", "Version", "Last publish"})
 
 	for _, object := range data.Objects {
 		name := object.Package.Name
@@ -60,42 +80,50 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 		date := object.Package.Date
 
-		var versionColor tablewriter.Colors
-		if strings.HasPrefix(version, "0") {
-			versionColor = tablewriter.Colors{tablewriter.Bold, tablewriter.FgYellowColor}
-		} else {
-			versionColor = tablewriter.Colors{tablewriter.FgCyanColor}
-		}
-
-		var dateColor tablewriter.Colors
-		if carbon.Now().SubMonths(2).After(date) {
-			dateColor = tablewriter.Colors{tablewriter.Bold, tablewriter.FgYellowColor}
-		} else {
-			dateColor = tablewriter.Colors{tablewriter.FgBlueColor}
-		}
+		versionColor := generateVersionColor(version)
+		dateColor := generateDateColor(date)
 
 		table.Rich([]string{name, version, humanize.Time(date)}, []tablewriter.Colors{
-			{tablewriter.FgWhiteColor},
-			versionColor,
-			dateColor,
+			{
+				// tablewriter.FgWhiteColor
+			},
+			*versionColor,
+			*dateColor,
 		})
 	}
-
 	table.Render()
 
-	content += tableString.String()
+	content := "```ansi\n"
+	content += removeTrailingWhitespace(tableString.String())
 	content += "```"
 
-	fmt.Println(content) // TODO: remove print
+	//fmt.Println(content) // TODO: remove print
 
 	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			// TODO: generate proper message
 			Content: content,
+			Flags:   discordgo.MessageFlagsEphemeral,
+			Components: []discordgo.MessageComponent{
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.Button{
+							Label: fmt.Sprintf("View %v results on npmjs.com", humanize.Comma(data.Total)),
+							Style: discordgo.LinkButton,
+							Emoji: discordgo.ComponentEmoji{
+								Name: "📦",
+							},
+							Disabled: false,
+							URL:      "https://www.npmjs.com/search?q=" + options.Text,
+						},
+					},
+				},
+			},
 		},
 	})
 	if err != nil {
+		log.Error().Err(err).Msg("failed to respond npm-search command")
+
 		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
@@ -104,6 +132,20 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			},
 		})
 	}
+}
+
+func generateVersionColor(version string) *tablewriter.Colors {
+	if strings.HasPrefix(version, "0") {
+		return &tablewriter.Colors{tablewriter.Bold, tablewriter.FgYellowColor}
+	}
+	return &tablewriter.Colors{tablewriter.FgCyanColor}
+}
+
+func generateDateColor(date time.Time) *tablewriter.Colors {
+	if carbon.Now().SubMonths(2).After(date) {
+		return &tablewriter.Colors{tablewriter.Bold, tablewriter.FgYellowColor}
+	}
+	return &tablewriter.Colors{tablewriter.FgBlueColor}
 }
 
 func mapSortValueToSortOptions(value int64, options *npmAPI.SearchOptions) {
@@ -118,4 +160,12 @@ func mapSortValueToSortOptions(value int64, options *npmAPI.SearchOptions) {
 		options.Maintenance = 1
 		break
 	}
+}
+
+func removeTrailingWhitespace(input string) string {
+	lines := strings.Split(input, "\n")
+	for i := range lines {
+		lines[i] = strings.TrimRight(lines[i], " \t")
+	}
+	return strings.Join(lines, "\n")
 }
