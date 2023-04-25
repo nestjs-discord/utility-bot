@@ -1,4 +1,16 @@
-guild_id: 977977381526593587
+# List of users who can bypass restrictions.
+moderators:
+  - 370903700979318784 # Script
+  - 524281921115652106 # Jay
+  - 132222189209518080 # Micael
+  - 718538147449012245 # Tony
+  - 118633408438992896 # wodCZ
+  - 267661647785623572 # Scott
+  - 225858983632699392 # Brunner
+  - 646107453469229056 # Papooch
+  - 673658728863629360 # Maciek
+
+# Static slash commands
 commands:
   async:
     description: "Use promise chaining .then() or async/await to handle JavaScript's asynchronous actions"

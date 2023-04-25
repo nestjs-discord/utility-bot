@@ -3,8 +3,7 @@ package discord
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/erosdesire/discord-nestjs-utility-bot/core/config"
-	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command"
+	internalDiscord "github.com/erosdesire/discord-nestjs-utility-bot/internal/discord"
 	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/handler"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -13,22 +12,13 @@ import (
 	"syscall"
 )
 
-var removeSlashCommands bool
-
-func init() {
-	RunCmd.PersistentFlags().BoolVarP(&removeSlashCommands, "remove-slash-commands", "", true, "remove all slash commands before shutting down")
-}
-
-var RunCmd = &cobra.Command{
+var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Runs the Discord bot",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		token := "Bot " + os.Getenv("DISCORD_BOT_TOKEN")
-		guildId := config.GetConfig().GuildID
-
-		dg, err := discordgo.New(token)
+		dg, err := internalDiscord.NewSession()
 		if err != nil {
-			return fmt.Errorf("failed to create Discord session: %v", err)
+			return err
 		}
 
 		// Discord event handlers
@@ -51,18 +41,6 @@ var RunCmd = &cobra.Command{
 		signal := <-sc
 
 		log.Warn().Str("signal", signal.String()).Msg("shutting down")
-
-		if removeSlashCommands {
-			// Remove registered slash command before exiting
-			for _, c := range command.RegisteredCommands {
-				err := dg.ApplicationCommandDelete(dg.State.User.ID, guildId, c.ID)
-				if err != nil {
-					log.Error().Err(err).Str("name", c.Name).Msg("failed to remove slash command")
-					continue
-				}
-				log.Debug().Str("name", c.Name).Msg("removed slash command")
-			}
-		}
 
 		// Cleanly close down the Discord session
 		return dg.Close()

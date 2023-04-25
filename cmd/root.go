@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/erosdesire/discord-nestjs-utility-bot/cmd/discord"
-	config2 "github.com/erosdesire/discord-nestjs-utility-bot/core/config"
+	"github.com/erosdesire/discord-nestjs-utility-bot/core/config"
 	"github.com/erosdesire/discord-nestjs-utility-bot/core/logger"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -36,7 +36,8 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "debug log level")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./config.yml)")
 
-	rootCmd.AddCommand(discord.RunCmd)
+	rootCmd.AddCommand(discord.Run)
+	rootCmd.AddCommand(discord.Clean)
 }
 
 func Execute() error {
@@ -63,12 +64,12 @@ func initConfig() {
 
 	log.Debug().Str("path", viper.ConfigFileUsed()).Msg("config: read success")
 
-	if err := config2.Unmarshal(); err != nil {
+	if err := config.Unmarshal(); err != nil {
 		log.Fatal().Err(err).Msg("config unmarshal failed")
 	}
 
 	// Cache local content on memory
-	for _, c := range config2.GetConfig().Commands {
+	for _, c := range config.GetConfig().Commands {
 		// Ignore non markdown files
 		if !strings.HasSuffix(c.Content, ".md") {
 			continue

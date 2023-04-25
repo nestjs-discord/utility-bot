@@ -5,11 +5,6 @@ import (
 	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command/npm"
 )
 
-const (
-	NpmInspect           = "npm-inspect"
-	NpmInspectNameOption = "name"
-)
-
 var (
 	StaticCommands = []*discordgo.ApplicationCommand{
 		npm.Search,

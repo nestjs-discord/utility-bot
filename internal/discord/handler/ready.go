@@ -15,7 +15,7 @@ func Ready(s *discordgo.Session, m *discordgo.Ready) {
 		Str("username", fmt.Sprintf("%s#%s", m.User.Username, m.User.Discriminator)).
 		Msg("logged in as")
 
-	c, err := s.ApplicationCommands(m.User.ID, config.GetConfig().GuildID)
+	c, err := s.ApplicationCommands(m.User.ID, config.GetGuildID())
 	if err != nil {
 		log.Panic().Err(err).Msg("failed to fetch registered application commands")
 		return
@@ -50,7 +50,7 @@ func registerStaticSlashCommands(s *discordgo.Session) {
 			continue
 		}
 
-		c, err := s.ApplicationCommandCreate(s.State.User.ID, config.GetConfig().GuildID, cmd)
+		c, err := s.ApplicationCommandCreate(s.State.User.ID, config.GetGuildID(), cmd)
 		if err != nil {
 			log.Error().Err(err).Str("name", cmd.Name).Msg("failed to create static slash command")
 		}
@@ -66,7 +66,7 @@ func registerContentSlashCommands(s *discordgo.Session) {
 			continue
 		}
 
-		c, err := s.ApplicationCommandCreate(s.State.User.ID, config.GetConfig().GuildID, &discordgo.ApplicationCommand{
+		c, err := s.ApplicationCommandCreate(s.State.User.ID, config.GetGuildID(), &discordgo.ApplicationCommand{
 			Name:        cmd,
 			Description: cmdData.Description,
 		})
