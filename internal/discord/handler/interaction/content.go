@@ -33,8 +33,12 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 		Str("user-id", i.Member.User.ID).
 		Msg("failed to respond to interaction")
 
-	_, _ = s.FollowupMessageCreate(i.Interaction, true, &discordgo.WebhookParams{
-		Content: "Something went wrong",
+	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: "Something went wrong",
+			Flags:   discordgo.MessageFlagsEphemeral,
+		},
 	})
 
 	return false

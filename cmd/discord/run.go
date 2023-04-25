@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/erosdesire/discord-nestjs-utility-bot/core/config"
-	commands "github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command"
-	handler2 "github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/handler"
+	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command"
+	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/handler"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"os"
@@ -32,9 +32,9 @@ var RunCmd = &cobra.Command{
 		}
 
 		// Discord event handlers
-		dg.AddHandler(handler2.Ready)
+		dg.AddHandler(handler.Ready)
 		//dg.AddHandler(handlers.MessageCreate)
-		dg.AddHandler(handler2.InteractionCreate)
+		dg.AddHandler(handler.InteractionCreate)
 
 		// We only care about receiving message events
 		dg.Identify.Intents = discordgo.IntentsGuildMessages
@@ -54,7 +54,7 @@ var RunCmd = &cobra.Command{
 
 		if removeSlashCommands {
 			// Remove registered slash command before exiting
-			for _, c := range commands.RegisteredCommands {
+			for _, c := range command.RegisteredCommands {
 				err := dg.ApplicationCommandDelete(dg.State.User.ID, guildId, c.ID)
 				if err != nil {
 					log.Error().Err(err).Str("name", c.Name).Msg("failed to remove slash command")

@@ -3,7 +3,7 @@ package handler
 import (
 	"fmt"
 	"github.com/erosdesire/discord-nestjs-utility-bot/core/config"
-	commands "github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command"
+	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
@@ -15,32 +15,57 @@ func Ready(s *discordgo.Session, m *discordgo.Ready) {
 		Str("username", fmt.Sprintf("%s#%s", m.User.Username, m.User.Discriminator)).
 		Msg("logged in as")
 
+	c, err := s.ApplicationCommands(m.User.ID, config.GetConfig().GuildID)
+	if err != nil {
+		log.Panic().Err(err).Msg("failed to fetch registered application commands")
+		return
+	}
+	command.RegisteredCommands = append(command.RegisteredCommands, c...)
+
 	registerStaticSlashCommands(s)
 	registerContentSlashCommands(s)
 
 	if err := updateStatus(s); err != nil {
-		log.Error().Err(err).Msg("failed to update status")
-	} else {
-		log.Debug().Msg("status updated")
+		log.Panic().Err(err).Msg("failed to update status")
+		return
 	}
+	log.Debug().Msg("status updated")
 
 	log.Info().Msg("ready")
 }
 
+func isCommandRegistered(commandName string) bool {
+	for _, cmd := range command.RegisteredCommands {
+		if cmd.Name == commandName {
+			return true
+		}
+	}
+	return false
+}
+
 func registerStaticSlashCommands(s *discordgo.Session) {
-	for _, cmd := range commands.StaticCommands {
+	for _, cmd := range command.StaticCommands {
+
+		if isCommandRegistered(cmd.Name) {
+			continue
+		}
+
 		c, err := s.ApplicationCommandCreate(s.State.User.ID, config.GetConfig().GuildID, cmd)
 		if err != nil {
 			log.Error().Err(err).Str("name", cmd.Name).Msg("failed to create static slash command")
 		}
 
-		commands.RegisteredCommands = append(commands.RegisteredCommands, c)
+		command.RegisteredCommands = append(command.RegisteredCommands, c)
 		log.Debug().Str("name", c.Name).Msg("registered static slash command")
 	}
 }
 
 func registerContentSlashCommands(s *discordgo.Session) {
 	for cmd, cmdData := range config.GetConfig().Commands {
+		if isCommandRegistered(cmd) {
+			continue
+		}
+
 		c, err := s.ApplicationCommandCreate(s.State.User.ID, config.GetConfig().GuildID, &discordgo.ApplicationCommand{
 			Name:        cmd,
 			Description: cmdData.Description,
@@ -49,7 +74,7 @@ func registerContentSlashCommands(s *discordgo.Session) {
 			log.Error().Err(err).Str("name", cmd).Msg("failed to create content slash command")
 		}
 
-		commands.RegisteredCommands = append(commands.RegisteredCommands, c)
+		command.RegisteredCommands = append(command.RegisteredCommands, c)
 		log.Debug().Str("name", c.Name).Msg("registered content slash command")
 	}
 }
