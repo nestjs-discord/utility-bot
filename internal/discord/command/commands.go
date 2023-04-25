@@ -13,6 +13,7 @@ const (
 var (
 	StaticCommands = []*discordgo.ApplicationCommand{
 		npm.Search,
+		npm.Inspect,
 	}
 	// RegisteredCommands stores both static and dynamic commands
 	// that can be easily configured after the bot is launched

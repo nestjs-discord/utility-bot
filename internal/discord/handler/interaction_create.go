@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command/npm"
-	interaction2 "github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/handler/interaction"
+	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/handler/interaction"
 	"github.com/rs/zerolog/log"
 )
 
@@ -15,15 +15,18 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Str("user-id", i.Member.User.ID).
 		Msg("event: interaction create")
 
-	if interaction2.ContentHandler(s, i) {
+	if interaction.ContentHandler(s, i) {
 		return
 	}
 
 	switch name {
 	case npm.SearchCommandName:
-		interaction2.NpmSearchHandler(s, i)
+		interaction.NpmSearchHandler(s, i)
+		return
+	case npm.InspectCommandName:
+		interaction.NpmInspectHandler(s, i)
 		return
 	}
 
-	interaction2.DefaultHandler(s, i)
+	interaction.DefaultHandler(s, i)
 }

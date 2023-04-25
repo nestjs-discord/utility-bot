@@ -13,7 +13,7 @@ commands:
 #    content: "./content/dm.md"
 #
   codeblocks:
-    description: "Letting people know how to show their code in a Markdown code block"
+    description: "Letting people know how to share their code in a Markdown code block"
     content: "./content/codeblocks.md"
 
 #  js-error:

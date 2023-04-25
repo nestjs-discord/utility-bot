@@ -26,8 +26,13 @@ It does not matter in what order commands are defined in `config.yml`; Discord w
 
 ## Todo
 
-- [ ] npm-search slash command
-  - [ ] button component to view rest of search result on [npmjs.com](https://npmjs.com/)
+- [ ] investigate subcommands for npm related commands
+- [ ] Cobra `discord:clean` command to remove registered application commands
+  - [ ] Remove the registered commands array 
+- [ ] validate npm packages name
+- [ ] validate version numbers
+- [ ] replace any follow-up message with interaction respond
 - [ ] npm-inspect slash command https://registry.npmjs.org/@nestjs/core/latest
 - [ ] rate limit usage of some slash commands
 - [ ] improve the `readme.md` file
+- [ ] refactor duplicate "Something went wrong" interaction responds

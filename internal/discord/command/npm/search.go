@@ -18,7 +18,7 @@ const (
 
 var Search = &discordgo.ApplicationCommand{
 	Name:        SearchCommandName,
-	Description: "Search packages in NPM registry",
+	Description: "Search public packages on NPM registry",
 	Options: []*discordgo.ApplicationCommandOption{
 		{
 			Name:        SearchOptionName,
