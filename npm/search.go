@@ -3,6 +3,7 @@ package npm
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/google/go-querystring/query"
 	"io"
 	"net/http"
@@ -12,12 +13,12 @@ import (
 
 // SearchOptions represents options for searching NPM packages.
 type SearchOptions struct {
-	Text        string  `url:"text"`        // Text does full-text search
-	Size        int     `url:"size"`        // Size sets how many results should be returned (default 20, max 250)
-	From        *int    `url:"from"`        // From offset to return results from
-	Quality     float64 `url:"quality"`     // Quality how much of an effect should quality have
-	Popularity  float64 `url:"popularity"`  // Popularity how much of an effect should popularity have
-	Maintenance float64 `url:"maintenance"` // Maintenance how much of an effect should maintenance have
+	Text        string  `url:"text"`                  // Text does full-text search
+	Size        int     `url:"size,omitempty"`        // Size sets how many results should be returned (default 20, max 250)
+	From        int     `url:"from,omitempty"`        // From offset to return results from
+	Quality     float64 `url:"quality,omitempty"`     // Quality how much of an effect should quality have
+	Popularity  float64 `url:"popularity,omitempty"`  // Popularity how much of an effect should popularity have
+	Maintenance float64 `url:"maintenance,omitempty"` // Maintenance how much of an effect should maintenance have
 }
 
 type SearchResponse struct {
@@ -61,6 +62,7 @@ func Search(options *SearchOptions) (*SearchResponse, error) {
 	}
 
 	url := "https://registry.npmjs.org/-/v1/search?" + v.Encode()
+	fmt.Println(url)
 	resp, err := http.Get(url) // TODO: replace with client with timeout context
 	if err != nil {
 		return nil, err // TODO: wrap error
