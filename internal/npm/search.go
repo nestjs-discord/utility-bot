@@ -3,7 +3,6 @@ package npm
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/google/go-querystring/query"
 	"io"
 	"net/http"
@@ -62,7 +61,7 @@ func Search(options *SearchOptions) (*SearchResponse, error) {
 	}
 
 	url := "https://registry.npmjs.org/-/v1/search?" + v.Encode()
-	fmt.Println(url)
+	//fmt.Println(url)
 	resp, err := http.Get(url) // TODO: replace with client with timeout context
 	if err != nil {
 		return nil, err // TODO: wrap error

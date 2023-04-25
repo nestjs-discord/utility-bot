@@ -1,14 +1,14 @@
 package npm_test
 
 import (
-	"github.com/erosdesire/discord-nestjs-utility-bot/npm"
+	"github.com/erosdesire/discord-nestjs-utility-bot/internal/npm"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestSearchNestJS(t *testing.T) {
 	res, err := npm.Search(&npm.SearchOptions{
-		Text: "@nestjs/",
+		Text: "scope:nestjs",
 	})
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
@@ -18,7 +18,7 @@ func TestSearchNestJS(t *testing.T) {
 
 func TestSearchNestJSWithOptions(t *testing.T) {
 	res, err := npm.Search(&npm.SearchOptions{
-		Text:        "@nestjs/",
+		Text:        "scope:nestjs",
 		Popularity:  1,
 		Maintenance: 1,
 		Quality:     1,

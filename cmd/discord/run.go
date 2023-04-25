@@ -3,9 +3,9 @@ package discord
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	commands "github.com/erosdesire/discord-nestjs-utility-bot/cmd/discord/command"
-	"github.com/erosdesire/discord-nestjs-utility-bot/cmd/discord/handler"
-	"github.com/erosdesire/discord-nestjs-utility-bot/config"
+	"github.com/erosdesire/discord-nestjs-utility-bot/core/config"
+	commands "github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command"
+	handler2 "github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/handler"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"os"
@@ -32,9 +32,9 @@ var RunCmd = &cobra.Command{
 		}
 
 		// Discord event handlers
-		dg.AddHandler(handler.Ready)
+		dg.AddHandler(handler2.Ready)
 		//dg.AddHandler(handlers.MessageCreate)
-		dg.AddHandler(handler.InteractionCreate)
+		dg.AddHandler(handler2.InteractionCreate)
 
 		// We only care about receiving message events
 		dg.Identify.Intents = discordgo.IntentsGuildMessages
