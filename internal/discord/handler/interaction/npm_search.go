@@ -17,13 +17,15 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := &npmAPI.SearchOptions{
 		Size: 20,
 	}
-	for _, option := range i.ApplicationCommandData().Options {
-		switch option.Name {
-		case npm.SearchOptionName:
-			options.Text = option.StringValue()
-		case npm.SearchOptionSort:
-			value := option.IntValue()
-			mapSortValueToSortOptions(value, options)
+	for _, parentOption := range i.ApplicationCommandData().Options {
+		for _, childOption := range parentOption.Options {
+			switch childOption.Name {
+			case npm.SearchOptionName:
+				options.Text = childOption.StringValue()
+			case npm.SearchOptionSort:
+				value := childOption.IntValue()
+				mapSortValueToSortOptions(value, options)
+			}
 		}
 	}
 

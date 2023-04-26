@@ -26,15 +26,20 @@ It does not matter in what order commands are defined in `config.yml`; Discord w
 
 ## Todo
 
-- [ ] npm related commands
+- [ ] npm related
   - [ ] validate npm packages name
   - [ ] validate version numbers
   - [ ] investigate subcommands
   - [ ] npm-inspect slash command https://registry.npmjs.org/@nestjs/core/latest
 
-- [ ] rate limit usage of some slash commands
-- [ ] move repository and go mod to the `nestjs-discord` organization
-- [ ] research about sharding
+- [ ] features
+  - [ ] rate limit usage of some slash commands
+  - [ ] enable sharding maybe?
+
+- [ ] refactor
+  - [ ] wrap errors
+  - [ ] move repository and go mod to the `nestjs-discord` organization
+
 - [ ] deployment
   - [ ] Docker files
   - [ ] CI build

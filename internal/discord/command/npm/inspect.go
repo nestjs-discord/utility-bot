@@ -3,14 +3,15 @@ package npm
 import "github.com/bwmarrin/discordgo"
 
 const (
-	InspectCommandName   = "npm-inspect"
+	InspectCommandName   = "inspect"
 	InspectOptionPackage = "package"
 	InspectOptionVersion = "version"
 )
 
-var Inspect = &discordgo.ApplicationCommand{
+var Inspect = &discordgo.ApplicationCommandOption{
+	Type:        discordgo.ApplicationCommandOptionSubCommand,
 	Name:        InspectCommandName,
-	Description: "View a specific public package on NPM registry",
+	Description: "Inspect a specific public package on NPM registry",
 	Options: []*discordgo.ApplicationCommandOption{
 		{
 			Name:        InspectOptionPackage,

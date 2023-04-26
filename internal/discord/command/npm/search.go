@@ -3,7 +3,7 @@ package npm
 import "github.com/bwmarrin/discordgo"
 
 const (
-	SearchCommandName = "npm-search"
+	SearchCommandName = "search"
 	SearchOptionName  = "text"
 	SearchOptionSort  = "sort"
 )
@@ -16,7 +16,8 @@ const (
 	SearchSortMaintenance SortOptionValue = 3
 )
 
-var Search = &discordgo.ApplicationCommand{
+var Search = &discordgo.ApplicationCommandOption{
+	Type:        discordgo.ApplicationCommandOptionSubCommand,
 	Name:        SearchCommandName,
 	Description: "Search public packages on NPM registry",
 	Options: []*discordgo.ApplicationCommandOption{

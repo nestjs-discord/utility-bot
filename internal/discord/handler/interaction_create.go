@@ -20,12 +20,19 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	switch name {
-	case npm.SearchCommandName:
-		interaction.NpmSearchHandler(s, i)
-		return
-	case npm.InspectCommandName:
-		interaction.NpmInspectHandler(s, i)
-		return
+	// Npm subcommand
+	case npm.Name:
+		for _, option := range i.ApplicationCommandData().Options {
+
+			switch option.Name {
+			case npm.SearchCommandName:
+				interaction.NpmSearchHandler(s, i)
+				return
+			case npm.InspectCommandName:
+				interaction.NpmInspectHandler(s, i)
+				return
+			}
+		}
 	}
 
 	interaction.DefaultHandler(s, i)

@@ -19,15 +19,16 @@ func DefaultHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	// Delete the slash command when it doesn't have any registered handler
-	log.Debug().
+	log.Warn().
 		Str("app-id", i.AppID).
 		Str("guild-id", i.GuildID).
 		Str("id", i.ID).
 		Str("interaction-id", i.Interaction.ID).
-		Msg("deleting this")
+		Interface("interaction-data", i.Data).
+		Msg("received unknown slash command, consider running the discord:clean command.")
 
-	err = s.ApplicationCommandDelete(i.AppID, i.GuildID, i.ID)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to delete default command")
-	}
+	//err = s.ApplicationCommandDelete(i.AppID, i.GuildID, i.ID)
+	//if err != nil {
+	//	log.Error().Err(err).Msg("failed to delete default command")
+	//}
 }
