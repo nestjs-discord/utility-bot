@@ -22,14 +22,13 @@ Placeholder.
 
 ## Notes
 
-It does not matter in what order commands are defined in `config.yml`; Discord will sort them alphabetically once they're registered.
+- Once slash commands are registered, Discord will sort them alphabetically, regardless of their initial order in `config.yml`.
 
 ## Todo
 
 - [ ] npm related
   - [ ] validate npm packages name
   - [ ] validate version numbers
-  - [ ] investigate subcommands
   - [ ] npm-inspect slash command https://registry.npmjs.org/@nestjs/core/latest
 
 - [ ] features

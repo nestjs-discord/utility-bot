@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
+	"github.com/dustin/go-humanize/english"
 	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command/npm"
 	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/util"
 	npmAPI "github.com/erosdesire/discord-nestjs-utility-bot/internal/npm"
@@ -93,7 +94,13 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	content += removeTrailingWhitespace(tableString.String())
 	content += "```"
 
-	//fmt.Println(content) // TODO: remove print
+	// Print ansi table for debugging
+	// fmt.Println(content)
+
+	label := fmt.Sprintf("View %v %v on npmjs.com",
+		humanize.Comma(data.Total),
+		english.PluralWord(int(data.Total), "result", "results"),
+	)
 
 	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -104,7 +111,7 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				discordgo.ActionsRow{
 					Components: []discordgo.MessageComponent{
 						discordgo.Button{
-							Label: fmt.Sprintf("View %v results on npmjs.com", humanize.Comma(data.Total)),
+							Label: label,
 							Style: discordgo.LinkButton,
 							Emoji: discordgo.ComponentEmoji{
 								Name: "📦",

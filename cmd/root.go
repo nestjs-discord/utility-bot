@@ -82,6 +82,14 @@ func initConfig() {
 		}
 
 		c.Content = string(data)
+
+		// Slash commands can have a maximum of 4000 characters for combined name, description,
+		// and value properties for each command, its options (including subcommands and groups), and choices.
+		if len(c.Content) > 3500 {
+			log.Fatal().Str("path", p).Msg("file content contains too many characters, please consider making it shorter.")
+			return
+		}
+
 		log.Debug().Str("path", p).Msg("loaded file content")
 	}
 }
