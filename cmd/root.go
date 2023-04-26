@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/erosdesire/discord-nestjs-utility-bot/cmd/discord"
-	"github.com/erosdesire/discord-nestjs-utility-bot/core/config"
-	"github.com/erosdesire/discord-nestjs-utility-bot/core/logger"
+	"github.com/nestjs-discord/utility-bot/cmd/discord"
+	"github.com/nestjs-discord/utility-bot/core/config"
+	util "github.com/nestjs-discord/utility-bot/core/logger"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

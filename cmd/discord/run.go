@@ -3,8 +3,8 @@ package discord
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	internalDiscord "github.com/erosdesire/discord-nestjs-utility-bot/internal/discord"
-	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/handler"
+	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
+	"github.com/nestjs-discord/utility-bot/internal/discord/handler"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"os"

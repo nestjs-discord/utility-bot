@@ -2,7 +2,7 @@ package interaction
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/util"
+	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 )
 

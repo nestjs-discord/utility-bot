@@ -1,7 +1,7 @@
 package npm_test
 
 import (
-	"github.com/erosdesire/discord-nestjs-utility-bot/internal/npm"
+	"github.com/nestjs-discord/utility-bot/internal/npm"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

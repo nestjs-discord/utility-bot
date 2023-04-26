@@ -37,7 +37,6 @@ Placeholder.
 
 - [ ] refactor
   - [ ] wrap errors
-  - [ ] move repository and go mod to the `nestjs-discord` organization
 
 - [ ] deployment
   - [ ] Docker files

@@ -2,7 +2,7 @@ package command
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command/npm"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/npm"
 )
 
 var (

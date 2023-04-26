@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command/npm"
-	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/handler/interaction"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/npm"
+	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 	"github.com/rs/zerolog/log"
 )
 

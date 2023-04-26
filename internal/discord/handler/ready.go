@@ -2,8 +2,8 @@ package handler
 
 import (
 	"fmt"
-	"github.com/erosdesire/discord-nestjs-utility-bot/core/config"
-	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command"
+	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"

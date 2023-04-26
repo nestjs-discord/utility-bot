@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/erosdesire/discord-nestjs-utility-bot/cmd"
 	"github.com/joho/godotenv"
+	"github.com/nestjs-discord/utility-bot/cmd"
 	"github.com/rs/zerolog/log"
 )
 
