@@ -5,9 +5,9 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/command/npm"
+	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/util"
 	npmAPI "github.com/erosdesire/discord-nestjs-utility-bot/internal/npm"
 	"github.com/olekukonko/tablewriter"
-	"github.com/rs/zerolog/log"
 	"github.com/uniplaces/carbon"
 	"strings"
 	"time"
@@ -29,13 +29,7 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	data, err := npmAPI.Search(options)
 	if err != nil {
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: "Something went wrong",
-				Flags:   discordgo.MessageFlagsEphemeral,
-			},
-		})
+		util.InteractionRespondError(err, s, i)
 		return
 	}
 
@@ -122,15 +116,7 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		},
 	})
 	if err != nil {
-		log.Error().Err(err).Msg("failed to respond npm-search command")
-
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: "Something went wrong",
-				Flags:   discordgo.MessageFlagsEphemeral,
-			},
-		})
+		util.InteractionRespondError(err, s, i)
 	}
 }
 

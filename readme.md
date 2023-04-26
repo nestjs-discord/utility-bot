@@ -26,9 +26,6 @@ It does not matter in what order commands are defined in `config.yml`; Discord w
 
 ## Todo
 
-- [ ] refactor duplicate "Something went wrong" interaction responds
-- [ ] replace any follow-up message with interaction respond
-
 - [ ] npm related commands
   - [ ] validate npm packages name
   - [ ] validate version numbers

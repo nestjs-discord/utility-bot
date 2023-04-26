@@ -37,7 +37,7 @@ func GetGuildID() string {
 
 type config struct {
 	Moderators []string            `mapstructure:"moderators" validate:"required,min=1,dive,min=1"`
-	Commands   map[string]*Command `mapstructure:"commands" validate:"required,min=1,dive"`
+	Commands   map[string]*Command `mapstructure:"commands" validate:"required,min=1,max=85,dive"`
 }
 
 type Command struct {

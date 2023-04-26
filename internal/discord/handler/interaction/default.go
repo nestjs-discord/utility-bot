@@ -2,6 +2,7 @@ package interaction
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 )
 
@@ -14,10 +15,7 @@ func DefaultHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		},
 	})
 	if err != nil {
-		_, _ = s.FollowupMessageCreate(i.Interaction, true, &discordgo.WebhookParams{
-			Content: "Something went wrong",
-			Flags:   discordgo.MessageFlagsEphemeral,
-		})
+		util.InteractionRespondError(err, s, i)
 	}
 
 	// Delete the slash command when it doesn't have any registered handler

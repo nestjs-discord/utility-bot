@@ -3,6 +3,7 @@ package interaction
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/erosdesire/discord-nestjs-utility-bot/core/config"
+	"github.com/erosdesire/discord-nestjs-utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 )
 
@@ -33,13 +34,7 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 		Str("user-id", i.Member.User.ID).
 		Msg("failed to respond to interaction")
 
-	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: "Something went wrong",
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
+	util.InteractionRespondError(err, s, i)
 
 	return false
 }
