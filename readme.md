@@ -22,9 +22,6 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
 - [ ] Refactor
   - [ ] Wrap errors
 
-- [ ] Deployment
-  - [ ] Docker files
-
 ## Configuration
 
 ```shell
@@ -45,16 +42,25 @@ and execute the following command.
 go build -trimpath -buildvcs=false -ldflags "-w" -o ./bin/utility-bot ./main.go
 ```
 
+## Adding your bot to server
+
+Please add the bot to the server using the invite link created by the `discord:invite` CLI command,
+as the permissions within the link will likely change based on the features we may add.
+
 ## Docker usage
 
 ```shell
 docker compose up -d
+
+# Generates an invite link to add the bot to servers
+docker compose exec utility-bot ./utility-bot discord:invite
+
+# Graceful shutdown
+# docker compose down
+
+# Removing the registered slash commands (in case of inconsistency between the configuration and the production)
+# docker compose exec utility-bot ./utility-bot discord:clean
 ```
-
-## Adding your bot to server
-
-Please add the bot to the server using the invite link created by the 'discord:invite' CLI command,
-as the permissions within the link will likely change based on the features we may add.
 
 ## Notes
 

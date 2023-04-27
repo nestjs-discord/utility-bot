@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  utility-bot:
+    container_name: nestjs-discord-utility-bot
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: build-release-stage
+#    entrypoint: ["/utility-bot", "discord:run", "--debug"]
+    volumes: # in case, we may add the hot-reloading feature
+      - ./content:/content:ro
+      - ./config.yml:/config.yml:ro
+    env_file:
+      - .env
