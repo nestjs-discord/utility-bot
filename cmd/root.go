@@ -37,6 +37,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./config.yml)")
 
 	rootCmd.AddCommand(discord.Run)
+	rootCmd.AddCommand(discord.Invite)
 	rootCmd.AddCommand(discord.Clean)
 }
 

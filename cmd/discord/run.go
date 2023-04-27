@@ -2,7 +2,6 @@ package discord
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/core/cache"
 	"github.com/nestjs-discord/utility-bot/core/config"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
@@ -18,7 +17,7 @@ import (
 
 var Run = &cobra.Command{
 	Use:   "discord:run",
-	Short: "Runs the Discord bot",
+	Short: "Starts the Discord bot",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		cache.InitRatelimit(config.GetConfig().Ratelimit.TTL)
 	},
@@ -44,7 +43,7 @@ var Run = &cobra.Command{
 		session.AddHandler(handler.InteractionCreate)
 
 		// We only care about receiving message events
-		session.Identify.Intents = discordgo.IntentsGuildMessages
+		session.Identify.Intents = config.BotIntents
 
 		// Open a websocket connection to Discord and begin listening
 		err = session.Open()
