@@ -35,6 +35,7 @@ var Run = &cobra.Command{
 
 		// Discord event handlers
 		session.AddHandler(handler.Ready)
+
 		//session.AddHandler(handlers.MessageCreate)
 		session.AddHandler(handler.InteractionCreate)
 

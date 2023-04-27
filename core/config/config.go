@@ -37,7 +37,13 @@ func GetGuildID() string {
 
 type config struct {
 	Moderators []string            `mapstructure:"moderators" validate:"required,min=1,dive,min=1"`
+	Ratelimit  Ratelimit           `mapstructure:"ratelimit" validate:"required,dive"`
 	Commands   map[string]*Command `mapstructure:"commands" validate:"required,min=1,max=85,dive"`
+}
+
+type Ratelimit struct {
+	TTL   int `mapstructure:"ttl" validate:"required,min=1"`
+	Usage int `mapstructure:"usage" validate:"required,min=2"`
 }
 
 type Command struct {

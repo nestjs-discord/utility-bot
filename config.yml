@@ -10,6 +10,17 @@ moderators:
   - 646107453469229056 # Papooch
   - 673658728863629360 # Maciek
 
+# This configuration is for rate limiting usage of slash commands
+#
+# `ttl` specifies the maximum time to live (in seconds) for each usage of a slash command,
+# after which the usage count will reset to 0
+#
+# `usage` specifies the maximum number of times a particular slash command can be used within the `ttl` period
+# before further usage is prevented
+ratelimit:
+  ttl: 60 # Maximum TTL of 60 seconds
+  usage: 8 # Maximum of 8 usages within the TTL period
+
 # Static slash commands
 commands:
 #  async:
