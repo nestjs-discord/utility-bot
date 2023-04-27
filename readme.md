@@ -61,8 +61,6 @@ Placeholder.
 
 - [ ] deployment
   - [ ] Docker files
-  - [ ] CI build
-  - [ ] CI tests
   - [ ] go releaser, maybe?
 
 - [ ] `readme.md`
