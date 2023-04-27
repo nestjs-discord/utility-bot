@@ -20,7 +20,7 @@ moderators:
 # before further usage is prevented
 ratelimit:
   ttl: 60 # Maximum TTL of 60 seconds
-  usage: 2 # Maximum of 8 usages within the TTL period
+  usage: 8 # Maximum of 8 usages within the TTL period
   message: "Chill out, cowboy!\nYou don't want to overload our poor server."
 
 #
