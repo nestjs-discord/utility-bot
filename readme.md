@@ -1,16 +1,40 @@
 # Utility Bot
 
-Placeholder.
+[![build-and-test](https://github.com/nestjs-discord/utility-bot/actions/workflows/build-and-test.yaml/badge.svg)](https://github.com/nestjs-discord/utility-bot/actions/workflows/build-and-test.yaml)
 
-## Motivation
+As people who usually answer questions on [the official NestJS Discord server](https://discord.gg/nestjs), we experienced that sometimes, users ask some questions that have already been answered.
 
-Placeholder.
+There are some common issues, like when they post a new support request, they don't provide a [minimal reproduction code](https://minimum-reproduction.wtf/), or sometimes they don't even share their code, and even if they do, they don't know how to put them in [code blocks](https://gist.github.com/matthewzring/9f7bbfd102003963f9be7dbcf7d40e51#code-blocks) properly.
 
-## Deployment
+So we devised the idea of having a [Discord bot](https://discord.com/developers/docs/intro#bots-and-apps) with predefined well-written static Markdown content, as [slash commands](https://discord.com/developers/docs/interactions/application-commands) to something quickly reply to users instead of repeatedly writing and explaining over and over again.
 
-Placeholder.
+## Todo
 
-## Tests
+- [ ] npm related
+  - Before interacting with the npm registry API
+    - [ ] validate npm package names
+    - [ ] validate version numbers
+
+- [ ] features
+  - [ ] mark slash commands as `protected`
+  - [ ] "npm > inspect" slash command https://registry.npmjs.org/@nestjs/core/latest
+
+- [ ] refactor
+  - [ ] wrap errors
+
+- [ ] deployment
+  - [ ] Docker files
+  - [ ] go releaser, maybe?
+
+## Build
+
+To build this project, you must [install Golang](https://go.dev/doc/install) in your system and use the following command.
+
+```shell
+go build -trimpath -buildvcs=false -ldflags "-w" -o ./bin/utility-bot ./main.go
+```
+
+## Docker usage
 
 Placeholder.
 
@@ -34,6 +58,12 @@ Placeholder.
   - They bypass rate-limit policies.
   - They can execute `protected` commands in `config.yml`.
 
+## Running tests
+
+```shell
+go test -v ./...
+```
+
 ## Dependencies overview
 
 - [DiscordGo](https://github.com/bwmarrin/discordgo) - Provides low level bindings to the Discord chat client API
@@ -43,25 +73,3 @@ Placeholder.
 - [Zerolog](https://github.com/rs/zerolog) - Zero allocation JSON logger
 - [Go-humanize](https://github.com/dustin/go-humanize) - Formatters for units to human friendly sizes
 - [Testify](https://github.com/stretchr/testify) - A toolkit with common assertions and mocks
-
-## Todo
-
-- [ ] npm related
-  - Before interacting with the npm registry API
-    - [ ] validate npm package names
-    - [ ] validate version numbers
-
-- [ ] features
-  - [ ] mark slash commands as `protected`
-  - [ ] "npm > inspect" slash command https://registry.npmjs.org/@nestjs/core/latest
-
-- [ ] refactor
-  - [ ] wrap errors
-
-- [ ] deployment
-  - [ ] Docker files
-  - [ ] go releaser, maybe?
-
-- [ ] `readme.md`
-  - [ ] improve the `readme.md` file
-  - [ ] badges

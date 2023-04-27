@@ -9,7 +9,7 @@ import (
 
 var Clean = &cobra.Command{
 	Use:   "discord:clean",
-	Short: "Clean registered slash commands",
+	Short: "Cleans the registered slash commands",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		dg, err := internalDiscord.NewSession()
 		if err != nil {
