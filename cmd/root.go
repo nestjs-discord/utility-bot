@@ -1,14 +1,13 @@
 package cmd
 
 import (
+	"github.com/nestjs-discord/utility-bot/cmd/content"
 	"github.com/nestjs-discord/utility-bot/cmd/discord"
 	"github.com/nestjs-discord/utility-bot/core/config"
-	util "github.com/nestjs-discord/utility-bot/core/logger"
+	"github.com/nestjs-discord/utility-bot/core/logger"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
-	"strings"
 )
 
 var (
@@ -36,9 +35,11 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "sets log level to debug")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./config.yml)")
 
-	rootCmd.AddCommand(discord.Run)
-	rootCmd.AddCommand(discord.Invite)
+	rootCmd.AddCommand(content.Validate)
+
 	rootCmd.AddCommand(discord.Clean)
+	rootCmd.AddCommand(discord.Invite)
+	rootCmd.AddCommand(discord.Run)
 }
 
 func Execute() error {
@@ -46,7 +47,7 @@ func Execute() error {
 }
 
 func initConfig() {
-	util.RegisterLogger(debug)
+	logger.Register(debug)
 
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -69,28 +70,4 @@ func initConfig() {
 		log.Fatal().Err(err).Msg("config unmarshal failed")
 	}
 
-	// Cache local content on memory
-	for _, c := range config.GetConfig().Commands {
-		// Ignore non markdown files
-		if !strings.HasSuffix(c.Content, ".md") {
-			continue
-		}
-
-		p := c.Content
-		data, err := os.ReadFile(p)
-		if err != nil {
-			log.Error().Err(err).Str("path", p).Msg("failed to read file content")
-		}
-
-		c.Content = string(data)
-
-		// Slash commands can have a maximum of 4000 characters for combined name, description,
-		// and value properties for each command, its options (including subcommands and groups), and choices.
-		if len(c.Content) > 3500 {
-			log.Fatal().Str("path", p).Msg("file content contains too many characters, please consider making it shorter.")
-			return
-		}
-
-		log.Debug().Str("path", p).Msg("loaded file content")
-	}
 }

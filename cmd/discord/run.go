@@ -18,8 +18,16 @@ import (
 var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Starts the Discord bot",
-	PreRun: func(cmd *cobra.Command, args []string) {
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		// Cache Markdown content
+		err := cache.Content()
+		if err != nil {
+			return err
+		}
+
 		cache.InitRatelimit(config.GetConfig().Ratelimit.TTL)
+
+		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		session, err := internalDiscord.NewSession()
