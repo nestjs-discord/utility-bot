@@ -2,33 +2,44 @@
 
 [![build-and-test](https://github.com/nestjs-discord/utility-bot/actions/workflows/build-and-test.yaml/badge.svg)](https://github.com/nestjs-discord/utility-bot/actions/workflows/build-and-test.yaml)
 
-As people who usually answer questions on [the official NestJS Discord server](https://discord.gg/nestjs), we experienced that sometimes, users ask some questions that have already been answered.
+As people who usually answer questions on [the official NestJS Discord server](https://discord.gg/nestjs), we've experienced that sometimes users ask questions that have already been answered many times before.
 
-There are some common issues, like when they post a new support request, they don't provide a [minimal reproduction code](https://minimum-reproduction.wtf/), or sometimes they don't even share their code, and even if they do, they don't know how to put them in [code blocks](https://gist.github.com/matthewzring/9f7bbfd102003963f9be7dbcf7d40e51#code-blocks) properly.
+There are some common cases, like when they post a new support request, they don't provide a [minimal reproduction code](https://minimum-reproduction.wtf/), or sometimes they don't even share their code, and even if they do, they don't know how to put them in [code blocks](https://gist.github.com/matthewzring/9f7bbfd102003963f9be7dbcf7d40e51#code-blocks) properly.
 
-So we devised the idea of having a [Discord bot](https://discord.com/developers/docs/intro#bots-and-apps) with predefined well-written static Markdown content, as [slash commands](https://discord.com/developers/docs/interactions/application-commands) to something quickly reply to users instead of repeatedly writing and explaining over and over again.
+So we devised the idea of having a [Discord bot](https://discord.com/developers/docs/intro#bots-and-apps) with predefined and well-written Markdown content as [slash commands](https://discord.com/developers/docs/interactions/application-commands) to reply to users instead of repeatedly writing and explaining.
 
 ## Todo
 
-- [ ] npm related
-  - Before interacting with the npm registry API
-    - [ ] validate npm package names
-    - [ ] validate version numbers
+- [ ] NPM related (before interacting with the npm registry API)
+  - [ ] Validate npm package names
+  - [ ] Validate version numbers
 
-- [ ] features
-  - [ ] mark slash commands as `protected`
-  - [ ] "npm > inspect" slash command https://registry.npmjs.org/@nestjs/core/latest
+- [ ] Features
+  - [ ] Mark slash commands as `protected`
+  - [ ] `npm > inspect` slash command https://registry.npmjs.org/@nestjs/core/latest
+  - [ ] `content:validate` cli command to validate Markdown content (max 3500 characters allowed)
 
-- [ ] refactor
-  - [ ] wrap errors
+- [ ] Refactor
+  - [ ] Wrap errors
 
-- [ ] deployment
+- [ ] Deployment
   - [ ] Docker files
-  - [ ] go releaser, maybe?
+
+## Configuration
+
+```shell
+cp .env.example .env
+```
+
+Three `DISCORD_APP_ID`, `DISCORD_BOT_TOKEN`, and `DISCORD_GUILD_ID` environment variables are required, and rest of
+the configuration is located in `config.yml`.
+
+Currently, the bot doesn't support hot-reloading. Instead, the application should restart to apply the changes.
 
 ## Build
 
-To build this project, you must [install Golang](https://go.dev/doc/install) in your system and use the following command.
+To build this project, you must [install Golang](https://go.dev/doc/install) in your system
+and execute the following command.
 
 ```shell
 go build -trimpath -buildvcs=false -ldflags "-w" -o ./bin/utility-bot ./main.go
@@ -36,14 +47,17 @@ go build -trimpath -buildvcs=false -ldflags "-w" -o ./bin/utility-bot ./main.go
 
 ## Docker usage
 
-Placeholder.
+```shell
+docker compose up -d
+```
+
+## Adding your bot to server
+
+Please add the bot to the server using the invite link created by the 'discord:invite' CLI command,
+as the permissions within the link will likely change based on the features we may add.
 
 ## Notes
 
-- Configuration
-  - Three `DISCORD_APP_ID`, `DISCORD_BOT_TOKEN`, and `DISCORD_GUILD_ID` environment variables are required.
-  - Rest of the configuration will be loaded from the `config.yml` file.
-  - Currently, the bot doesn't support hot-reloading. Instead, the application should restart to apply the changes.
 - Slash commands
   - Once slash commands are registered, Discord will sort them alphabetically, regardless of their initial order in `config.yml`.
   - Once slash commands are registered or removed, they get updated instantly for the end-user because this project uses [guild commands](https://discord.com/developers/docs/interactions/application-commands#registering-a-command) instead of global commands.
