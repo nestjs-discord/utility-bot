@@ -17,8 +17,8 @@ var (
 	cfgFile string
 
 	rootCmd = &cobra.Command{
-		Use:   "nestjs-utility",
-		Short: "NestJS Utility",
+		Use:   "utility-bot",
+		Short: "NestJS Discord Utility Bot",
 		CompletionOptions: cobra.CompletionOptions{
 			DisableDefaultCmd:   true,
 			HiddenDefaultCmd:    true,
@@ -33,7 +33,7 @@ var (
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "debug log level")
+	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "sets log level to debug")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./config.yml)")
 
 	rootCmd.AddCommand(discord.Run)

@@ -1,4 +1,4 @@
-# Discord NestJS Utility Bot
+# Utility Bot
 
 Placeholder.
 
@@ -19,18 +19,18 @@ Placeholder.
 - Configuration
   - Three `DISCORD_APP_ID`, `DISCORD_BOT_TOKEN`, and `DISCORD_GUILD_ID` environment variables are required.
   - Rest of the configuration will be loaded from the `config.yml` file.
-  - Currently, The bot doesn't support hot-reloading. Instead, the application should restart to apply the changes.
+  - Currently, the bot doesn't support hot-reloading. Instead, the application should restart to apply the changes.
 - Slash commands
   - Once slash commands are registered, Discord will sort them alphabetically, regardless of their initial order in `config.yml`.
   - Once slash commands are registered or removed, they get updated instantly for the end-user because this project uses [guild commands](https://discord.com/developers/docs/interactions/application-commands#registering-a-command) instead of global commands.
   - Discord has a global rate limit of [200 application command creations per day, per guild](https://discord.com/developers/docs/interactions/application-commands#registering-a-command).
-  - Bot will automatically register non-registered slash commands on every launch.
+  - Bot will automatically register non-registered slash commands on bootstrap.
   - Registered slash commands can be removed by `discord:clean` command.
 - Markdown content
   - Content within the slash commands can have a maximum of 3500 characters.
-  - The bot will cache content on memory on every bootstrap to avoid spamming IO.
+  - The bot will cache Markdown content on memory to avoid spamming I/O.
 - Moderators
-  - They can be defined by their unique Discord ID in `config.yml` .
+  - They can be defined by their unique Discord ID in `config.yml`.
   - They bypass rate-limit policies.
   - They can execute `protected` commands in `config.yml`.
 
@@ -48,7 +48,7 @@ Placeholder.
 
 - [ ] npm related
   - Before interacting with the npm registry API
-    - [ ] validate npm packages name 
+    - [ ] validate npm package names
     - [ ] validate version numbers
 
 - [ ] features

@@ -3,8 +3,11 @@ package discord
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/core/config"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"os"
@@ -16,21 +19,30 @@ var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Runs the Discord bot",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		dg, err := internalDiscord.NewSession()
+		session, err := internalDiscord.NewSession()
 		if err != nil {
 			return err
 		}
 
+		c, err := session.ApplicationCommands(config.GetAppID(), config.GetGuildID())
+		if err != nil {
+			return errors.Wrap(err, "failed to fetch registered application commands")
+		}
+		command.RegisteredCommands = append(command.RegisteredCommands, c...)
+
+		command.RegisterStaticSlashCommands(session)
+		command.RegisterContentSlashCommands(session)
+
 		// Discord event handlers
-		dg.AddHandler(handler.Ready)
-		//dg.AddHandler(handlers.MessageCreate)
-		dg.AddHandler(handler.InteractionCreate)
+		session.AddHandler(handler.Ready)
+		//session.AddHandler(handlers.MessageCreate)
+		session.AddHandler(handler.InteractionCreate)
 
 		// We only care about receiving message events
-		dg.Identify.Intents = discordgo.IntentsGuildMessages
+		session.Identify.Intents = discordgo.IntentsGuildMessages
 
 		// Open a websocket connection to Discord and begin listening
-		err = dg.Open()
+		err = session.Open()
 		if err != nil {
 			return fmt.Errorf("failed to open Discord connection: %v", err)
 		}
@@ -43,7 +55,7 @@ var Run = &cobra.Command{
 		log.Warn().Str("signal", signal.String()).Msg("shutting down")
 
 		// Cleanly close down the Discord session
-		return dg.Close()
+		return session.Close()
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		log.Warn().Msg("discord session closed")
