@@ -1,5 +1,7 @@
 # Utility Bot
 
+A Discord bot designed to streamline the support process on the official NestJS Discord server.
+
 [![build-and-test](https://github.com/nestjs-discord/utility-bot/actions/workflows/build-and-test.yaml/badge.svg)](https://github.com/nestjs-discord/utility-bot/actions/workflows/build-and-test.yaml)
 
 As people who usually answer questions on [the official NestJS Discord server](https://discord.gg/nestjs), we've experienced that sometimes users ask questions that have already been answered many times before.
