@@ -2,8 +2,8 @@ package npm
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/google/go-querystring/query"
+	"github.com/pkg/errors"
 	"io"
 	"net/http"
 	"strings"
@@ -44,10 +44,10 @@ func Search(options *SearchOptions) (*SearchResponse, error) {
 	// Validation
 	options.Text = strings.TrimSpace(options.Text)
 	if options.Text == "" {
-		return nil, errors.New("package name is required")
+		return nil, errors.New("text field is required")
 	}
 	if len(options.Text) > 214 {
-		return nil, errors.New("package name length too long")
+		return nil, errors.New("text length too long")
 	}
 
 	if options.Size <= 0 {
@@ -57,32 +57,34 @@ func Search(options *SearchOptions) (*SearchResponse, error) {
 	// Generate the querystring
 	v, err := query.Values(options)
 	if err != nil {
-		return nil, err // TODO: wrap error
+		return nil, errors.Wrap(err, "failed to generate querystring")
 	}
 
 	url := "https://registry.npmjs.org/-/v1/search?" + v.Encode()
-	//fmt.Println(url)
-	resp, err := http.Get(url) // TODO: replace with client with timeout context
+	client := http.Client{
+		Timeout: 5 * time.Second,
+	}
+	resp, err := client.Get(url)
 	if err != nil {
-		return nil, err // TODO: wrap error
+		return nil, errors.Wrap(err, "failed to interact with NPM registry API")
 	}
 	defer func(Body io.ReadCloser) {
 		_ = Body.Close()
 	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, err // TODO: wrap error
+		return nil, errors.Wrapf(err, "NPM registry API returned unacceptable status code: %v", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err // TODO: wrap error
+		return nil, errors.Wrap(err, "failed to read NPM registry response body")
 	}
 
 	var data SearchResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return nil, err // TODO: wrap error
+		return nil, errors.Wrap(err, "failed to JSON parse NPM registry response")
 	}
 
 	return &data, nil
