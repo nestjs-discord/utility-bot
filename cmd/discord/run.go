@@ -3,6 +3,7 @@ package discord
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/core/cache"
 	"github.com/nestjs-discord/utility-bot/core/config"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
@@ -18,6 +19,9 @@ import (
 var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Runs the Discord bot",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		cache.InitRatelimit(config.GetConfig().Ratelimit.TTL)
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		session, err := internalDiscord.NewSession()
 		if err != nil {

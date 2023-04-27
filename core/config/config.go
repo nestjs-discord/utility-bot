@@ -42,8 +42,9 @@ type config struct {
 }
 
 type Ratelimit struct {
-	TTL   int `mapstructure:"ttl" validate:"required,min=1"`
-	Usage int `mapstructure:"usage" validate:"required,min=2"`
+	TTL     int    `mapstructure:"ttl" validate:"required,min=1"`
+	Usage   int    `mapstructure:"usage" validate:"required,min=2"`
+	Message string `mapstructure:"message" validate:"required,min=3"`
 }
 
 type Command struct {

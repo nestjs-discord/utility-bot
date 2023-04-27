@@ -52,7 +52,6 @@ Placeholder.
     - [ ] validate version numbers
 
 - [ ] features
-  - [ ] rate limit usage of some slash commands
   - [ ] mark slash commands as `protected`
   - [ ] "npm > inspect" slash command https://registry.npmjs.org/@nestjs/core/latest
 
