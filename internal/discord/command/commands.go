@@ -4,12 +4,14 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/core/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/npm"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
 	"github.com/rs/zerolog/log"
 )
 
 var (
 	StaticCommands = []*discordgo.ApplicationCommand{
 		npm.Subcommand,
+		stats.Command,
 	}
 	// RegisteredCommands stores both static and dynamic commands
 	// that can be easily configured after the bot is launched

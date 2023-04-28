@@ -9,8 +9,7 @@ func InteractionRespondError(err error, s *discordgo.Session, i *discordgo.Inter
 	content := "Something went wrong."
 	if IsUserModerator(i.Member.User.ID) {
 		content += "\n\n"
-		content += "⚠"
-		content += "Because you're a moderator, here's the internal error message:\n" + err.Error()
+		content += "Because you're a moderator, here's the internal error message:\n\n" + err.Error()
 	}
 
 	e := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{

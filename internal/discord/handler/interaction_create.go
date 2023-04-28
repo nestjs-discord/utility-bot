@@ -5,6 +5,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/core/cache"
 	"github.com/nestjs-discord/utility-bot/core/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/npm"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -52,6 +53,9 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				return
 			}
 		}
+	case stats.Stats:
+		interaction.StatHandler(s, i)
+		return
 	}
 
 	interaction.DefaultHandler(s, i)

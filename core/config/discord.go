@@ -11,3 +11,6 @@ const BotPermissions int = discordgo.PermissionViewChannel |
 	discordgo.PermissionAddReactions
 
 const BotIntents = discordgo.IntentsGuildMessages
+
+const ProtectedContentPermission int64 = discordgo.PermissionManageMessages | discordgo.PermissionUseSlashCommands
+const DefaultContentPermission int64 = discordgo.PermissionUseSlashCommands
