@@ -29,8 +29,10 @@ FROM debian:bullseye-20230320 AS build-release-stage
 WORKDIR /
 
 # Update the package lists and install required packages
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates curl
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Update the trusted CA certificates
 RUN update-ca-certificates
