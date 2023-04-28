@@ -40,80 +40,7 @@ func NpmInspectHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	fields := generateFields(data)
-
-	var mainComponents []discordgo.MessageComponent
-	if data.Homepage != "" {
-		mainComponents = append(mainComponents, discordgo.Button{
-			Emoji: discordgo.ComponentEmoji{
-				Name: "📦",
-			},
-			Label: "Homepage",
-			Style: discordgo.LinkButton,
-			URL:   data.Homepage,
-		})
-	}
-
-	if data.Repository.Type != "" && data.Repository.Url != "" {
-		repositoryURL := strings.Replace(data.Repository.Url, data.Repository.Type+"+", "", 1)
-
-		// Validate URL
-		_, err := url.Parse(repositoryURL)
-		if err == nil {
-			mainComponents = append(mainComponents, discordgo.Button{
-				Emoji: discordgo.ComponentEmoji{
-					Name: "🔗",
-				},
-				Label: "Repository",
-				Style: discordgo.LinkButton,
-				URL:   repositoryURL,
-			})
-		}
-	}
-
-	if data.Bugs.Url != "" {
-		mainComponents = append(mainComponents, discordgo.Button{
-			Emoji: discordgo.ComponentEmoji{
-				Name: "🐞",
-			},
-			Label: "Bugs",
-			Style: discordgo.LinkButton,
-			URL:   data.Bugs.Url,
-		})
-	}
-
-	if data.Dist.Tarball != "" {
-		mainComponents = append(mainComponents, discordgo.Button{
-			Emoji: discordgo.ComponentEmoji{
-				Name: "🔗",
-			},
-			Label: "Download",
-			Style: discordgo.LinkButton,
-			URL:   data.Dist.Tarball,
-		})
-	}
-
-	var messageComponents []discordgo.MessageComponent
-
-	if len(mainComponents) != 0 {
-		messageComponents = append(messageComponents, discordgo.ActionsRow{
-			Components: mainComponents,
-		})
-	}
-
-	if data.Funding.Url != "" {
-		messageComponents = append(messageComponents, discordgo.ActionsRow{
-			Components: []discordgo.MessageComponent{
-				discordgo.Button{
-					Emoji: discordgo.ComponentEmoji{
-						Name: "🤗",
-					},
-					Label: "Funding: " + data.Funding.Type,
-					Style: discordgo.LinkButton,
-					URL:   data.Funding.Url,
-				},
-			},
-		})
-	}
+	messageComponents := generateComponents(data)
 
 	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -135,9 +62,143 @@ func NpmInspectHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 }
 
+func generateComponents(data *npmAPI.InspectResponse) (components []discordgo.MessageComponent) {
+	firstRowComponents := generateFirstRowComponents(data)
+
+	if len(firstRowComponents) != 0 {
+		components = append(components, discordgo.ActionsRow{
+			Components: firstRowComponents,
+		})
+	}
+
+	if data.Funding.Url != "" {
+		components = append(components, discordgo.ActionsRow{
+			Components: []discordgo.MessageComponent{
+				discordgo.Button{
+					Emoji: discordgo.ComponentEmoji{
+						Name: "🤗",
+					},
+					Label: "Funding: " + data.Funding.Type,
+					Style: discordgo.LinkButton,
+					URL:   data.Funding.Url,
+				},
+			},
+		})
+	}
+
+	return
+}
+
+func generateFirstRowComponents(data *npmAPI.InspectResponse) (firstRowComponents []discordgo.MessageComponent) {
+	if data.Homepage != "" {
+		firstRowComponents = append(firstRowComponents, discordgo.Button{
+			Emoji: discordgo.ComponentEmoji{
+				Name: "📦",
+			},
+			Label: "Homepage",
+			Style: discordgo.LinkButton,
+			URL:   data.Homepage,
+		})
+	}
+
+	if data.Repository.Type != "" && data.Repository.Url != "" {
+		repositoryURL := strings.Replace(data.Repository.Url, data.Repository.Type+"+", "", 1)
+
+		// Validate URL
+		_, err := url.Parse(repositoryURL)
+		if err == nil {
+			firstRowComponents = append(firstRowComponents, discordgo.Button{
+				Emoji: discordgo.ComponentEmoji{
+					Name: "🔗",
+				},
+				Label: "Repository",
+				Style: discordgo.LinkButton,
+				URL:   repositoryURL,
+			})
+		}
+	}
+
+	if data.Bugs.Url != "" {
+		firstRowComponents = append(firstRowComponents, discordgo.Button{
+			Emoji: discordgo.ComponentEmoji{
+				Name: "🐞",
+			},
+			Label: "Bugs",
+			Style: discordgo.LinkButton,
+			URL:   data.Bugs.Url,
+		})
+	}
+
+	if data.Dist.Tarball != "" {
+		firstRowComponents = append(firstRowComponents, discordgo.Button{
+			Emoji: discordgo.ComponentEmoji{
+				Name: "🔗",
+			},
+			Label: "Download",
+			Style: discordgo.LinkButton,
+			URL:   data.Dist.Tarball,
+		})
+	}
+
+	return
+}
+
 func generateFields(data *npmAPI.InspectResponse) []*discordgo.MessageEmbedField {
 	var fields []*discordgo.MessageEmbedField
 
+	fields = generateHeaderFields(data, fields)
+
+	fields = appendSpacer(fields)
+
+	fields = generateDependenciesFields(data, fields)
+
+	fields = appendSpacer(fields)
+
+	if data.Dist.UnpackedSize != 0 {
+		fields = append(fields, &discordgo.MessageEmbedField{
+			Name:   "Unpacked size",
+			Value:  humanize.Bytes(data.Dist.UnpackedSize),
+			Inline: true,
+		})
+	}
+
+	if data.Dist.FileCount != 0 {
+		fields = append(fields, &discordgo.MessageEmbedField{
+			Name:   "Files count (folders excluded)",
+			Value:  humanize.Comma(data.Dist.FileCount),
+			Inline: true,
+		})
+	}
+
+	fields = appendSpacer(fields)
+
+	if data.GitHead != "" {
+		fields = append(fields, &discordgo.MessageEmbedField{
+			Name:   "Git head",
+			Value:  "`" + data.GitHead + "`",
+			Inline: true,
+		})
+	}
+
+	if data.Dist.Integrity != "" {
+		fields = append(fields, &discordgo.MessageEmbedField{
+			Name:   "Integrity",
+			Value:  "`" + data.Dist.Integrity + "`",
+			Inline: true,
+		})
+	}
+
+	if len(data.Keywords) != 0 {
+		fields = append(fields, &discordgo.MessageEmbedField{
+			Name:  "Keywords",
+			Value: strings.Join(data.Keywords, ", "),
+		})
+	}
+
+	return fields
+}
+
+func generateHeaderFields(data *npmAPI.InspectResponse, fields []*discordgo.MessageEmbedField) []*discordgo.MessageEmbedField {
 	if data.Version != "" {
 		fields = append(fields, &discordgo.MessageEmbedField{
 			Name:   "Version",
@@ -165,12 +226,10 @@ func generateFields(data *npmAPI.InspectResponse) []*discordgo.MessageEmbedField
 			Inline: true,
 		})
 	}
+	return fields
+}
 
-	fields = append(fields, &discordgo.MessageEmbedField{
-		Name:  "",
-		Value: "",
-	})
-
+func generateDependenciesFields(data *npmAPI.InspectResponse, fields []*discordgo.MessageEmbedField) []*discordgo.MessageEmbedField {
 	if len(data.Dependencies) != 0 {
 		v := ""
 		for item, value := range data.Dependencies {
@@ -205,48 +264,13 @@ func generateFields(data *npmAPI.InspectResponse) []*discordgo.MessageEmbedField
 			Value: v,
 		})
 	}
+	return fields
+}
 
+func appendSpacer(fields []*discordgo.MessageEmbedField) []*discordgo.MessageEmbedField {
 	fields = append(fields, &discordgo.MessageEmbedField{
 		Name:  "",
 		Value: "",
 	})
-
-	if data.Dist.FileCount != 0 {
-		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:   "Files count (folder excluded)",
-			Value:  humanize.Comma(data.Dist.FileCount),
-			Inline: true,
-		})
-	}
-
-	if data.Dist.UnpackedSize != 0 {
-		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:   "Unpacked size",
-			Value:  humanize.Bytes(data.Dist.UnpackedSize),
-			Inline: true,
-		})
-	}
-
-	if data.Dist.Integrity != "" {
-		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:  "Integrity",
-			Value: "`" + data.Dist.Integrity + "`",
-		})
-	}
-
-	if data.GitHead != "" {
-		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:  "Git head",
-			Value: "`" + data.GitHead + "`",
-		})
-	}
-
-	if len(data.Keywords) != 0 {
-		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:  "Keywords",
-			Value: strings.Join(data.Keywords, ", "),
-		})
-	}
-
 	return fields
 }
