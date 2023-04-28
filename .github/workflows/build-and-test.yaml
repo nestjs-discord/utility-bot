@@ -49,7 +49,7 @@ jobs:
 
       - name: Build
         run: go build
-        
+
       - name: Validate content
         run: go run . content:validate --debug
 
