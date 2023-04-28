@@ -50,4 +50,5 @@ type Ratelimit struct {
 type Command struct {
 	Description string `mapstructure:"description" validate:"required,min=1,max=100"`
 	Content     string `mapstructure:"content" validate:"required,min=1"`
+	Protected   bool   `mapstructure:"protected" validate:"boolean"`
 }

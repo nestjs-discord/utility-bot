@@ -48,9 +48,12 @@ func RegisterContentSlashCommands(s *discordgo.Session) {
 			continue
 		}
 
+		permission := calculateCommandPermission(cmdData)
+
 		c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), &discordgo.ApplicationCommand{
-			Name:        cmd,
-			Description: cmdData.Description,
+			Name:                     cmd,
+			Description:              cmdData.Description,
+			DefaultMemberPermissions: &permission,
 		})
 		if err != nil {
 			log.Error().Err(err).Str("name", cmd).Msg("failed to create content slash command")
@@ -59,4 +62,12 @@ func RegisterContentSlashCommands(s *discordgo.Session) {
 		RegisteredCommands = append(RegisteredCommands, c)
 		log.Debug().Str("name", c.Name).Msg("registered content slash command")
 	}
+}
+
+func calculateCommandPermission(cmdData *config.Command) int64 {
+	if cmdData.Protected {
+		return discordgo.PermissionManageMessages | discordgo.PermissionUseSlashCommands
+	}
+
+	return discordgo.PermissionUseSlashCommands
 }

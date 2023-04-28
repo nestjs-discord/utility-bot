@@ -19,7 +19,6 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
   - [ ] Validate version numbers
 
 - [ ] Features
-  - [ ] Mark slash commands as `protected`
   - [ ] `npm > inspect` slash command https://registry.npmjs.org/@nestjs/core/latest
 
 - [ ] Refactor

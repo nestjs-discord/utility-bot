@@ -1,4 +1,7 @@
-# List of users who can bypass restrictions.
+#
+# List of users who can bypass ratelimit restriction
+# and have access to protected commands.
+#
 moderators:
   - 370903700979318784 # Script
   - 524281921115652106 # Jay
@@ -18,6 +21,7 @@ moderators:
 #
 # `usage` specifies the maximum number of times a particular slash command can be used within the `ttl` period
 # before further usage is prevented
+#
 ratelimit:
   ttl: 60 # Maximum TTL of 60 seconds
   usage: 8 # Maximum of 8 usages within the TTL period
@@ -25,31 +29,45 @@ ratelimit:
 
 #
 # Static slash commands (Markdown content)
-commands:
-#  async:
-#    description: "Use promise chaining .then() or async/await to handle JavaScript's asynchronous actions"
-#    content: "./content/async.md"
-
-#  awesome:
-#    description: "A curated list of awesome things related to NestJS"
-#    content: "./content/awesome.md"
-
-#  dm:
-#    description: "Use server to get help on NestJS; don't DM other members."
-#    content: "./content/dm.md"
 #
+commands:
+  #
+  # Protected commands
+  # Only users with "Manage Messages" permission can _see_ and _use_ these commands.
+  #
+  spam:
+    description: "A friendly warning to prevent spamming in the chat"
+    content: "./content/spam.md"
+    protected: true
+
+  #
+  # Public commands
+  # Only users with "Use Application Commands" permission can _see_ and _use_ these commands.
+  #
+  async:
+    description: "Use promise chaining .then() or async/await to handle JavaScript's asynchronous actions"
+    content: "./content/async.md"
+
+  awesome:
+    description: "A curated list of awesome things related to NestJS"
+    content: "./content/awesome.md"
+
+  dm:
+    description: "Use server to get help on NestJS; don't DM other members."
+    content: "./content/dm.md"
+
   codeblocks:
     description: "Letting people know how to share their code in a Markdown code block"
     content: "./content/codeblocks.md"
 
-#  js-error:
-#    description: "How to interpret JavaScript errors"
-#    content: "./content/js-error.md"
-#
-#  undefined:
-#    description: "Uncaught TypeError: Cannot read properties of undefined (reading 'foo')"
-#    content: "./content/undefined.md"
+  js-error:
+    description: "How to interpret JavaScript errors"
+    content: "./content/js-error.md"
 
-#  screenshot:
-#    description: "When someone posts a screenshot instead of sharing their code"
-#    content: "./content/screenshot.md"
+  undefined:
+    description: "Uncaught TypeError: Cannot read properties of undefined (reading 'foo')"
+    content: "./content/undefined.md"
+
+  screenshot:
+    description: "When someone posts a screenshot instead of sharing their code"
+    content: "./content/screenshot.md"
