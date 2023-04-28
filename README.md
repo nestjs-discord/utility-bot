@@ -14,10 +14,6 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
 
 ## Todo
 
-- [ ] NPM related (before interacting with the npm registry API)
-  - [ ] Validate npm package names
-  - [ ] Validate version numbers
-
 - [ ] Refactor
   - [ ] Wrap errors
 

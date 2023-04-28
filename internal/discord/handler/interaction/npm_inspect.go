@@ -12,7 +12,9 @@ import (
 )
 
 func NpmInspectHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	options := &npmAPI.InspectOptions{}
+	options := &npmAPI.InspectOptions{
+		Version: "latest",
+	}
 	for _, parentOption := range i.ApplicationCommandData().Options {
 		for _, childOption := range parentOption.Options {
 			switch childOption.Name {
@@ -22,6 +24,28 @@ func NpmInspectHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				options.Version = childOption.StringValue()
 			}
 		}
+	}
+
+	if err := npmAPI.IsNPMPackageNameValid(options.Name); err != nil {
+		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Flags:   discordgo.MessageFlagsEphemeral,
+				Content: err.Error(),
+			},
+		})
+		return
+	}
+
+	if err := npmAPI.IsNPMVersionValid(options.Version); err != nil {
+		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Flags:   discordgo.MessageFlagsEphemeral,
+				Content: err.Error(),
+			},
+		})
+		return
 	}
 
 	data, err := npmAPI.Inspect(options)
