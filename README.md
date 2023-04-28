@@ -18,9 +18,6 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
   - [ ] Validate npm package names
   - [ ] Validate version numbers
 
-- [ ] Features
-  - [ ] `npm > inspect` slash command https://registry.npmjs.org/@nestjs/core/latest
-
 - [ ] Refactor
   - [ ] Wrap errors
 

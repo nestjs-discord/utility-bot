@@ -2,6 +2,7 @@ package npm
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/google/go-querystring/query"
 	"github.com/pkg/errors"
 	"io"
@@ -73,7 +74,7 @@ func Search(options *SearchOptions) (*SearchResponse, error) {
 	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.Wrapf(err, "NPM registry API returned unacceptable status code: %v", resp.StatusCode)
+		return nil, fmt.Errorf("NPM registry API returned unacceptable status code: %v", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
