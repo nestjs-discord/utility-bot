@@ -147,13 +147,10 @@ func mapSortValueToSortOptions(value int64, options *npmAPI.SearchOptions) {
 	switch value {
 	case int64(npm.SearchSortPopularity):
 		options.Popularity = 1
-		break
 	case int64(npm.SearchSortQuality):
 		options.Quality = 1
-		break
 	case int64(npm.SearchSortMaintenance):
 		options.Maintenance = 1
-		break
 	}
 }
 
