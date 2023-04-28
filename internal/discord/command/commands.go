@@ -68,8 +68,8 @@ func RegisterContentSlashCommands(s *discordgo.Session) {
 
 func calculateCommandPermission(cmdData *config.Command) int64 {
 	if cmdData.Protected {
-		return discordgo.PermissionManageMessages | discordgo.PermissionUseSlashCommands
+		return config.ProtectedContentPermission
 	}
 
-	return discordgo.PermissionUseSlashCommands
+	return config.DefaultContentPermission
 }
