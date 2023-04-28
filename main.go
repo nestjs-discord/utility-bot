@@ -10,6 +10,6 @@ func main() {
 	_ = godotenv.Load()
 
 	if err := cmd.Execute(); err != nil {
-		log.Fatal().Err(err).Msg("execution failed")
+		log.Panic().Err(err).Msg("execution failed")
 	}
 }

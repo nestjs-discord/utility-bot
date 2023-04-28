@@ -12,5 +12,11 @@ services:
     volumes: # in case, we may add the hot-reloading feature
       - ./content:/content:ro
       - ./config.yml:/config.yml:ro
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://127.0.0.1:2112/metrics" ]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+      timeout: 3s
     env_file:
       - .env
