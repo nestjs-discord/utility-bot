@@ -49,6 +49,9 @@ jobs:
 
       - name: Build
         run: go build
+        
+      - name: Validate content
+        run: go run . content:validate --debug
 
       - name: Test
         run: go test -v ./...
