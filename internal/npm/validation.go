@@ -20,27 +20,9 @@ func IsNPMPackageNameValid(name string) error {
 	}
 
 	// check valid scope format, if present
-	if name[0] == '@' {
-		scopeEnd := -1
-		for i := 1; i < len(name); i++ {
-			if name[i] == '/' {
-				scopeEnd = i
-				break
-			}
-			if !((name[i] >= 'a' && name[i] <= 'z') || (name[i] >= '0' && name[i] <= '9') || name[i] == '-') {
-				return InvalidNPMPackageNameError{"Package scope must contain only lowercase letters, numbers, and hyphens (-)"}
-			}
-		}
-		if scopeEnd == -1 {
-			return InvalidNPMPackageNameError{"Scoped package name must contain a slash (/) after the scope"}
-		}
-		if scopeEnd == 1 {
-			return InvalidNPMPackageNameError{"Scoped package name must contain a non-empty scope"}
-		}
-		if scopeEnd == len(name)-1 {
-			return InvalidNPMPackageNameError{"Scoped package name must contain a package name after the scope"}
-		}
-		name = name[scopeEnd+1:]
+	name, err := checkValidScopeFormat(name)
+	if err != nil {
+		return err
 	}
 
 	// check first character is lowercase letter
@@ -48,6 +30,15 @@ func IsNPMPackageNameValid(name string) error {
 		return InvalidNPMPackageNameError{"Package name must start with a lowercase letter"}
 	}
 
+	err2 := validateCharacters(name)
+	if err2 != nil {
+		return err2
+	}
+
+	return nil
+}
+
+func validateCharacters(name string) error {
 	for i := 0; i < len(name); i++ {
 		c := name[i]
 
@@ -66,8 +57,33 @@ func IsNPMPackageNameValid(name string) error {
 			return InvalidNPMPackageNameError{"Package name must not start or end with a hyphen (-) or underscore (_)"}
 		}
 	}
-
 	return nil
+}
+
+func checkValidScopeFormat(name string) (string, error) {
+	if name[0] == '@' {
+		scopeEnd := -1
+		for i := 1; i < len(name); i++ {
+			if name[i] == '/' {
+				scopeEnd = i
+				break
+			}
+			if !((name[i] >= 'a' && name[i] <= 'z') || (name[i] >= '0' && name[i] <= '9') || name[i] == '-') {
+				return "", InvalidNPMPackageNameError{"Package scope must contain only lowercase letters, numbers, and hyphens (-)"}
+			}
+		}
+		if scopeEnd == -1 {
+			return "", InvalidNPMPackageNameError{"Scoped package name must contain a slash (/) after the scope"}
+		}
+		if scopeEnd == 1 {
+			return "", InvalidNPMPackageNameError{"Scoped package name must contain a non-empty scope"}
+		}
+		if scopeEnd == len(name)-1 {
+			return "", InvalidNPMPackageNameError{"Scoped package name must contain a package name after the scope"}
+		}
+		name = name[scopeEnd+1:]
+	}
+	return name, nil
 }
 
 type InvalidNPMVersionError struct {
