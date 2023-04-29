@@ -43,8 +43,8 @@ func validateCharacters(name string) error {
 		c := name[i]
 
 		// check character is valid
-		if !((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' || c == '_') {
-			return InvalidNPMPackageNameError{"Package name must contain only lowercase letters, numbers, hyphens (-), and underscores (_)"}
+		if !((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.') {
+			return InvalidNPMPackageNameError{"Package name must contain only lowercase letters, numbers, dots(.), hyphens (-), and underscores (_)"}
 		}
 
 		// check no consecutive hyphens or underscores

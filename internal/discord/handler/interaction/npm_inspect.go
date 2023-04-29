@@ -181,7 +181,7 @@ func generateFields(data *npmAPI.InspectResponse) []*discordgo.MessageEmbedField
 	if data.Dist.UnpackedSize != 0 {
 		fields = append(fields, &discordgo.MessageEmbedField{
 			Name:   "Unpacked size",
-			Value:  humanize.Bytes(data.Dist.UnpackedSize),
+			Value:  "`" + humanize.Bytes(data.Dist.UnpackedSize) + "`",
 			Inline: true,
 		})
 	}
@@ -189,7 +189,7 @@ func generateFields(data *npmAPI.InspectResponse) []*discordgo.MessageEmbedField
 	if data.Dist.FileCount != 0 {
 		fields = append(fields, &discordgo.MessageEmbedField{
 			Name:   "Files count (folders excluded)",
-			Value:  humanize.Comma(data.Dist.FileCount),
+			Value:  "`" + humanize.Comma(data.Dist.FileCount) + "`",
 			Inline: true,
 		})
 	}
@@ -198,35 +198,42 @@ func generateFields(data *npmAPI.InspectResponse) []*discordgo.MessageEmbedField
 
 	if data.GitHead != "" {
 		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:   "Git head",
-			Value:  "`" + data.GitHead + "`",
-			Inline: true,
+			Name:  "Git head",
+			Value: "`" + data.GitHead + "`",
 		})
 	}
 
 	if data.Dist.Integrity != "" {
 		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:   "Integrity",
-			Value:  "`" + data.Dist.Integrity + "`",
-			Inline: true,
+			Name:  "Integrity",
+			Value: "`" + data.Dist.Integrity + "`",
 		})
 	}
 
 	if len(data.Keywords) != 0 {
 		fields = append(fields, &discordgo.MessageEmbedField{
 			Name:  "Keywords",
-			Value: strings.Join(data.Keywords, ", "),
+			Value: wrapKeywords(data.Keywords),
 		})
 	}
 
 	return fields
 }
 
+func wrapKeywords(keywords []string) string {
+	var wrappedKeywords []string
+	for _, keyword := range keywords {
+		wrappedKeyword := fmt.Sprintf("`%s`", keyword)
+		wrappedKeywords = append(wrappedKeywords, wrappedKeyword)
+	}
+	return strings.Join(wrappedKeywords, ", ")
+}
+
 func generateHeaderFields(data *npmAPI.InspectResponse, fields []*discordgo.MessageEmbedField) []*discordgo.MessageEmbedField {
 	if data.Version != "" {
 		fields = append(fields, &discordgo.MessageEmbedField{
 			Name:   "Version",
-			Value:  data.Version,
+			Value:  "`" + data.Version + "`",
 			Inline: true,
 		})
 	}
@@ -234,7 +241,7 @@ func generateHeaderFields(data *npmAPI.InspectResponse, fields []*discordgo.Mess
 	if data.License != "" {
 		fields = append(fields, &discordgo.MessageEmbedField{
 			Name:   "License",
-			Value:  strings.TrimSpace(data.License),
+			Value:  "`" + data.License + "`",
 			Inline: true,
 		})
 	}
@@ -254,41 +261,44 @@ func generateHeaderFields(data *npmAPI.InspectResponse, fields []*discordgo.Mess
 }
 
 func generateDependenciesFields(data *npmAPI.InspectResponse, fields []*discordgo.MessageEmbedField) []*discordgo.MessageEmbedField {
-	if len(data.Dependencies) != 0 {
-		v := ""
-		for item, value := range data.Dependencies {
-			v += fmt.Sprintf("`%v %v`\n", item, value)
+	appendDependencyFields := func(deps map[string]string, name string, inline bool) []*discordgo.MessageEmbedField {
+		if len(deps) == 0 {
+			return fields
 		}
+
 		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:   "Dependencies",
-			Value:  v,
-			Inline: true,
+			Name:   name,
+			Value:  generateDependencyFieldsValue(deps),
+			Inline: inline,
 		})
+
+		return fields
 	}
 
-	if len(data.DevDependencies) != 0 {
-		v := ""
-		for item, value := range data.DevDependencies {
-			v += fmt.Sprintf("`%v %v`\n", item, value)
-		}
-		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:   "Dev Dependencies",
-			Value:  v,
-			Inline: true,
-		})
-	}
+	fields = appendDependencyFields(data.Dependencies, "Dependencies", true)
+	fields = appendDependencyFields(data.DevDependencies, "Dev Dependencies", true)
+	fields = appendDependencyFields(data.PeerDependencies, "Peer Dependencies", len(data.DevDependencies) == 0)
 
-	if len(data.PeerDependencies) != 0 {
-		v := ""
-		for item, value := range data.PeerDependencies {
-			v += fmt.Sprintf("`%v %v`\n", item, value)
-		}
-		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:  "Peer Dependencies",
-			Value: v,
-		})
-	}
 	return fields
+}
+
+func generateDependencyFieldsValue(deps map[string]string) string {
+	v := ""
+	count := 0
+	for item, value := range deps {
+		s := fmt.Sprintf("`%v %v`\n", item, value)
+		// Discord limits each fields value to maximum 1000 characters
+		if len(v)+len(s) > 900 {
+			remaining := len(deps) - count
+			if remaining > 0 {
+				v += fmt.Sprintf("%v more...", remaining)
+			}
+			break
+		}
+		v += s
+		count++
+	}
+	return v
 }
 
 func appendSpacer(fields []*discordgo.MessageEmbedField) []*discordgo.MessageEmbedField {
