@@ -12,11 +12,6 @@ There are some common cases, like when they post a new support request, they don
 
 So we devised the idea of having a [Discord bot](https://discord.com/developers/docs/intro#bots-and-apps) with predefined and well-written Markdown content as [slash commands](https://discord.com/developers/docs/interactions/application-commands) to reply to users instead of repeatedly writing and explaining.
 
-## Todo
-
-- [ ] Refactor
-  - [ ] Wrap errors
-
 ## Configuration
 
 ```shell
