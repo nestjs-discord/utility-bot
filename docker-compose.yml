@@ -7,16 +7,25 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      target: build-release-stage
-#    entrypoint: ["/utility-bot", "discord:run", "--debug"]
-    volumes: # in case, we may add the hot-reloading feature
-      - ./content:/content:ro
-      - ./config.yml:/config.yml:ro
+      target: build-release-stage # Multi-stage Docker build
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://127.0.0.1:2112/metrics" ]
       interval: 10s
       retries: 5
       start_period: 20s
       timeout: 3s
-    env_file:
-      - .env
+    volumes: # In case, we may add a live-reloading feature
+      - ./content:/content:ro
+      - ./config.yml:/config.yml:ro
+    environment:
+      DISCORD_APP_ID: "${DISCORD_APP_ID}"
+      DISCORD_BOT_TOKEN: "${DISCORD_BOT_TOKEN}"
+      DISCORD_GUILD_ID: "${DISCORD_GUILD_ID}"
+
+    # Bind prometheus metrics to host machine
+    # http://127.0.0.1:2112/metrics
+    # ports:
+    #   - "127.0.0.1:2112:2112"
+
+    # Sets log level to debug
+    # entrypoint: ["/utility-bot", "discord:run", "--debug"]

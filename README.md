@@ -45,7 +45,7 @@ as the permissions within the link will likely change based on the features we m
 ## Docker usage
 
 ```shell
-docker compose up -d
+docker compose --env-file ./.env up -d --build
 
 # Generates an invite link to add the bot to servers
 docker compose exec utility-bot ./utility-bot discord:invite
