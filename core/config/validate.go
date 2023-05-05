@@ -3,12 +3,30 @@ package config
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog/log"
+	"strings"
 )
+
+// MaxOneSpaceValidator validates that a string field contains at most one optional space character
+var MaxOneSpaceValidator = func(fl validator.FieldLevel) bool {
+	for _, key := range fl.Field().MapKeys() {
+		if strings.Count(key.String(), " ") > 1 {
+			return false
+		}
+	}
+
+	return true
+}
 
 func validateConfig() {
 	validate := validator.New()
 
-	err := validate.Struct(c)
+	// register all sql.Null* types to use the ValidateValuer CustomTypeFunc
+	err := validate.RegisterValidation("max-one-space-allowed", MaxOneSpaceValidator)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to register custom validation function")
+	}
+
+	err = validate.Struct(c)
 	if err != nil {
 		// this check is only needed when your code could produce
 		// an invalid value for validation such as interface with nil

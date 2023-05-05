@@ -9,6 +9,11 @@ import (
 
 func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 	name := i.ApplicationCommandData().Name
+	for _, opt := range i.ApplicationCommandData().Options {
+		if opt.Type == discordgo.ApplicationCommandOptionSubCommand {
+			name += " " + opt.Name
+		}
+	}
 
 	// Check cache if the tag exists
 	cmd, cmdExist := config.GetConfig().Commands[name]

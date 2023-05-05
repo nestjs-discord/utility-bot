@@ -19,6 +19,7 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Str("guild-id", i.GuildID).
 		Str("channel-id", i.ChannelID).
 		Str("user-id", userID).
+		Interface("options", i.ApplicationCommandData().Options).
 		Msg("event: interaction create")
 
 	if checkRatelimit(userID) {

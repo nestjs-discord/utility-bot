@@ -38,7 +38,7 @@ func GetGuildID() string {
 type Config struct {
 	Moderators []string            `mapstructure:"moderators" validate:"required,min=1,dive,min=1"`
 	Ratelimit  Ratelimit           `mapstructure:"ratelimit" validate:"required,dive"`
-	Commands   map[string]*Command `mapstructure:"commands" validate:"required,min=1,max=85,dive"`
+	Commands   map[string]*Command `mapstructure:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
 }
 
 type Ratelimit struct {
