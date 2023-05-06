@@ -60,6 +60,7 @@ docker compose exec utility-bot ./utility-bot discord:invite
   - Discord has a global rate limit of [200 application command creations per day, per guild](https://discord.com/developers/docs/interactions/application-commands#registering-a-command).
   - Bot will automatically register non-registered slash commands on bootstrap.
   - Registered slash commands can be removed by `discord:clean` command.
+  - Only one sub-command level is supported; for example, `foo bar` is valid.
 - Markdown content
   - Content within the slash commands can have a maximum of 3500 characters.
   - The bot will cache Markdown content on memory to avoid spamming I/O.
