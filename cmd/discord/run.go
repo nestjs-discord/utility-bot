@@ -59,10 +59,8 @@ var Run = &cobra.Command{
 		}
 		command.RegisteredCommands = append(command.RegisteredCommands, c...)
 
-		command.GenerateRegisteredCommandsSlice()
-
 		command.RegisterStaticCommands(session)
-		command.RegisterContentCommands(session)
+		command.RegisterDynamicCommands(session)
 
 		// Discord event handlers
 		session.AddHandler(handler.Ready)

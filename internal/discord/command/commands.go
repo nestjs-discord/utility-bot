@@ -16,45 +16,14 @@ var (
 	}
 	// RegisteredCommands stores both static and dynamic commands
 	// that can be easily configured after the bot is launched
-	RegisteredCommands      []*discordgo.ApplicationCommand
-	registeredCommandsSlice []string
+	RegisteredCommands []*discordgo.ApplicationCommand
 )
 
-func IsCommandRegistered(commandName ...string) bool {
-	for _, c := range registeredCommandsSlice {
-		if c == strings.Join(commandName, " ") {
-			return true
-		}
-	}
-	return false
-}
-
-func GenerateRegisteredCommandsSlice() {
-	for _, cmd := range RegisteredCommands {
-		registeredCommandsSlice = append(registeredCommandsSlice, cmd.Name)
-
-		if len(cmd.Options) == 0 {
-			continue
-		}
-
-		for _, opt := range cmd.Options {
-			if opt.Type == discordgo.ApplicationCommandOptionSubCommand {
-				registeredCommandsSlice = append(registeredCommandsSlice, cmd.Name+" "+opt.Name)
-			}
-		}
-	}
-
-	if len(registeredCommandsSlice) != 0 {
-		log.Debug().Str("list", strings.Join(registeredCommandsSlice, "|")).Msg("discord registered commands")
-	}
-}
+type subCommands = map[string]map[string]*config.Command
+type normalCommands = map[string]*config.Command
 
 func RegisterStaticCommands(s *discordgo.Session) {
 	for _, cmd := range StaticCommands {
-
-		if IsCommandRegistered(cmd.Name) {
-			continue
-		}
 
 		c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), cmd)
 		if err != nil {
@@ -62,60 +31,106 @@ func RegisterStaticCommands(s *discordgo.Session) {
 		}
 
 		RegisteredCommands = append(RegisteredCommands, c)
-		log.Debug().Str("name", c.Name).Msg("registered static slash command")
+		log.Info().Str("name", c.Name).Msg("registered static command")
 	}
 }
 
-func RegisterContentCommands(s *discordgo.Session) {
-	for cmdName, cmdData := range config.GetConfig().Commands {
-		cmdNameParts := strings.Split(cmdName, " ")
-		if IsCommandRegistered(cmdNameParts...) {
-			continue
-		}
-		permission := calculateCommandPermission(cmdData)
+func RegisterDynamicCommands(s *discordgo.Session) {
+	subCommands, normalCommands := generateCommandsToRegister()
+	registerDynamicSubcommands(s, subCommands)
+	registerDynamicCommands(s, normalCommands)
+}
 
-		if len(cmdNameParts) != 1 {
-			// cmdName has spaces, so it's a sub-command
-			cmd := &discordgo.ApplicationCommand{
-				Name:        cmdNameParts[0],
-				Description: cmdData.Description,
-				Options: []*discordgo.ApplicationCommandOption{
-					{
-						Type:        discordgo.ApplicationCommandOptionSubCommand,
-						Name:        cmdNameParts[1],
-						Description: cmdData.Description,
-					},
-				},
-				DefaultMemberPermissions: &permission,
-			}
-
-			c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), cmd)
-			if err != nil {
-				log.Fatal().Err(err).Str("name", cmdName).Msg("failed to create content sub-command")
-				return
-			}
-
-			RegisteredCommands = append(RegisteredCommands, c)
-			log.Debug().Str("name", cmdName).Msg("registered content sub-command")
-			continue
-		}
-
-		// cmdNameParts len is equal to 1, which means the cmdName is not a sub-command
-		c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), &discordgo.ApplicationCommand{
-			Name:                     cmdName,
-			Description:              cmdData.Description,
+func registerDynamicCommands(s *discordgo.Session, normalCommands map[string]*config.Command) {
+	for k, v := range normalCommands {
+		permission := calculateCommandPermission(v)
+		cmd := &discordgo.ApplicationCommand{
+			Name:                     k,
+			Description:              v.Description,
 			DefaultMemberPermissions: &permission,
-		})
+		}
+
+		c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), cmd)
 		if err != nil {
-			log.Fatal().Err(err).Str("name", cmdName).Msg("failed to create content slash command")
+			log.Fatal().Err(err).Str("name", k).Msg("failed to create content slash command")
 			return
 		}
 
 		RegisteredCommands = append(RegisteredCommands, c)
-		log.Debug().Str("name", c.Name).Msg("registered content slash command")
+		log.Info().Str("name", c.Name).Msg("registered dynamic command")
 	}
 }
 
+func registerDynamicSubcommands(s *discordgo.Session, subCommands subCommands) {
+	var permission int64
+
+	for k, v := range subCommands {
+
+		var options []*discordgo.ApplicationCommandOption
+		for s, sd := range v {
+			if permission == 0 {
+				permission = calculateCommandPermission(sd)
+			}
+
+			options = append(options, &discordgo.ApplicationCommandOption{
+				Type:        discordgo.ApplicationCommandOptionSubCommand,
+				Name:        s,
+				Description: sd.Description,
+			})
+		}
+
+		cmd := &discordgo.ApplicationCommand{
+			Name:                     k,
+			Description:              "sub-commands related to " + k,
+			Options:                  options,
+			DefaultMemberPermissions: &permission,
+		}
+
+		c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), cmd)
+		if err != nil {
+			log.Fatal().Err(err).Str("name", k).Msg("failed to create content sub-command")
+			return
+		}
+		RegisteredCommands = append(RegisteredCommands, c)
+		log.Info().Str("name", k).Msg("registered dynamic sub-command")
+	}
+}
+
+func generateCommandsToRegister() (subCommands, normalCommands) {
+	subCommands := subCommands{}
+	normalCommands := normalCommands{}
+
+	for cmdName, cmdData := range config.GetConfig().Commands {
+		if !strings.Contains(cmdName, " ") {
+			normalCommands[cmdName] = cmdData
+			continue
+		}
+
+		parts := strings.Split(cmdName, " ")
+		root := parts[0]
+		subCmd := parts[1]
+
+		if subCommands[root] == nil {
+			subCommands[root] = make(map[string]*config.Command, 0)
+		}
+
+		subCommands[root][subCmd] = &config.Command{
+			Description: cmdData.Description,
+		}
+	}
+
+	return subCommands, normalCommands
+}
+
+// calculateCommandPermission returns the appropriate content permission level for a given command.
+// If the command is marked as protected, the function returns the ProtectedContentPermission constant.
+// Otherwise, the function returns the DefaultContentPermission constant.
+//
+// Parameters:
+// - cmdData: a pointer to a config.Command object representing the command to calculate permission for.
+//
+// Returns:
+// - An int64 representing the calculated content permission level.
 func calculateCommandPermission(cmdData *config.Command) int64 {
 	if cmdData.Protected {
 		return config.ProtectedContentPermission
