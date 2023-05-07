@@ -62,7 +62,7 @@ docker compose exec utility-bot ./utility-bot discord:invite
   - Registered slash commands can be removed by `discord:clean` command.
   - Only one sub-command level is supported; for example, `foo bar` is valid.
 - Markdown content
-  - Content within the slash commands can have a maximum of 3500 characters.
+  - Content within the slash commands can have a maximum of 2000 characters.
   - The bot will cache Markdown content on memory to avoid spamming I/O.
 - Moderators
   - They can be defined by their unique Discord ID in `config.yml`.

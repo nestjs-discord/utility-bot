@@ -10,16 +10,15 @@ import (
 var Validate = &cobra.Command{
 	Use:   "content:validate",
 	Short: "Validates the Markdown content in the configuration to be the correct length",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		err := cache.Content()
 		if err != nil {
-			return err
+			log.Fatal().Err(err).Send()
+			return
 		}
 
 		log.Info().
 			Int("content-validated", len(config.GetConfig().Commands)).
 			Msg("Good job! everything looks fine :)")
-
-		return nil
 	},
 }

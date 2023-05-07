@@ -69,6 +69,11 @@ commands:
   # Protected commands
   # Only users with "Manage Messages" permission can _see_ and _use_ these commands.
   #
+  mods cross-post:
+    description: "Don't cross post, ask in relevant channels, be patient and structure your question"
+    content: "./content/mods/cross-post.md"
+    protected: true
+
   mods spam:
     description: "A friendly warning to prevent spamming in the chat"
     content: "./content/mods/spam.md"
@@ -109,8 +114,21 @@ commands:
           url: "https://trilon.io/blog/avoiding-circular-dependencies-in-nestjs"
           emoji: "📝"
 
+  docs file-change-detected:
+    description: "How to fix when TypeScript 4.9+ on Windows causes infinite loop in watch mode"
+    content: "./content/docs/file-change-detected.md"
+    buttons:
+      -
+        - label: "TypeScript documentation"
+          url: "https://www.typescriptlang.org/tsconfig#watch-watchDirectory"
+          emoji: "🔗"
+      -
+        - label: "New strategy for detecting file changes"
+          url: "https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#file-watching-now-uses-file-system-events"
+          emoji: "📝"
+
   docs hybrid-app:
-    description: "Create hybrid apps with Nest.js and microservices"
+    description: "Create hybrid apps with NestJS and microservices"
     content: "./content/docs/hybrid-app.md"
     buttons:
       -
@@ -118,13 +136,37 @@ commands:
           url: "https://docs.nestjs.com/faq/hybrid-application"
           emoji: "🔗"
 
+  docs nest-debug:
+    description: "Debug NestJS dependencies with environment variable"
+    content: "./content/docs/nest-debug.md"
+
   docs request-lifecycle:
-    description: "Get a grip on Nest.js' request lifecycle for smooth coding"
+    description: "Get a grip on NestJS' request lifecycle for smooth coding"
     content: "./content/docs/request-lifecycle.md"
     buttons:
       -
         - label: "Read more"
           url: "https://docs.nestjs.com/faq/request-lifecycle"
+          emoji: "🔗"
+
+  docs resolve-dependencies:
+    description: "Nest not being able to resolve dependencies of something"
+    content: "./content/docs/resolve-dependencies.md"
+    buttons:
+      -
+        - label: "Read more about this error"
+          url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
+          emoji: "🔗"
+      -
+        - label: "Standard NestJS provider practices"
+          url: "https://docs.nestjs.com/fundamentals/custom-providers#di-fundamentals"
+          emoji: "🔗"
+      -
+        - label: "Circular dependency"
+          url: "https://docs.nestjs.com/faq/common-errors#circular-dependency-error"
+          emoji: "🔗"
+        - label: "Custom providers"
+          url: "https://docs.nestjs.com/fundamentals/custom-providers"
           emoji: "🔗"
 
   rules dm:

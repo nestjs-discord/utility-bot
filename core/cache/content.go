@@ -11,7 +11,7 @@ import (
 
 // Content will cache local Markdown content on memory
 func Content() error {
-	charLimit := 3500
+	charLimit := 2000
 
 	for _, c := range config.GetConfig().Commands {
 		// Ignore non markdown files
