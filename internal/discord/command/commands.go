@@ -62,9 +62,8 @@ func registerDynamicCommands(s *discordgo.Session, normalCommands map[string]*co
 }
 
 func registerDynamicSubcommands(s *discordgo.Session, subCommands subCommands) {
-	var permission int64
-
 	for k, v := range subCommands {
+		var permission int64 = 0
 
 		var options []*discordgo.ApplicationCommandOption
 		for s, sd := range v {
@@ -114,9 +113,7 @@ func generateCommandsToRegister() (subCommands, normalCommands) {
 			subCommands[root] = make(map[string]*config.Command, 0)
 		}
 
-		subCommands[root][subCmd] = &config.Command{
-			Description: cmdData.Description,
-		}
+		subCommands[root][subCmd] = cmdData
 	}
 
 	return subCommands, normalCommands
