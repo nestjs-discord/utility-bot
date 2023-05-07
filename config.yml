@@ -35,9 +35,7 @@ commands:
   # For each command, use a key to define the command name.
   # If a key contains a single space character, it becomes a sub-command.
   #
-  # example sub-command:
-  #
-  #   my-command:
+  #   example sub-command:
   #     description: "This is my command"
   #     content: "./content/my-command.md"
   #     protected: false
