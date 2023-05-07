@@ -14,7 +14,3 @@ func init() {
 func Uptime() string {
 	return humanize.Time(startTime)
 }
-
-//func UptimeDuration() time.Duration {
-//	return time.Since(startTime)
-//}
