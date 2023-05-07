@@ -24,7 +24,8 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: cmd.Content,
+			Content:    cmd.Content,
+			Components: convertButtonsToMessageComponents(cmd.Buttons),
 		},
 	})
 	if err == nil {
@@ -42,4 +43,24 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 	util.InteractionRespondError(err, s, i)
 
 	return false
+}
+
+func convertButtonsToMessageComponents(b [][]*config.Button) []discordgo.MessageComponent {
+	var components []discordgo.MessageComponent
+	for _, row := range b {
+		componentsInRow := make([]discordgo.MessageComponent, 0, len(row))
+		for _, btn := range row {
+			componentsInRow = append(componentsInRow, discordgo.Button{
+				Label: btn.Label,
+				URL:   btn.URL,
+				Style: discordgo.LinkButton,
+				Emoji: discordgo.ComponentEmoji{Name: btn.Emoji},
+			})
+		}
+		components = append(components, discordgo.ActionsRow{
+			Components: componentsInRow,
+		})
+	}
+
+	return components
 }

@@ -28,11 +28,45 @@ ratelimit:
     "Chill out, cowboy!\nYou don't want to overload our poor server."
 
 #
-# This is a configuration block for defining dynamic slash commands that will be displayed to Discord users
-# when they type "/". Each key represents a command name and may contain a maximum of one space character,
-# which will turn it into a sub-command.
+# This configuration block defines dynamic slash commands to be displayed to Discord users.
 #
 commands:
+  #
+  # For each command, use a key to define the command name.
+  # If a key contains a single space character, it becomes a sub-command.
+  #
+  # example sub-command:
+  #
+  #   my-command:
+  #     description: "This is my command"
+  #     content: "./content/my-command.md"
+  #     protected: false
+  #     buttons:
+  #       -
+  #         - label: "Button 1"
+  #           url: "https://button1.com/"
+  #           emoji: "🔗"
+  #         - label: "Button 2"
+  #           url: "https://button2.com/"
+  #           emoji: "🔗"
+  #
+  # The properties for each command are as follows:
+  #
+  #   description (optional, max 100 characters):
+  #     A short description of the command.
+  #
+  #   content (required):
+  #     The path to the markdown file containing detailed information about the command.
+  #     The file should be located in the "content" folder, as the Docker volume relies on this.
+  #
+  #   protected (optional, default is false):
+  #     If set to true, only moderators will be able to see this command.
+  #
+  #   buttons (optional, max 8 rows, max 4 columns):
+  #     An array of arrays representing rows and columns of Discord message components, specifically link buttons.
+  #     Each link button has a label, URL, and optional emoji.
+  #     See https://discord.com/developers/docs/interactions/message-components for more information on message components.
+
   #
   # Protected commands
   # Only users with "Manage Messages" permission can _see_ and _use_ these commands.
@@ -53,10 +87,20 @@ commands:
   awesome:
     description: "A curated list of awesome things related to NestJS"
     content: "./content/awesome.md"
+    buttons:
+      -
+        - label: "View repository on GitHub"
+          url: "https://github.com/nestjs/awesome-nestjs"
+          emoji: "🔗"
 
   community testing:
     description: "A GitHub repository to show off to the community methods of testing NestJS"
     content: "./content/community/testing.md"
+    buttons:
+      -
+        - label: "View repository on GitHub"
+          url: "https://github.com/jmcdo29/testing-nestjs"
+          emoji: "🔗"
 
   dm:
     description: "Use server to get help on NestJS; don't DM other members."

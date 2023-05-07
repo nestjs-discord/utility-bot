@@ -48,7 +48,14 @@ type Ratelimit struct {
 }
 
 type Command struct {
-	Description string `mapstructure:"description" validate:"required,min=1,max=100"`
-	Content     string `mapstructure:"content" validate:"required,min=1"`
-	Protected   bool   `mapstructure:"protected" validate:"boolean"`
+	Description string      `mapstructure:"description" validate:"required,min=1,max=100"`
+	Content     string      `mapstructure:"content" validate:"required,min=1"`
+	Protected   bool        `mapstructure:"protected" validate:"boolean"`
+	Buttons     [][]*Button `mapstructure:"buttons" validate:"min=0,max=8,dive,min=1,max=4,dive"`
+}
+
+type Button struct {
+	Label string `mapstructure:"label" validate:"required,min=3,max=40"`
+	URL   string `mapstructure:"url" validate:"required,url,min=3"`
+	Emoji string `mapstructure:"emoji" validate:"regexp=^[\p{Emoji}]$"`
 }
