@@ -6,4 +6,4 @@
 4) **Legibility** - You cannot read screenshots of code directly, instead you have to open them in an enlarged context.
 5) **Bandwidth usage/clutter** - Some of our members use metered connections, and it is wasteful for them to download images of text.
 
-For a small amount of code please use a code-block (`/codeblocks`), while an external repository (see `/code`) is suitable for larger codebase.
+For a small amount of code please use a code-block (`/rules codeblocks`).

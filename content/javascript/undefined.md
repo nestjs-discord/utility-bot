@@ -17,4 +17,4 @@ foo.name;
 ```
 You'll have to find the variable on which you try to access the property, and work backwards to find out why it's `undefined`.
 Errors come with stack traces right underneath. It will say the exact line and position where the error occurred.
-See `/js-error` for the structure of an error message in JavaScript.
+See `/javascript js-error` for the structure of an error message in JavaScript.

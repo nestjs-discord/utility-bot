@@ -69,22 +69,18 @@ commands:
   # Protected commands
   # Only users with "Manage Messages" permission can _see_ and _use_ these commands.
   #
-  spam:
+  mods spam:
     description: "A friendly warning to prevent spamming in the chat"
-    content: "./content/spam.md"
+    content: "./content/mods/spam.md"
     protected: true
 
   #
   # Public commands
   # Only users with "Use Application Commands" permission can _see_ and _use_ these commands.
   #
-  async:
-    description: "Use promise chaining .then() or async/await to handle JavaScript's asynchronous actions"
-    content: "./content/async.md"
-
-  awesome:
+  community awesome:
     description: "A curated list of awesome things related to NestJS"
-    content: "./content/awesome.md"
+    content: "./content/community/awesome.md"
     buttons:
       -
         - label: "View repository on GitHub"
@@ -100,13 +96,18 @@ commands:
           url: "https://github.com/jmcdo29/testing-nestjs"
           emoji: "🔗"
 
-  dm:
-    description: "Use server to get help on NestJS; don't DM other members."
-    content: "./content/rules/dm.md"
-
-  codeblocks:
-    description: "Letting people know how to share their code in a Markdown code block"
-    content: "./content/codeblocks.md"
+  docs circular-dependency:
+    description: "Circular Dependencies in NestJS and how to Avoid Them"
+    content: "./content/docs/circular-dependency.md"
+    buttons:
+      -
+        - label: "Read rest of the documentation"
+          url: "https://docs.nestjs.com/fundamentals/circular-dependency"
+          emoji: "🔗"
+      -
+        - label: "How to avoid circular dependencies"
+          url: "https://trilon.io/blog/avoiding-circular-dependencies-in-nestjs"
+          emoji: "📝"
 
   docs hybrid-app:
     description: "Create hybrid apps with Nest.js and microservices"
@@ -126,14 +127,31 @@ commands:
           url: "https://docs.nestjs.com/faq/request-lifecycle"
           emoji: "🔗"
 
-#  js-error:
-#    description: "How to interpret JavaScript errors"
-#    content: "./content/js-error.md"
+  rules dm:
+    description: "Use server to get help on NestJS; don't DM other members."
+    content: "./content/rules/dm.md"
 
-  undefined:
-    description: "Uncaught TypeError: Cannot read properties of undefined (reading 'foo')"
-    content: "./content/undefined.md"
+  rules codeblocks:
+    description: "Letting people know how to share their code in a Markdown code block"
+    content: "./content/rules/codeblocks.md"
 
-  screenshot:
+  rules screenshot:
     description: "When someone posts a screenshot instead of sharing their code"
-    content: "./content/screenshot.md"
+    content: "./content/rules/screenshot.md"
+
+  javascript async:
+    description: "Use promise chaining .then() or async/await to handle JavaScript's asynchronous actions"
+    content: "./content/javascript/async.md"
+    buttons:
+      -
+        - label: "Learn more"
+          url: "https://javascript.info/async"
+          emoji: "🔗"
+
+  javascript js-error:
+    description: "How to interpret JavaScript errors"
+    content: "./content/javascript/error.md"
+
+  javascript undefined:
+    description: "Uncaught TypeError: Cannot read properties of undefined (reading 'foo')"
+    content: "./content/javascript/undefined.md"
