@@ -20,7 +20,7 @@ export class ModuleB {}
 export class ModuleA {}
 ```
 ```ts
-import { ServiceB } from '../module-b.module'
+import { ServiceB } from '../module-b/service-b.service'
 
 @Injectable()
 export class ServiceA {
