@@ -140,6 +140,10 @@ commands:
     description: "Debug NestJS dependencies with environment variable"
     content: "./content/docs/nest-debug.md"
 
+  docs providers-vs-imports:
+    description: "Ensure accurate service/module listings"
+    content: "./content/docs/providers-vs-imports.md"
+
   docs request-lifecycle:
     description: "Get a grip on NestJS' request lifecycle for smooth coding"
     content: "./content/docs/request-lifecycle.md"
