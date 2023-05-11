@@ -1,6 +1,7 @@
 package discord
 
 import (
+	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/core/config"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/rs/zerolog/log"
@@ -19,25 +20,12 @@ var Clean = &cobra.Command{
 		appId := config.GetAppID()
 		guildId := config.GetGuildID()
 
-		// Fetch registered slash commands
-		registeredCommands, err := dg.ApplicationCommands(appId, guildId)
+		_, err = dg.ApplicationCommandBulkOverwrite(appId, guildId, []*discordgo.ApplicationCommand{})
 		if err != nil {
 			return err
 		}
 
-		log.Warn().Int("len", len(registeredCommands)).Msg("fetched registered slash commands")
-
-		// Remove registered slash command
-		for _, c := range registeredCommands {
-			if err := dg.ApplicationCommandDelete(appId, guildId, c.ID); err != nil {
-				log.Error().Err(err).Str("name", c.Name).Msg("failed to remove slash command")
-				continue
-			}
-
-			log.Info().Str("name", c.Name).Msg("removed slash command")
-		}
-
-		log.Info().Msg("done")
+		log.Info().Msg("successfully removed application commands")
 
 		return nil
 	},
