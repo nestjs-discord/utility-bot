@@ -10,62 +10,51 @@ import (
 )
 
 var (
-	StaticCommands = []*discordgo.ApplicationCommand{
+	commands = []*discordgo.ApplicationCommand{
 		npm.Subcommand,
 		stats.Command,
 	}
-	// RegisteredCommands stores both static and dynamic commands
-	// that can be easily configured after the bot is launched
-	RegisteredCommands []*discordgo.ApplicationCommand
 )
 
 type subCommands = map[string]map[string]*config.Command
 type normalCommands = map[string]*config.Command
 
-func RegisterStaticCommands(s *discordgo.Session) {
-	for _, cmd := range StaticCommands {
+func RegisterApplicationCommands(s *discordgo.Session) {
+	normalCommands, subCommands := generateCommandsToRegister()
 
-		c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), cmd)
-		if err != nil {
-			log.Error().Err(err).Str("name", cmd.Name).Msg("failed to create static slash command")
-		}
+	commands = append(commands, generateDynamicCommands(normalCommands)...)
+	commands = append(commands, generateDynamicSubcommands(subCommands)...)
 
-		RegisteredCommands = append(RegisteredCommands, c)
-		log.Info().Str("name", c.Name).Msg("registered static command")
+	_, err := s.ApplicationCommandBulkOverwrite(config.GetAppID(), config.GetGuildID(), commands)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to bulk overwrite application commands")
+		return
 	}
+
+	log.Info().Int("len", len(commands)).Msg("registered application commands")
 }
 
-func RegisterDynamicCommands(s *discordgo.Session) {
-	subCommands, normalCommands := generateCommandsToRegister()
-	registerDynamicSubcommands(s, subCommands)
-	registerDynamicCommands(s, normalCommands)
-}
-
-func registerDynamicCommands(s *discordgo.Session, normalCommands map[string]*config.Command) {
+func generateDynamicCommands(normalCommands map[string]*config.Command) (commands []*discordgo.ApplicationCommand) {
 	for k, v := range normalCommands {
 		permission := calculateCommandPermission(v)
+
 		cmd := &discordgo.ApplicationCommand{
 			Name:                     k,
 			Description:              v.Description,
 			DefaultMemberPermissions: &permission,
 		}
 
-		c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), cmd)
-		if err != nil {
-			log.Fatal().Err(err).Str("name", k).Msg("failed to create content slash command")
-			return
-		}
-
-		RegisteredCommands = append(RegisteredCommands, c)
-		log.Info().Str("name", c.Name).Msg("registered dynamic command")
+		commands = append(commands, cmd)
 	}
+
+	return
 }
 
-func registerDynamicSubcommands(s *discordgo.Session, subCommands subCommands) {
+func generateDynamicSubcommands(subCommands subCommands) (commands []*discordgo.ApplicationCommand) {
 	for k, v := range subCommands {
 		var permission int64 = 0
-
 		var options []*discordgo.ApplicationCommandOption
+
 		for s, sd := range v {
 			if permission == 0 {
 				permission = calculateCommandPermission(sd)
@@ -85,17 +74,13 @@ func registerDynamicSubcommands(s *discordgo.Session, subCommands subCommands) {
 			DefaultMemberPermissions: &permission,
 		}
 
-		c, err := s.ApplicationCommandCreate(config.GetAppID(), config.GetGuildID(), cmd)
-		if err != nil {
-			log.Fatal().Err(err).Str("name", k).Msg("failed to create content sub-command")
-			return
-		}
-		RegisteredCommands = append(RegisteredCommands, c)
-		log.Info().Str("name", k).Msg("registered dynamic sub-command")
+		commands = append(commands, cmd)
 	}
+
+	return
 }
 
-func generateCommandsToRegister() (subCommands, normalCommands) {
+func generateCommandsToRegister() (normalCommands, subCommands) {
 	subCommands := subCommands{}
 	normalCommands := normalCommands{}
 
@@ -116,7 +101,7 @@ func generateCommandsToRegister() (subCommands, normalCommands) {
 		subCommands[root][subCmd] = cmdData
 	}
 
-	return subCommands, normalCommands
+	return normalCommands, subCommands
 }
 
 // calculateCommandPermission returns the appropriate content permission level for a given command.

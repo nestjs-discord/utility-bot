@@ -53,14 +53,7 @@ var Run = &cobra.Command{
 			return err
 		}
 
-		c, err := session.ApplicationCommands(config.GetAppID(), config.GetGuildID())
-		if err != nil {
-			return errors.Wrap(err, "failed to fetch registered application commands")
-		}
-		command.RegisteredCommands = append(command.RegisteredCommands, c...)
-
-		command.RegisterStaticCommands(session)
-		command.RegisterDynamicCommands(session)
+		command.RegisterApplicationCommands(session)
 
 		// Discord event handlers
 		session.AddHandler(handler.Ready)
