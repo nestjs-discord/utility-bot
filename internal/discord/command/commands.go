@@ -14,6 +14,23 @@ var (
 		npm.Subcommand,
 		stats.Command,
 	}
+	defaultOptions = []*discordgo.ApplicationCommandOption{
+		{
+			Name:        OptionTarget,
+			Description: "User to mention",
+			Type:        discordgo.ApplicationCommandOptionUser,
+		},
+		{
+			Name:        OptionHide,
+			Description: "Hide commands output",
+			Type:        discordgo.ApplicationCommandOptionBoolean,
+		},
+	}
+)
+
+const (
+	OptionTarget = "target"
+	OptionHide   = "hide"
 )
 
 type subCommands = map[string]map[string]*config.Command
@@ -42,6 +59,7 @@ func generateDynamicCommands(normalCommands map[string]*config.Command) (command
 			Name:                     k,
 			Description:              v.Description,
 			DefaultMemberPermissions: &permission,
+			Options:                  defaultOptions,
 		}
 
 		commands = append(commands, cmd)
@@ -64,6 +82,7 @@ func generateDynamicSubcommands(subCommands subCommands) (commands []*discordgo.
 				Type:        discordgo.ApplicationCommandOptionSubCommand,
 				Name:        s,
 				Description: sd.Description,
+				Options:     defaultOptions,
 			})
 		}
 
