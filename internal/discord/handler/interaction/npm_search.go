@@ -41,7 +41,7 @@ func NpmSearchHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Content: "No results were found with the entered information.",
-				Flags:   discordgo.MessageFlagsEphemeral,
+				// Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
 		return

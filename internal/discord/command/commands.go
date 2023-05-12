@@ -3,7 +3,9 @@ package command
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/npm"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
 	"github.com/rs/zerolog/log"
 	"strings"
@@ -12,25 +14,13 @@ import (
 var (
 	commands = []*discordgo.ApplicationCommand{
 		npm.Subcommand,
+		reference.Subcommand,
 		stats.Command,
 	}
 	defaultOptions = []*discordgo.ApplicationCommandOption{
-		{
-			Name:        OptionTarget,
-			Description: "User to mention",
-			Type:        discordgo.ApplicationCommandOptionUser,
-		},
-		{
-			Name:        OptionHide,
-			Description: "Hide commands output",
-			Type:        discordgo.ApplicationCommandOptionBoolean,
-		},
+		common.TargetOption,
+		common.HideOption,
 	}
-)
-
-const (
-	OptionTarget = "target"
-	OptionHide   = "hide"
 )
 
 type subCommands = map[string]map[string]*config.Command

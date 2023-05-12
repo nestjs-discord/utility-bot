@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/core/config"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 )
@@ -21,13 +21,10 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 	var flags discordgo.MessageFlags
 
 	for _, opt := range options {
-		if opt.Name == command.OptionHide && opt.Value == true {
+		if opt.Name == common.OptionHide && opt.Value == true {
 			flags = discordgo.MessageFlagsEphemeral
-			break
-		}
-
-		if opt.Name == command.OptionTarget && opt.Value != "" {
-			cmd.Content = fmt.Sprintf("<@%v>\n", opt.Value) + cmd.Content
+		} else if opt.Name == common.OptionTarget && opt.Value != "" {
+			cmd.Content = fmt.Sprintf("Suggestion for <@%v>:\n", opt.Value) + cmd.Content
 		}
 	}
 

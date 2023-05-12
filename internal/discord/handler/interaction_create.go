@@ -5,6 +5,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/core/cache"
 	"github.com/nestjs-discord/utility-bot/core/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/npm"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
@@ -12,6 +13,16 @@ import (
 )
 
 func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	switch i.Type {
+	case discordgo.InteractionApplicationCommand:
+		handleInteractionApplicationCommand(s, i)
+		return
+	case discordgo.InteractionApplicationCommandAutocomplete:
+		handleInteractionApplicationCommandAutocomplete(s, i)
+	}
+}
+
+func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	name := i.ApplicationCommandData().Name
 	userID := i.Member.User.ID
 
@@ -20,7 +31,7 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Str("channel-id", i.ChannelID).
 		Str("user-id", userID).
 		Interface("options", i.ApplicationCommandData().Options).
-		Msg("event: interaction create")
+		Msg("event: interaction application command")
 
 	if checkRatelimit(userID) {
 		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -41,25 +52,35 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	switch name {
-	// Npm subcommand
 	case npm.Name:
-		for _, option := range i.ApplicationCommandData().Options {
+		interaction.NpmHandler(s, i)
+		return
 
-			switch option.Name {
-			case npm.SearchCommandName:
-				interaction.NpmSearchHandler(s, i)
-				return
-			case npm.InspectCommandName:
-				interaction.NpmInspectHandler(s, i)
-				return
-			}
-		}
 	case stats.Stats:
 		interaction.StatHandler(s, i)
+		return
+
+	case reference.Name:
+		interaction.ReferenceHandler(s, i)
 		return
 	}
 
 	interaction.DefaultHandler(s, i)
+}
+
+func handleInteractionApplicationCommandAutocomplete(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	name := i.ApplicationCommandData().Name
+	log.Debug().Str("name", name).
+		Str("guild-id", i.GuildID).
+		Str("channel-id", i.ChannelID).
+		Interface("options", i.ApplicationCommandData().Options).
+		Msg("event: interaction application command autocomplete")
+
+	switch name {
+	case reference.Name:
+		interaction.ReferenceAutocompleteHandler(s, i)
+		return
+	}
 }
 
 func checkRatelimit(userID string) bool {
