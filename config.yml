@@ -108,7 +108,7 @@ commands:
       -
         - label: "Read rest of the documentation"
           url: "https://docs.nestjs.com/fundamentals/circular-dependency"
-          emoji: "🔗"
+          emoji: "📖"
       -
         - label: "How to avoid circular dependencies"
           url: "https://trilon.io/blog/avoiding-circular-dependencies-in-nestjs"
@@ -134,7 +134,7 @@ commands:
       -
         - label: "Read more"
           url: "https://docs.nestjs.com/faq/hybrid-application"
-          emoji: "🔗"
+          emoji: "📖"
 
   docs nest-debug:
     description: "Debug NestJS dependencies with environment variable"
@@ -143,6 +143,11 @@ commands:
   docs providers-vs-imports:
     description: "Ensure accurate service/module listings"
     content: "./content/docs/providers-vs-imports.md"
+    buttons:
+      -
+        - label: "Read more"
+          url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
+          emoji: "📖"
 
   docs request-lifecycle:
     description: "Get a grip on NestJS' request lifecycle for smooth coding"
@@ -151,7 +156,7 @@ commands:
       -
         - label: "Read more"
           url: "https://docs.nestjs.com/faq/request-lifecycle"
-          emoji: "🔗"
+          emoji: "📖"
 
   docs resolve-dependencies:
     description: "Nest not being able to resolve dependencies of something"
@@ -160,7 +165,7 @@ commands:
       -
         - label: "Read more about this error"
           url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
-          emoji: "🔗"
+          emoji: "📖"
       -
         - label: "Standard NestJS provider practices"
           url: "https://docs.nestjs.com/fundamentals/custom-providers#di-fundamentals"
@@ -192,7 +197,7 @@ commands:
       -
         - label: "Learn more"
           url: "https://javascript.info/async"
-          emoji: "🔗"
+          emoji: "📖"
 
   javascript js-error:
     description: "How to interpret JavaScript errors"
