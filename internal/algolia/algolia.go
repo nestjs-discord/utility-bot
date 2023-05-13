@@ -56,7 +56,6 @@ func Search(app App, query string) (hits []Hit, error error) {
 
 	setHeaders(req, credential)
 
-	client := getClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "http request failed")
@@ -104,7 +103,6 @@ func GetObject(app App, objectID string) (*Hit, error) {
 
 	setHeaders(req, credential)
 
-	client := getClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "http request failed")

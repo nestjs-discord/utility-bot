@@ -32,9 +32,9 @@ func ReferenceHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			return
 		}
 
-		content += "**" + algolia.ResolveHitToName(*hit) + "**\n"
+		content += "**" + algolia.GetFormattedHierarchy(*hit) + "**\n"
 		if hit.Content != "" {
-			content += algolia.Truncate(hit.Content, 300, "") + "\n"
+			content += algolia.Truncate(hit.Content, 300) + "\n"
 		}
 
 		err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -83,43 +83,44 @@ func generateReferenceComponents(hit *algolia.Hit) []discordgo.MessageComponent 
 }
 
 func ReferenceAutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	for _, option := range i.ApplicationCommandData().Options {
-		app, ok := algolia.Apps[option.Name]
+	rootOptions := i.ApplicationCommandData().Options
+	var choices []*discordgo.ApplicationCommandOptionChoice
+
+	for _, rootOption := range rootOptions {
+		app, ok := algolia.Apps[rootOption.Name]
 		if !ok {
 			continue
 		}
 
-		var choices []*discordgo.ApplicationCommandOptionChoice
-
-		query, err := getStringValueByName(reference.Query, option.Options)
+		query, err := getStringValueByName(reference.Query, rootOption.Options)
 		if err != nil {
-			_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionApplicationCommandAutocompleteResult,
-				Data: &discordgo.InteractionResponseData{
-					Choices: choices,
-				},
-			})
-			return
+			break // reply empty choices at the bottom
 		}
 
 		hits, err := algolia.Search(app, query)
-
-		if err == nil {
-			for _, hit := range hits {
-				choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
-					Name:  algolia.Truncate(algolia.ResolveHitToName(hit), 95, ""),
-					Value: hit.ObjectID,
-				})
-			}
+		if err != nil {
+			break // reply empty choices at the bottom
 		}
 
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionApplicationCommandAutocompleteResult,
-			Data: &discordgo.InteractionResponseData{
-				Choices: choices,
-			},
-		})
+		for _, hit := range hits {
+			choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
+				Name:  algolia.Truncate(algolia.GetFormattedHierarchy(hit), 95),
+				Value: hit.ObjectID,
+			})
+		}
+
+		// Break the loop after processing the first valid rootOption
+		break
 	}
+
+	response := &discordgo.InteractionResponseData{
+		Choices: choices,
+	}
+
+	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionApplicationCommandAutocompleteResult,
+		Data: response,
+	})
 }
 
 func getStringValueByName(name string, options []*discordgo.ApplicationCommandInteractionDataOption) (string, error) {

@@ -7,15 +7,27 @@ import (
 	"time"
 )
 
-// getClient returns an HTTP client configured for making requests to Algolia.
-func getClient() *http.Client {
-	transport := &http.Transport{
-		Proxy:           http.ProxyFromEnvironment,
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: false},
+var client *http.Client
+
+func init() {
+	cacheSize := 100
+
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: false,
+		ClientSessionCache: tls.NewLRUClientSessionCache(cacheSize),
 	}
 
-	return &http.Client{
-		Timeout:   10 * time.Second,
+	transport := &http.Transport{
+		MaxIdleConns:        100,
+		MaxIdleConnsPerHost: 100,
+		MaxConnsPerHost:     100,
+		Proxy:               http.ProxyFromEnvironment,
+		TLSHandshakeTimeout: 5 * time.Second,
+		TLSClientConfig:     tlsConfig,
+	}
+
+	client = &http.Client{
+		Timeout:   8 * time.Second,
 		Transport: transport,
 	}
 }
@@ -28,6 +40,6 @@ func getBaseURL(credential credential) string {
 // setHeaders sets the required headers for making requests to Algolia.
 func setHeaders(req *http.Request, credential credential) {
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Algolia-API-Key", credential.apiKey)
+	req.Header.Set("X-Algolia-Api-Key", credential.apiKey)
 	req.Header.Set("X-Algolia-Application-Id", credential.appId)
 }

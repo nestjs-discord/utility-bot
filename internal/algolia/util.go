@@ -1,57 +1,72 @@
 package algolia
 
 import (
-	"fmt"
 	"strings"
 )
 
-// ResolveHitToName resolves the name of a hit based on its hierarchy.
-// It takes a Hit object and returns the resolved name as a string.
-// If the subcategory is not specified or is the same as the category, it defaults to "Introduction".
-// If the Lvl3 of the hierarchy is not empty, it appends it to the result with a dash.
-func ResolveHitToName(hit Hit) string {
+// GetFormattedHierarchy formats a hierarchy from the provided Hit
+// struct into a human-readable string representation.
+//
+// The function follows the following logic:
+//   - If the "lvl1" field of the Hit's Hierarchy is not empty, it is used as the category.
+//     Otherwise, if the "lvl0" field is not empty, it is used as the category.
+//   - If the "lvl2" field of the Hit's Hierarchy is not empty, it is used as the subcategory.
+//     Otherwise, if the "lvl1" field is not empty, it is used as the subcategory.
+//   - If the category is the same as the subcategory or the subcategory is empty,
+//     the subcategory is set to "Introduction".
+//   - If the "lvl3" field of the Hit's Hierarchy is not empty,
+//     it is appended to the result string separated by a dash.
+//
+// The resulting formatted hierarchy string is returned.
+func GetFormattedHierarchy(hit Hit) string {
+	var builder strings.Builder
+
 	category := hit.Hierarchy.Lvl1
 	if category == "" {
 		category = hit.Hierarchy.Lvl0
 	}
 
 	subcategory := hit.Hierarchy.Lvl2
-	if subcategory == "" || category == subcategory {
+	if subcategory == "" {
+		subcategory = hit.Hierarchy.Lvl1
+	}
+
+	if category == subcategory || subcategory == "" {
 		subcategory = "Introduction"
 	}
 
-	result := fmt.Sprintf("%s: %s", category, subcategory)
+	builder.WriteString(category)
+	builder.WriteString(": ")
+	builder.WriteString(subcategory)
+
 	if hit.Hierarchy.Lvl3 != "" {
-		result += fmt.Sprintf(" - %s", hit.Hierarchy.Lvl3)
+		builder.WriteString(" - ")
+		builder.WriteString(hit.Hierarchy.Lvl3)
 	}
 
-	return result
+	return builder.String()
 }
 
-// Truncate truncates a given text to a specified length while preserving word boundaries.
-// It takes the text to truncate, the desired length, and the split character as input.
+// Truncate truncates a given text to a specified length by cutting at word boundaries.
 // If the length of the text is less than or equal to the specified length, it returns the original text.
-// It splits the text into words using the split character and gradually adds words until the length is reached.
 // If truncation occurs, it appends "..." to the truncated text.
-func Truncate(text string, length int, splitChar string) string {
+func Truncate(text string, length int) string {
 	if len(text) <= length {
 		return text
 	}
 
-	words := strings.Split(text, splitChar)
-	var res []string
+	// Trim leading and trailing whitespaces
+	text = strings.TrimSpace(text)
 
-	for _, word := range words {
-		full := strings.Join(res, splitChar)
-		if len(full)+len(word)+1 <= length-3 {
-			res = append(res, word)
+	if len(text) > length {
+		// Find the last complete word within the character limit
+		lastSpaceIndex := strings.LastIndex(text[:length], " ")
+		if lastSpaceIndex > 0 {
+			text = text[:lastSpaceIndex]
+		} else {
+			text = text[:length]
 		}
 	}
 
-	resText := strings.Join(res, splitChar)
-	if len(resText) == len(text) {
-		return resText
-	}
-
-	return fmt.Sprintf("%s...", strings.TrimSpace(resText))
+	return text + "..."
 }

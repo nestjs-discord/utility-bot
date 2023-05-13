@@ -32,7 +32,7 @@ func init() {
 		Subcommand.Options = append(Subcommand.Options, &discordgo.ApplicationCommandOption{
 			Type:        discordgo.ApplicationCommandOptionSubCommand,
 			Name:        slug,
-			Description: "display docs for " + app.ToString(),
+			Description: "Display docs for " + string(app),
 			Options:     options,
 		})
 	}

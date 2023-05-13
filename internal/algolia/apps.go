@@ -7,18 +7,10 @@ import (
 // App represents an Algolia application.
 type App string
 
-// ToString converts the App to its string representation.
-func (a App) ToString() string {
-	return string(a)
-}
-
 // ToSlug converts the App to a slug format.
 // It converts the App to lowercase and replaces spaces with hyphens.
 func (a App) ToSlug() string {
-	return strings.ReplaceAll(
-		strings.ToLower(a.ToString()),
-		" ", "-",
-	)
+	return strings.ReplaceAll(strings.ToLower(string(a)), " ", "-")
 }
 
 // Predefined App constants representing different applications.
