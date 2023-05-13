@@ -19,6 +19,7 @@ var emojis = map[string]string{
 	algolia.NestCommander.ToSlug():  "<:commander:1106968502432190484>",
 	algolia.NestJS.ToSlug():         "<:nestjs:1106967607434817698>",
 	algolia.Ogma.ToSlug():           "<:ogma:1106968518160814180>",
+	algolia.TypeORM.ToSlug():        "<:typeorm:1106976838695264348>",
 	algolia.TypeScript.ToSlug():     "<:typescript:1106968521692414043>",
 }
 

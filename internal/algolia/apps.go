@@ -23,6 +23,7 @@ const (
 	NestCommander  App = "Nest Commander"
 	NestJS         App = "NestJS"
 	Ogma           App = "Ogma"
+	TypeORM        App = "TypeORM"
 	TypeScript     App = "TypeScript"
 )
 
@@ -36,5 +37,6 @@ var Apps = map[string]App{
 	NestCommander.ToSlug():  NestCommander,
 	NestJS.ToSlug():         NestJS,
 	Ogma.ToSlug():           Ogma,
+	TypeORM.ToSlug():        TypeORM,
 	TypeScript.ToSlug():     TypeScript,
 }

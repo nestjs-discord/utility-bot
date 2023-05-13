@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestSearch(t *testing.T) {
+func TestSearchNestJS(t *testing.T) {
 	res, err := algolia.Search(algolia.NestJS, "test")
 	assert.NoError(t, err)
 	assert.NotNil(t, res)

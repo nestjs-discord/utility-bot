@@ -16,5 +16,6 @@ var credentials = map[App]credential{
 	NestCommander:  {appId: "9O0K4CXI15", apiKey: "9689faf6550ca3133e69be1d9861ea92", index: "nest-commander"},
 	NestJS:         {appId: "SDCBYAN96J", apiKey: "6d1869890dab96592b191e63a8deb5b5", index: "nestjs"},
 	Ogma:           {appId: "U5N45YQUS6", apiKey: "dad79a1521426f184d0fac2ce3575149", index: "ogma"},
+	TypeORM:        {appId: "2UUKVSBT3M", apiKey: "8392de2c2e76d873b60bf10562aab788", index: "typeorm"},
 	TypeScript:     {appId: "BGCDYOIYZ5", apiKey: "37ee06fa68db6aef451a490df6df7c60", index: "typescriptlang"},
 }
