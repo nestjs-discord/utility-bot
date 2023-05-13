@@ -8,7 +8,8 @@ const BotPermissions int = discordgo.PermissionViewChannel |
 	discordgo.PermissionAttachFiles |
 	discordgo.PermissionEmbedLinks |
 	discordgo.PermissionUseSlashCommands |
-	discordgo.PermissionAddReactions
+	discordgo.PermissionAddReactions |
+	discordgo.PermissionUseExternalEmojis
 
 const BotIntents = discordgo.IntentsGuildMessages
 

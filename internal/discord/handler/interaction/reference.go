@@ -7,7 +7,20 @@ import (
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
+	"strings"
 )
+
+var emojis = map[string]string{
+	algolia.Discord.ToSlug():        "<:discord:1106968504877461616>",
+	algolia.DiscordJSGuide.ToSlug(): "<:discordjs:1106968508950122637>",
+	algolia.Express.ToSlug():        "<:express:1106968511483490376>",
+	algolia.Fastify.ToSlug():        "<:fastify:1106968514109116486>",
+	algolia.Necord.ToSlug():         "<:necord:1106968169580613723>",
+	algolia.NestCommander.ToSlug():  "<:commander:1106968502432190484>",
+	algolia.NestJS.ToSlug():         "<:nestjs:1106967607434817698>",
+	algolia.Ogma.ToSlug():           "<:ogma:1106968518160814180>",
+	algolia.TypeScript.ToSlug():     "<:typescript:1106968521692414043>",
+}
 
 func ReferenceHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
@@ -32,16 +45,28 @@ func ReferenceHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			return
 		}
 
-		content += "**" + algolia.GetFormattedHierarchy(*hit) + "**\n"
+		// Add emoji
+		emoji, ok := emojis[option.Name]
+		if ok {
+			content.WriteString(emoji)
+			content.WriteString(" ")
+		}
+
+		// Add title
+		content.WriteString("**")
+		content.WriteString(algolia.GetFormattedHierarchy(*hit))
+		content.WriteString("**\n")
+
+		// Add description (if present)
 		if hit.Content != "" {
-			content += algolia.Truncate(hit.Content, 300) + "\n"
+			content.WriteString(algolia.Truncate(hit.Content, 350) + "\n")
 		}
 
 		err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content:    content,
-				Flags:      flags,
+				Content:    content.String(),
+				Flags:      flags | discordgo.MessageFlagsSupressEmbeds,
 				Components: generateReferenceComponents(hit),
 			},
 		})
@@ -51,15 +76,15 @@ func ReferenceHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 }
 
-func parseReferenceOptions(option *discordgo.ApplicationCommandInteractionDataOption) (discordgo.MessageFlags, string) {
+func parseReferenceOptions(option *discordgo.ApplicationCommandInteractionDataOption) (discordgo.MessageFlags, strings.Builder) {
 	var flags discordgo.MessageFlags
-	var content string
+	var content strings.Builder
 
 	for _, opt := range option.Options {
 		if opt.Name == common.OptionHide && opt.Value == true {
 			flags = discordgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
-			content += fmt.Sprintf("Suggestion for <@%v>:\n", opt.Value)
+			content.WriteString(fmt.Sprintf("Suggestion for <@%v>:\n", opt.Value))
 		}
 	}
 
