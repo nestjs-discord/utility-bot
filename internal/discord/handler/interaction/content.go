@@ -24,7 +24,7 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 		if opt.Name == common.OptionHide && opt.Value == true {
 			flags = discordgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
-			cmd.Content = fmt.Sprintf("Suggestion for <@%v>:\n", opt.Value) + cmd.Content
+			cmd.Content = fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value) + cmd.Content
 		}
 	}
 

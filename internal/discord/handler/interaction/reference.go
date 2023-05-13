@@ -31,7 +31,9 @@ func ReferenceHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			continue
 		}
 
-		flags, content := parseReferenceOptions(option)
+		var content strings.Builder
+
+		flags := parseReferenceOptions(option, &content)
 
 		objectID, err := getStringValueByName(reference.Query, option.Options)
 		if err != nil {
@@ -76,19 +78,18 @@ func ReferenceHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 }
 
-func parseReferenceOptions(option *discordgo.ApplicationCommandInteractionDataOption) (discordgo.MessageFlags, strings.Builder) {
+func parseReferenceOptions(option *discordgo.ApplicationCommandInteractionDataOption, content *strings.Builder) discordgo.MessageFlags {
 	var flags discordgo.MessageFlags
-	var content strings.Builder
 
 	for _, opt := range option.Options {
 		if opt.Name == common.OptionHide && opt.Value == true {
 			flags = discordgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
-			content.WriteString(fmt.Sprintf("Suggestion for <@%v>:\n", opt.Value))
+			content.WriteString(fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value))
 		}
 	}
 
-	return flags, content
+	return flags
 }
 
 func generateReferenceComponents(hit *algolia.Hit) []discordgo.MessageComponent {
