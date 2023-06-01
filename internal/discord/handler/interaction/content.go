@@ -20,18 +20,21 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 
 	var flags discordgo.MessageFlags
 
+	// Copy the content into a new variable to avoid pointer overwrite.
+	content := cmd.Content
+
 	for _, opt := range options {
 		if opt.Name == common.OptionHide && opt.Value == true {
 			flags = discordgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
-			cmd.Content = fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value) + cmd.Content
+			content = fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value) + content
 		}
 	}
 
 	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content:    cmd.Content,
+			Content:    content,
 			Components: convertButtonsToMessageComponents(cmd.Buttons),
 			Flags:      flags,
 		},
