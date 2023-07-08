@@ -101,6 +101,22 @@ commands:
           url: "https://github.com/jmcdo29/testing-nestjs"
           emoji: "🔗"
 
+  docs behind-proxy:
+    description: "How to enable the trust proxy option when NestJS app is behind a reverse proxy"
+    content: "./content/docs/behind-proxy.md"
+    buttons:
+      -
+        - label: "Fastify trustProxy docs"
+          url: "https://fastify.dev/docs/latest/Reference/Server#trustproxy"
+          emoji: "🔗"
+        - label: "Express trust proxy docs"
+          url: "https://expressjs.com/en/guide/behind-proxies.html"
+          emoji: "🔗"
+      -
+        - label: "@nestjs/throttler docs"
+          url: "https://docs.nestjs.com/security/rate-limiting#proxies"
+          emoji: "📖"
+
   docs circular-dependency:
     description: "Circular Dependencies in NestJS and how to Avoid Them"
     content: "./content/docs/circular-dependency.md"
