@@ -227,6 +227,15 @@ commands:
     description: "How to interpret JavaScript errors"
     content: "./content/javascript/error.md"
 
+  javascript floating-promise:
+    description: "What is a Floating Promise?"
+    content: "./content/javascript/floating-promise.md"
+    buttons:
+      -
+        - label: "eslint rule to prevent async code errors"
+          url: "https://typescript-eslint.io/rules/no-floating-promises/"
+          emoji: "🔗"
+
   javascript undefined:
     description: "Uncaught TypeError: Cannot read properties of undefined (reading 'foo')"
     content: "./content/javascript/undefined.md"
