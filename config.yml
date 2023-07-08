@@ -66,13 +66,21 @@ commands:
   #     See https://discord.com/developers/docs/interactions/message-components for more information on message components.
 
   #
-  # Protected commands
-  # Only users with "Manage Messages" permission can _see_ and _use_ these commands.
+  # Moderation commands
   #
   mods cross-post:
     description: "Don't cross post, ask in relevant channels, be patient and structure your question"
     content: "./content/mods/cross-post.md"
     protected: true
+
+  mods elaborate:
+    description: "Please provide more context so we can better assist you with your inquiry."
+    content: "./content/mods/elaborate.md"
+    buttons:
+      -
+        - label: "What is a reproduction repository?"
+          url: "https://minimum-reproduction.wtf/"
+          emoji: "🔗"
 
   mods spam:
     description: "A friendly warning to prevent spamming in the chat"
