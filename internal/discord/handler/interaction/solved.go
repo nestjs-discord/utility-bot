@@ -41,6 +41,20 @@ func validateInteractionForThreadPost(s *discordgo.Session, i *discordgo.Interac
 		return nil, false
 	}
 
+	// Restrict further actions to the original post owner and moderators
+	userId := i.Member.User.ID
+	postOwnerId := currentChannelInfo.OwnerID
+	if userId != postOwnerId && !util.IsUserModerator(userId) {
+		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: ":warning: Only forum post owner and moderators can use this command.",
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
+		})
+		return nil, false
+	}
+
 	return currentChannelInfo, true
 }
 
