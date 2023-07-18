@@ -3,9 +3,11 @@ package command
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/npm"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
 	"github.com/rs/zerolog/log"
 	"strings"
@@ -13,8 +15,10 @@ import (
 
 var (
 	commands = []*discordgo.ApplicationCommand{
+		archive.Command,
 		npm.Subcommand,
 		reference.Subcommand,
+		solved.Command,
 		stats.Command,
 	}
 	defaultOptions = []*discordgo.ApplicationCommandOption{

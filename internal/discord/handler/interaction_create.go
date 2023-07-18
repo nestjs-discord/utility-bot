@@ -4,8 +4,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/core/cache"
 	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/npm"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
@@ -52,16 +54,24 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 	}
 
 	switch name {
+	case archive.Archive:
+		interaction.ArchiveHandler(s, i)
+		return
+
 	case npm.Name:
 		interaction.NpmHandler(s, i)
 		return
 
-	case stats.Stats:
-		interaction.StatHandler(s, i)
-		return
-
 	case reference.Name:
 		interaction.ReferenceHandler(s, i)
+		return
+
+	case solved.Solved:
+		interaction.SolvedHandler(s, i)
+		return
+
+	case stats.Stats:
+		interaction.StatHandler(s, i)
 		return
 	}
 
