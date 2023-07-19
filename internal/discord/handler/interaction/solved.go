@@ -41,6 +41,15 @@ func validateInteractionForThreadPost(s *discordgo.Session, i *discordgo.Interac
 		return nil, false
 	}
 
+	return currentChannelInfo, true
+}
+
+func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	currentChannelInfo, isValid := validateInteractionForThreadPost(s, i)
+	if !isValid {
+		return
+	}
+
 	// Restrict further actions to the original post owner and moderators
 	userId := i.Member.User.ID
 	postOwnerId := currentChannelInfo.OwnerID
@@ -52,15 +61,6 @@ func validateInteractionForThreadPost(s *discordgo.Session, i *discordgo.Interac
 				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
-		return nil, false
-	}
-
-	return currentChannelInfo, true
-}
-
-func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	currentChannelInfo, isValid := validateInteractionForThreadPost(s, i)
-	if !isValid {
 		return
 	}
 

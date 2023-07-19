@@ -7,16 +7,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      target: build-release-stage # Multi-stage Docker build
-    healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://127.0.0.1:2112/metrics" ]
-      interval: 10s
-      retries: 5
-      start_period: 20s
-      timeout: 3s
+      target: production-stage # Multi-stage Docker build
     volumes: # In case, we may add the live-reloading feature
-      - ./content:/content:ro
-      - ./config.yml:/config.yml:ro
+      - ./content:/usr/app/content:ro
+      - ./config.yml:/usr/app/config.yml:ro
     environment:
       DISCORD_APP_ID: "${DISCORD_APP_ID}"
       DISCORD_BOT_TOKEN: "${DISCORD_BOT_TOKEN}"
@@ -28,4 +22,4 @@ services:
     #   - "127.0.0.1:2112:2112"
 
     # Sets log level to debug
-    # entrypoint: ["/utility-bot", "discord:run", "--debug"]
+    # entrypoint: ["ub", "discord:run", "--debug"]

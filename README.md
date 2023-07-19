@@ -54,31 +54,35 @@ as the permissions within the link will likely change based on the features we m
 ## Docker usage
 
 ```shell
+# Rebuild and start the Docker container in detached mode with environment variables from the '.env' file.
 docker compose --env-file ./.env up -d --build
 
 # Generate an invite link to add the bot to the server
-docker compose exec utility-bot ./utility-bot discord:invite
+docker compose exec utility-bot ub discord:invite
+
+# To remove the registered slash commands (in case of inconsistency between the configuration and the production)
+#
+# Executing this command is NOT required anymore because, based on previous updates,
+# the bot can overwrite registered commands and synchronize them with the local configuration on startup.
+docker compose exec utility-bot ub discord:clean
 
 # Graceful shutdown
-# docker compose down
-
-# Removing the registered slash commands (in case of inconsistency between the configuration and the production)
-# docker compose exec utility-bot ./utility-bot discord:clean
+docker compose down
 ```
 
 ## Notes
 
 - Slash commands
-  - Discord will sort them alphabetically, regardless of their initial order in `config.yml`.
-  - They update instantly for the end-user because this project uses [guild commands](https://discord.com/developers/docs/interactions/application-commands#registering-a-command) instead of global commands.
+  - Discord will sort commands alphabetically, regardless of their initial order in the `config.yml` file.
+  - Users will instantly see commands once registered because this project uses https://discord.com/developers/docs/interactions/application-commands#registering-a-command instead of global ones.
   - Discord has a global rate limit of [200 application command creations per day, per guild](https://discord.com/developers/docs/interactions/application-commands#registering-a-command).
-  - Bot will automatically register slash commands on startup.
-  - Registered slash commands can be removed by the `discord:clean` command.
+  - The bot will automatically register slash commands on startup.
+  - Registered commands can be removed by the `discord:clean` CLI command.
   - Only one sub-command level is supported; for example, `/foo bar` is valid.
 - Markdown content
-  - Content within the slash commands can have a maximum of 2000 characters.
-  - The bot will cache Markdown content to avoid spamming I/O.
+  - The content of each file can be up to 2000 characters.
+  - The bot caches the content after execution (restarting is required to apply the changes).
 - Moderators
   - They can be defined by their unique Discord ID in the `config.yml` file.
   - They bypass rate-limit policies.
-  - They can execute `protected` commands in `config.yml`.
+  - They can execute `protected` commands in the `config.yml` file.
