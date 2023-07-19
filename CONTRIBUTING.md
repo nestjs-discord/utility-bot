@@ -17,3 +17,29 @@ We welcome all contributions, including bug reports, feature requests, and code 
 So let's build something great together!
 
 Happy coding! 🚀
+
+## Running the Discord bot
+
+```shell
+go run . discord:run --debug
+```
+
+## Build
+
+To build this project, you must [install Golang](https://go.dev/doc/install) in your system
+and execute the following command.
+
+```shell
+go build -trimpath -buildvcs=false -ldflags "-w" -o ./bin/utility-bot ./main.go
+```
+
+## Dependencies overview
+
+- [DiscordGo](https://github.com/bwmarrin/discordgo) - Provides low-level bindings to the Discord chat client API
+- [Cobra](https://github.com/spf13/cobra) - Commander for modern Go CLI interactions
+- [Viper](https://github.com/spf13/viper) - Complete configuration solution for Go applications
+- [Validator](https://github.com/go-playground/validator) - Implements value validations for structs based on tags
+- [Zerolog](https://github.com/rs/zerolog) - Zero allocation JSON logger
+- [Go-humanize](https://github.com/dustin/go-humanize) - Formatters for units to human friendly sizes
+- [Testify](https://github.com/stretchr/testify) - A toolkit with common assertions and mocks
+- [Prometheus Golang](https://github.com/prometheus/client_golang) - Prometheus instrumentation library for Go apps

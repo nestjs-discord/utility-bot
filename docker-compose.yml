@@ -14,7 +14,7 @@ services:
       retries: 5
       start_period: 20s
       timeout: 3s
-    volumes: # In case, we may add a live-reloading feature
+    volumes: # In case, we may add the live-reloading feature
       - ./content:/content:ro
       - ./config.yml:/config.yml:ro
     environment:

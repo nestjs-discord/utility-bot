@@ -69,8 +69,13 @@ commands:
   # Moderation commands
   #
   mods cross-post:
-    description: "Don't cross post, ask in relevant channels, be patient and structure your question"
+    description: "Warn users not to cross-post, ask in relevant channels, and be patient."
     content: "./content/mods/cross-post.md"
+    protected: true
+
+  mods spam:
+    description: "A friendly warning to prevent spamming in the chat"
+    content: "./content/mods/spam.md"
     protected: true
 
   mods elaborate:
@@ -81,11 +86,6 @@ commands:
         - label: "What is a reproduction repository?"
           url: "https://minimum-reproduction.wtf/"
           emoji: "🔗"
-
-  mods spam:
-    description: "A friendly warning to prevent spamming in the chat"
-    content: "./content/mods/spam.md"
-    protected: true
 
   #
   # Public commands
@@ -114,11 +114,11 @@ commands:
     content: "./content/docs/behind-proxy.md"
     buttons:
       -
-        - label: "Fastify trustProxy docs"
-          url: "https://fastify.dev/docs/latest/Reference/Server#trustproxy"
-          emoji: "🔗"
         - label: "Express trust proxy docs"
           url: "https://expressjs.com/en/guide/behind-proxies.html"
+          emoji: "🔗"
+        - label: "Fastify trustProxy docs"
+          url: "https://fastify.dev/docs/latest/Reference/Server#trustproxy"
           emoji: "🔗"
       -
         - label: "@nestjs/throttler docs"
@@ -126,7 +126,7 @@ commands:
           emoji: "📖"
 
   docs circular-dependency:
-    description: "Circular Dependencies in NestJS and how to Avoid Them"
+    description: "Circular dependencies in NestJS and how to avoid them"
     content: "./content/docs/circular-dependency.md"
     buttons:
       -
@@ -215,7 +215,7 @@ commands:
     content: "./content/rules/screenshot.md"
 
   javascript floating-promise:
-    description: "What is a Floating Promise?"
+    description: "Introduction to floating Promises in JavaScript"
     content: "./content/javascript/floating-promise.md"
     buttons:
       -

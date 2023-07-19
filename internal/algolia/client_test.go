@@ -35,7 +35,7 @@ func TestGetBaseURL(t *testing.T) {
 }
 
 func TestSetHeaders(t *testing.T) {
-	// Create a dummy HTTP request
+	// Create a fake HTTP request
 	req, _ := http.NewRequest("GET", "https://example.com", nil)
 
 	// Test cases
