@@ -74,7 +74,7 @@ docker compose down
 
 - Slash commands
   - Discord will sort commands alphabetically, regardless of their initial order in the `config.yml` file.
-  - Users will instantly see commands once registered because this project uses https://discord.com/developers/docs/interactions/application-commands#registering-a-command instead of global ones.
+  - Users will instantly see commands once registered because this project uses [guild commands](https://discord.com/developers/docs/interactions/application-commands#registering-a-command) instead of global ones.
   - Discord has a global rate limit of [200 application command creations per day, per guild](https://discord.com/developers/docs/interactions/application-commands#registering-a-command).
   - The bot will automatically register slash commands on startup.
   - Registered commands can be removed by the `discord:clean` CLI command.
