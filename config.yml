@@ -226,3 +226,7 @@ commands:
         - label: "Eslint rule to prevent async code errors"
           url: "https://typescript-eslint.io/rules/no-floating-promises/"
           emoji: "🔗"
+
+  request-info:
+    description: "Ask them to run the \"npx @nestjs/cli info\" and paste the output in a code block."
+    content: "./content/request-info.md"

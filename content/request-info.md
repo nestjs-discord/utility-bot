@@ -1,0 +1,1 @@
+Please run the command `npx @nestjs/cli info` and paste the output in a code block. This will help us determine if there is a version issue in your packages and which version of nest we are triaging.
