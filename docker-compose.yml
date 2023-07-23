@@ -16,10 +16,5 @@ services:
       DISCORD_BOT_TOKEN: "${DISCORD_BOT_TOKEN}"
       DISCORD_GUILD_ID: "${DISCORD_GUILD_ID}"
 
-    # Bind prometheus metrics to host machine
-    # http://127.0.0.1:2112/metrics
-    # ports:
-    #   - "127.0.0.1:2112:2112"
-
     # Sets log level to debug
     # entrypoint: ["ub", "discord:run", "--debug"]

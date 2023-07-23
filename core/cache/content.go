@@ -14,7 +14,7 @@ func Content() error {
 	charLimit := 2000
 
 	for _, c := range config.GetConfig().Commands {
-		// Ignore non markdown files
+		// Ignore non-markdown files
 		if !strings.HasSuffix(c.Content, ".md") {
 			return fmt.Errorf("expected '%v' file, to have '.md' extension", c.Content)
 		}

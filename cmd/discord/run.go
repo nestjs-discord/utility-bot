@@ -2,40 +2,21 @@ package discord
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/core/cache"
 	"github.com/nestjs-discord/utility-bot/core/config"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler"
-	"github.com/nestjs-discord/utility-bot/internal/prometheus"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
-
-var (
-	metricsAddr string
-)
-
-func init() {
-	Run.PersistentFlags().StringVarP(&metricsAddr,
-		"metrics-addr", "", "0.0.0.0:2112", "address to run the HTTP metrics server")
-}
 
 var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Starts the Discord bot",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		if metricsAddr == "" {
-			return errors.New("metrics-addr flag is required.")
-		}
-		return nil
-	},
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		// Cache Markdown content
 		err := cache.Content()
@@ -70,8 +51,6 @@ var Run = &cobra.Command{
 			return fmt.Errorf("failed to open Discord connection: %v", err)
 		}
 
-		initPrometheus(session)
-
 		// Graceful shutdown
 		sc := make(chan os.Signal, 1)
 		signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)
@@ -85,22 +64,4 @@ var Run = &cobra.Command{
 	PostRun: func(cmd *cobra.Command, args []string) {
 		log.Warn().Msg("discord session closed")
 	},
-}
-
-func initPrometheus(s *discordgo.Session) {
-	p := prometheus.New()
-
-	go func() {
-		for range time.Tick(10 * time.Second) {
-			value := s.HeartbeatLatency().Seconds()
-			p.SetHeartbeatLatency(value)
-		}
-	}()
-
-	go func() {
-		err := p.ListenAndServe(metricsAddr)
-		if err != nil {
-			log.Panic().Err(err).Msg("failed to listen http server")
-		}
-	}()
 }

@@ -42,4 +42,3 @@ go build -trimpath -buildvcs=false -ldflags "-w" -o ./bin/utility-bot ./main.go
 - [Zerolog](https://github.com/rs/zerolog) - Zero allocation JSON logger
 - [Go-humanize](https://github.com/dustin/go-humanize) - Formatters for units to human friendly sizes
 - [Testify](https://github.com/stretchr/testify) - A toolkit with common assertions and mocks
-- [Prometheus Golang](https://github.com/prometheus/client_golang) - Prometheus instrumentation library for Go apps
