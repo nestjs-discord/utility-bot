@@ -9,8 +9,6 @@ import (
 )
 
 func StatHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	// TODO: Heartbeat latency field
-
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 
@@ -64,7 +62,6 @@ func StatHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		},
 	})
 	if err != nil {
-
 		util.InteractionRespondError(err, s, i)
 	}
 }
