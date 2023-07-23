@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
@@ -10,10 +9,6 @@ func Unmarshal() error {
 	if err != nil {
 		return err
 	}
-
-	log.Debug().Interface("instance", c).Msg("config")
-
-	validateConfig()
 
 	return nil
 }

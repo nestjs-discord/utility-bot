@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/go-playground/validator/v10"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"strings"
 )
@@ -17,23 +18,22 @@ var MaxOneSpaceValidator = func(fl validator.FieldLevel) bool {
 	return true
 }
 
-func validateConfig() {
+func ValidateConfig() error {
 	validate := validator.New()
 
 	// register all sql.Null* types to use the ValidateValuer CustomTypeFunc
 	err := validate.RegisterValidation("max-one-space-allowed", MaxOneSpaceValidator)
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to register custom validation function")
+		return errors.Wrap(err, "failed to register custom config validation function")
 	}
 
 	err = validate.Struct(c)
 	if err != nil {
 		// this check is only needed when your code could produce
 		// an invalid value for validation such as interface with nil
-		// value most including myself do not usually have code like this.
+		// value, most including myself do not usually have code like this.
 		if _, ok := err.(*validator.InvalidValidationError); ok {
-			log.Fatal().Err(err).Msg("config: validation invalid error")
-			return
+			return errors.Wrap(err, "invalid validation error")
 		}
 
 		for _, err := range err.(validator.ValidationErrors) {
@@ -45,6 +45,8 @@ func validateConfig() {
 				Msg("config: validation field")
 		}
 
-		log.Fatal().Msg("config: validation error, please check the configuration!")
+		return errors.New("config validation failed, please check the configuration file")
 	}
+
+	return nil
 }

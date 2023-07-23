@@ -67,7 +67,10 @@ func initConfig() {
 	log.Debug().Str("path", viper.ConfigFileUsed()).Msg("config: read success")
 
 	if err := config.Unmarshal(); err != nil {
-		log.Fatal().Err(err).Msg("config unmarshal failed")
+		log.Fatal().Err(err).Msg("config: unmarshal failed")
 	}
 
+	if err := config.ValidateConfig(); err != nil {
+		log.Fatal().Err(err).Send()
+	}
 }
