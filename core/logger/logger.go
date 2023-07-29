@@ -15,11 +15,12 @@ func Register(debug bool) {
 		Out: os.Stderr,
 	})
 
-	// Default level for this example is info, unless debug flag is present
+	// The Default level for this example is info
 	if debug {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 		log.Debug().Msg("debug mode activated")
-	} else {
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+		return
 	}
+
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 }

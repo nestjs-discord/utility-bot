@@ -7,6 +7,7 @@ import (
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"os"
@@ -31,7 +32,7 @@ var Run = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		session, err := internalDiscord.NewSession()
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to create new Discord session")
 		}
 
 		command.RegisterApplicationCommands(session)

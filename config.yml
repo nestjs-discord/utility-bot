@@ -213,6 +213,11 @@ commands:
   rules screenshot:
     description: "When someone posts a screenshot instead of sharing their code"
     content: "./content/rules/screenshot.md"
+    buttons:
+      -
+        - label: "Learn more about code-blocks"
+          url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
+          emoji: "🔗"
 
   javascript floating-promise:
     description: "Introduction to floating Promises in JavaScript"
