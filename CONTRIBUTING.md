@@ -7,21 +7,23 @@ We're thrilled to have you here!
 
 1. Fork the repository
 2. Clone the repository to your local machine
-3. Make your changes
-4. Run tests and ensure they pass with `go test -v ./...`
-5. Ensure Markdown content in the configuration have proper length with `go run . validate:content`
-6. Push your changes to your fork
-7. Create a pull request
+3. Install dependencies using `make install`
+4. Make your changes
+5. Run tests and ensure they pass with `go test -v ./...`
+6. Ensure Markdown content in the configuration have proper length with `go run . validate:content`
+7. Push your changes to your fork
+8. Create a pull request
 
 We welcome all contributions, including bug reports, feature requests, and code improvements.
 So let's build something great together!
 
 Happy coding! 🚀
 
-## Running the Discord bot
+## Running the Discord bot in debug mode
 
 ```shell
-go run . discord:run --debug
+# go run . discord:run --debug
+make run
 ```
 
 ## Build
@@ -30,15 +32,23 @@ To build this project, you must [install Golang](https://go.dev/doc/install) in 
 and execute the following command.
 
 ```shell
-go build -trimpath -buildvcs=false -ldflags "-w" -o ./bin/utility-bot ./main.go
+make install
+make build
 ```
 
-## Dependencies overview
+## Notes
 
-- [DiscordGo](https://github.com/bwmarrin/discordgo) - Provides low-level bindings to the Discord chat client API
-- [Cobra](https://github.com/spf13/cobra) - Commander for modern Go CLI interactions
-- [Viper](https://github.com/spf13/viper) - Complete configuration solution for Go applications
-- [Validator](https://github.com/go-playground/validator) - Implements value validations for structs based on tags
-- [Zerolog](https://github.com/rs/zerolog) - Zero allocation JSON logger
-- [Go-humanize](https://github.com/dustin/go-humanize) - Formatters for units to human friendly sizes
-- [Testify](https://github.com/stretchr/testify) - A toolkit with common assertions and mocks
+- Slash commands
+    - Discord will sort commands alphabetically, regardless of their initial order in the `config.yml` file.
+    - Users will instantly see commands once registered because this project uses [guild commands](https://discord.com/developers/docs/interactions/application-commands#registering-a-command) instead of global ones.
+    - Discord has a global rate limit of [200 application command creations per day, per guild](https://discord.com/developers/docs/interactions/application-commands#registering-a-command).
+    - The bot will automatically register slash commands on startup.
+    - Registered commands can be removed by the `discord:clean` CLI command.
+    - Only one sub-command level is supported; for example, `/foo bar` is valid.
+- Markdown content
+    - The content of each file can be up to 2000 characters.
+    - The bot caches the content after execution (restarting is required to apply the changes).
+- Moderators
+    - They can be defined by their unique Discord ID in the `config.yml` file.
+    - They bypass rate-limit policies.
+    - They can execute `protected` commands in the `config.yml` file.

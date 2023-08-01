@@ -52,6 +52,8 @@ var Run = &cobra.Command{
 			return fmt.Errorf("failed to open Discord connection: %v", err)
 		}
 
+		log.Info().Str("link", internalDiscord.GenerateInviteLink()).Msg("server invite")
+
 		// Graceful shutdown
 		sc := make(chan os.Signal, 1)
 		signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)

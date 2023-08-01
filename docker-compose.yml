@@ -15,6 +15,3 @@ services:
       DISCORD_APP_ID: "${DISCORD_APP_ID}"
       DISCORD_BOT_TOKEN: "${DISCORD_BOT_TOKEN}"
       DISCORD_GUILD_ID: "${DISCORD_GUILD_ID}"
-
-    # Sets log level to debug
-    # entrypoint: ["ub", "discord:run", "--debug"]

@@ -2,29 +2,22 @@
 FROM golang:1.20.6-alpine AS build-stage
 
 RUN apk update \
-    && apk add --no-cache ca-certificates \
+    && apk add --no-cache ca-certificates make \
     && rm -rf /var/cache/apk/*
 
-# Set the working directory for COPY
+# Set the working directory
 WORKDIR /app
 
-# Set environment variables
-ENV CGO_ENABLED=0 \
-    GOPROXY=https://proxy.golang.org \
-    GOOS=linux
-
 # Copy Go module files
-COPY go.mod go.sum ./
+COPY go.mod go.sum Makefile ./
 
-# Download Go modules and verify
-RUN go mod download && \
-    go mod verify
+RUN make install
 
 # Copy application source code
 COPY . .
 
-# Build application
-RUN go build -trimpath -buildvcs=false -ldflags "-w" -o /usr/bin/ub ./main.go
+# Build application using the Makefile
+RUN make build
 
 # Deploy the application binary into a lean image
 FROM scratch AS production-stage
@@ -36,7 +29,7 @@ WORKDIR /usr/app
 COPY --from=build-stage /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 # Copy application binary from build-stage image
-COPY --from=build-stage /usr/bin/ub /usr/bin/ub
+COPY --from=build-stage /app/bin/ub /usr/bin/ub
 
 # Set the entrypoint for the application
 ENTRYPOINT ["ub", "discord:run"]

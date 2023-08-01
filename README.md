@@ -45,45 +45,11 @@ cp .env.example .env
 Three `DISCORD_APP_ID`, `DISCORD_BOT_TOKEN`, and `DISCORD_GUILD_ID` environment variables are required, and the rest of
 the configuration is located in `config.yml`.
 
-Currently, the bot doesn't support hot-reloading. Instead, the application should restart to apply the changes.
-
-## Adding the bot to the server
-
-The `discord:invite` CLI command generates the server invite link,
-as the permissions within the link will likely change based on the features we may add.
-
 ## Docker usage
 
 ```shell
-# Rebuild and start the Docker container in detached mode with environment variables from the '.env' file.
-docker compose --env-file ./.env up -d --build
-
-# Generate an invite link to add the bot to the server
-docker compose exec utility-bot ub discord:invite
-
-# To remove the registered slash commands (in case of inconsistency between the configuration and the production)
-#
-# Executing this command is NOT required anymore because, based on previous updates,
-# the bot can overwrite registered commands and synchronize them with the local configuration on startup.
-docker compose exec utility-bot ub discord:clean
-
-# Graceful shutdown
-docker compose down
+# brings down the previous container
+# builds and starts a new container
+# prints the container logs
+make docker-redeploy
 ```
-
-## Notes
-
-- Slash commands
-  - Discord will sort commands alphabetically, regardless of their initial order in the `config.yml` file.
-  - Users will instantly see commands once registered because this project uses [guild commands](https://discord.com/developers/docs/interactions/application-commands#registering-a-command) instead of global ones.
-  - Discord has a global rate limit of [200 application command creations per day, per guild](https://discord.com/developers/docs/interactions/application-commands#registering-a-command).
-  - The bot will automatically register slash commands on startup.
-  - Registered commands can be removed by the `discord:clean` CLI command.
-  - Only one sub-command level is supported; for example, `/foo bar` is valid.
-- Markdown content
-  - The content of each file can be up to 2000 characters.
-  - The bot caches the content after execution (restarting is required to apply the changes).
-- Moderators
-  - They can be defined by their unique Discord ID in the `config.yml` file.
-  - They bypass rate-limit policies.
-  - They can execute `protected` commands in the `config.yml` file.

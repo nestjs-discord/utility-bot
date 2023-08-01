@@ -38,7 +38,6 @@ func init() {
 	rootCmd.AddCommand(content.Validate)
 
 	rootCmd.AddCommand(discord.Clean)
-	rootCmd.AddCommand(discord.Invite)
 	rootCmd.AddCommand(discord.Run)
 }
 

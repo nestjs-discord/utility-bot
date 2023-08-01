@@ -40,7 +40,7 @@ func RegisterApplicationCommands(s *discordgo.Session) {
 		return
 	}
 
-	log.Info().Int("len", len(commands)).Msg("registered application commands")
+	log.Info().Int("len", len(commands)).Msg("registered slash commands")
 }
 
 func generateDynamicCommands(normalCommands map[string]*config.Command) (commands []*discordgo.ApplicationCommand) {
