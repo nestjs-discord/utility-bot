@@ -4,6 +4,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"strings"
 )
 
@@ -129,11 +130,16 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
-	// Mark thread post as archived
+	// Mark thread post as closed
+
 	archived := true
-	_, _ = s.ChannelEdit(currentChannelInfo.ID, &discordgo.ChannelEdit{
-		Archived: &archived,
+	_, err = s.ChannelEdit(currentChannelInfo.ID, &discordgo.ChannelEdit{
+		Archived:            &archived,
+		AutoArchiveDuration: 60, // 60 minutes
 	})
+	if err != nil {
+		log.Err(err).Str("channel-id", currentChannelInfo.ID).Msg("solved command failed to edit the channel")
+	}
 }
 
 func findSolvedTag(tags []discordgo.ForumTag) (*discordgo.ForumTag, error) {
