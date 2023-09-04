@@ -1,4 +1,4 @@
-Please format your question with Markdown formatting.
+Please format your question or answer with Markdown formatting.
 It leads to better readability and an easier time to spot problems.
 For code blocks, you can wrap your block with three back ticks before and after the block, and after the first three back ticks you can add a language (like `ts`) to add syntax highlighting.
 e.g.
@@ -14,7 +14,7 @@ export class MySuperAwesomeService {
 }
 \`\`\`
 
-Becomes
+Becomes :point_down:
 
 ```ts
 @Injectable()
