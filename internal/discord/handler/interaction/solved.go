@@ -84,6 +84,7 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	for _, appliedTag := range currentChannelInfo.AppliedTags {
 		if appliedTag == solvedTag.ID {
 			hasSolvedTag = true
+			break
 
 			//_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			//	Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -97,6 +98,20 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 	if !hasSolvedTag {
 		currentChannelInfo.AppliedTags = append(currentChannelInfo.AppliedTags, solvedTag.ID)
+	}
+
+	// https://discord.com/developers/docs/resources/channel#modify-channel-json-params-thread
+	if len(currentChannelInfo.AppliedTags) > 5 {
+		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: ":warning: The current post already has five tags applied to it. " +
+					"To apply the \"Solved\" tag, please remove at least one tag, " +
+					"as Discord allows a maximum of 5 tags per forum post.",
+				Flags: discordgo.MessageFlagsEphemeral,
+			},
+		})
+		return
 	}
 
 	// Assign solved tag
