@@ -2,6 +2,7 @@ package interaction
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -85,15 +86,6 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		if appliedTag == solvedTag.ID {
 			hasSolvedTag = true
 			break
-
-			//_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			//	Type: discordgo.InteractionResponseChannelMessageWithSource,
-			//	Data: &discordgo.InteractionResponseData{
-			//		Content: ":warning: The solved tag is already applied to this channel.",
-			//		Flags:   discordgo.MessageFlagsEphemeral,
-			//	},
-			//})
-			//return
 		}
 	}
 	if !hasSolvedTag {
@@ -114,12 +106,12 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
+	//
 	// Assign solved tag
 	//
-	// Discord doesn't allow us to send interaction responses when the thread post is archived or locked
+	// Discord doesn't allow us to send an interaction response when the thread post is archived or locked
 	// that's why I decided to edit the channel twice, the first time for applying tags
-	// and the second time for archiving or closing (locking) the thread post.
-
+	// and the second time to close the thread post.
 	_, err = s.ChannelEdit(currentChannelInfo.ID, &discordgo.ChannelEdit{
 		AppliedTags: &currentChannelInfo.AppliedTags,
 	})
@@ -145,12 +137,32 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
-	// Mark thread post as closed
+	// Default values when "auto-close" option isn't specified
+	archived := true          // aka lock
+	autoArchiveDuration := 60 // minutes
 
-	archived := true
+	for _, option := range i.ApplicationCommandData().Options { // Check whether the "auto-close" option is specified
+		if option.Name != solved.AutoClose {
+			continue
+		}
+
+		optionValue, err := convertToInteger(option.Value)
+		if err != nil {
+			log.Err(err).Interface("value", option.Value).Msg("float64 to int conversion failed on auto-close option's value")
+			return
+		}
+
+		if optionValue == 0 { // do not close
+			return
+		}
+
+		archived = false                  // do not close the post right now
+		autoArchiveDuration = optionValue // but set its auto archive duration value to auto close in the future
+	}
+
 	_, err = s.ChannelEdit(currentChannelInfo.ID, &discordgo.ChannelEdit{
 		Archived:            &archived,
-		AutoArchiveDuration: 60, // 60 minutes
+		AutoArchiveDuration: autoArchiveDuration,
 	})
 	if err != nil {
 		log.Err(err).Str("channel-id", currentChannelInfo.ID).Msg("solved command failed to edit the channel")
@@ -165,4 +177,13 @@ func findSolvedTag(tags []discordgo.ForumTag) (*discordgo.ForumTag, error) {
 	}
 
 	return nil, errors.New("failed to find the solved tag")
+}
+
+func convertToInteger(value interface{}) (int, error) {
+	if floatValue, ok := value.(float64); ok {
+		optionValue := int(floatValue)
+		return optionValue, nil
+	}
+
+	return 0, errors.New("value is not a float64")
 }
