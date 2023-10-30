@@ -16,12 +16,12 @@ var Command = &discordgo.ApplicationCommand{
 		{
 			Required:    false,
 			Name:        AutoClose,
-			Description: "If no option is specified, the post will be closed after using the command.",
+			Description: "If the 'auto-close' option is specified, the post will remain open after using the command.",
 			Type:        discordgo.ApplicationCommandOptionInteger,
 			Choices: []*discordgo.ApplicationCommandOptionChoice{
 				{
-					Name:  "Do not close",
-					Value: 0,
+					Name:  "Close right after",
+					Value: 1,
 				},
 				{
 					Name:  "In 1 hour",

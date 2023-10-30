@@ -109,7 +109,7 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	//
 	// Assign solved tag
 	//
-	// Discord doesn't allow us to send an interaction response when the thread post is archived or locked
+	// Discord doesn't allow us to send an interaction response when the thread post is archived or closed
 	// that's why I decided to edit the channel twice, the first time for applying tags
 	// and the second time to close the thread post.
 	_, err = s.ChannelEdit(currentChannelInfo.ID, &discordgo.ChannelEdit{
@@ -138,8 +138,8 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	// Default values when "auto-close" option isn't specified
-	archived := true          // aka lock
-	autoArchiveDuration := 60 // minutes
+	archived := false              // aka close
+	autoArchiveDuration := 60 * 24 // a day | unit is minutes
 
 	for _, option := range i.ApplicationCommandData().Options { // Check whether the "auto-close" option is specified
 		if option.Name != solved.AutoClose {
@@ -152,11 +152,11 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			return
 		}
 
-		if optionValue == 0 { // do not close
-			return
+		if optionValue == 1 { // close right after
+			archived = true
+			continue
 		}
 
-		archived = false                  // do not close the post right now
 		autoArchiveDuration = optionValue // but set its auto archive duration value to auto close in the future
 	}
 
@@ -167,6 +167,11 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	if err != nil {
 		log.Err(err).Str("channel-id", currentChannelInfo.ID).Msg("solved command failed to edit the channel")
 	}
+
+	log.Debug().
+		Int("auto-archive-dur", autoArchiveDuration).
+		Bool("archived", archived).
+		Msg("solved command executed")
 }
 
 func findSolvedTag(tags []discordgo.ForumTag) (*discordgo.ForumTag, error) {
