@@ -27,7 +27,7 @@ func NewSearch() *Search {
 
 func (s *Search) Search(keyword string) ([]string, error) {
 	keyword = strings.TrimSpace(keyword) // normalize
-	apiUrl := "https://www.google.com/complete/search?client=gws-wiz&xssi=t&hl=en-US&authuser=0&dpr=1&q=" +
+	apiUrl := "https://google.com/complete/search?client=gws-wiz&xssi=t&hl=en-US&authuser=0&dpr=1&q=" +
 		url.QueryEscape(keyword)
 
 	resp, err := client.Get(apiUrl)
@@ -57,7 +57,7 @@ func (s *Search) Search(keyword string) ([]string, error) {
 		text = strings.ReplaceAll(text, "</b>", "")
 		text = strings.ReplaceAll(text, "  ", " ")
 		text = strings.TrimSpace(text)
-		// url := "https://www.google.com/search?q=" + url.QueryEscape(text)
+		// url := "https://google.com/search?q=" + url.QueryEscape(text)
 
 		res = append(res, text)
 	}

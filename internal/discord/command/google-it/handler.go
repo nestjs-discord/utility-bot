@@ -35,7 +35,7 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		content += "\n"
 
 		for _, suggestion := range suggestions {
-			content += "- <https://www.google.com/search?q=" + url.QueryEscape(suggestion) + ">" + "\n"
+			content += "- <https://google.com/search?q=" + url.QueryEscape(suggestion) + ">" + "\n"
 		}
 	}
 
