@@ -246,6 +246,15 @@ commands:
           url: "https://stackoverflow.com/help/minimal-reproducible-example"
           emoji: "🔗"
 
+  rules no-hello:
+    description: "Telling people not to say just 'hello' in the chat"
+    content: "./content/rules/no-hello.md"
+    buttons:
+      -
+        - label: "Why is this a thing"
+          url: "https://nohello.net/en/"
+          emoji: "❓"
+
   javascript floating-promise:
     description: "Introduction to floating Promises in JavaScript"
     content: "./content/javascript/floating-promise.md"
