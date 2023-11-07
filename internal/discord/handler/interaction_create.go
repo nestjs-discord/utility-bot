@@ -5,6 +5,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/core/cache"
 	"github.com/nestjs-discord/utility-bot/core/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
+	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
@@ -68,6 +69,10 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 	case stats.Stats:
 		interaction.StatHandler(s, i)
 		return
+
+	case google_it.Name:
+		google_it.Handler(s, i)
+		return
 	}
 
 	interaction.DefaultHandler(s, i)
@@ -84,6 +89,9 @@ func handleInteractionApplicationCommandAutocomplete(s *discordgo.Session, i *di
 	switch name {
 	case reference.Name:
 		interaction.ReferenceAutocompleteHandler(s, i)
+		return
+	case google_it.Name:
+		google_it.AutocompleteHandler(s, i)
 		return
 	}
 }
