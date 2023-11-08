@@ -42,4 +42,5 @@ func setHeaders(req *http.Request, credential credential) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Algolia-Api-Key", credential.apiKey)
 	req.Header.Set("X-Algolia-Application-Id", credential.appId)
+	req.Header.Set("Accept-Language", "en-US,en;q=0.5")
 }

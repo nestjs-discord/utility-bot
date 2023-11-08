@@ -7,11 +7,11 @@ import (
 )
 
 const Name = "reference"
-const Query = "query"
+const QueryOption = "query"
 
 var options = []*discordgo.ApplicationCommandOption{
 	{
-		Name:         Query,
+		Name:         QueryOption,
 		Type:         discordgo.ApplicationCommandOptionString,
 		Description:  "The query to search for",
 		Required:     true,

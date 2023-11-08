@@ -1,4 +1,4 @@
-package interaction
+package stats
 
 import (
 	"github.com/bwmarrin/discordgo"
@@ -8,7 +8,7 @@ import (
 	"runtime"
 )
 
-func StatHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 

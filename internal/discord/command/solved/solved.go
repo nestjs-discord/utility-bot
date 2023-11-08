@@ -5,12 +5,12 @@ import (
 )
 
 const (
-	Solved    = "solved"
+	Name      = "solved"
 	AutoClose = "auto-close"
 )
 
 var Command = &discordgo.ApplicationCommand{
-	Name:        Solved,
+	Name:        Name,
 	Description: "Close and mark a forum post as solved.",
 	Options: []*discordgo.ApplicationCommandOption{
 		{

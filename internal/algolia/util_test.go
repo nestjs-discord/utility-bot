@@ -16,7 +16,7 @@ func TestGetFormattedHierarchy_CategoryAndSubcategoryProvided(t *testing.T) {
 			Lvl3: "Thriller",
 		},
 	}
-	expectedResult := "Fiction: Mystery - Thriller"
+	expectedResult := "Books - Fiction: Mystery - Thriller"
 
 	result := algolia.GetFormattedHierarchy(hit)
 	assert.Equal(t, expectedResult, result)
@@ -31,7 +31,7 @@ func TestGetFormattedHierarchy_OnlyCategoryProvided(t *testing.T) {
 			Lvl3: "Drama",
 		},
 	}
-	expectedResult := "Fiction: Introduction - Drama"
+	expectedResult := "Books - Fiction - Drama"
 
 	result := algolia.GetFormattedHierarchy(hit)
 	assert.Equal(t, expectedResult, result)
@@ -46,7 +46,7 @@ func TestGetFormattedHierarchy_OnlyLvl0Provided(t *testing.T) {
 			Lvl3: "",
 		},
 	}
-	expectedResult := "Books: Introduction"
+	expectedResult := "Books"
 
 	result := algolia.GetFormattedHierarchy(hit)
 	assert.Equal(t, expectedResult, result)

@@ -8,7 +8,6 @@ import (
 )
 
 func TestGetBaseURL(t *testing.T) {
-	// Test cases
 	testCases := []struct {
 		name           string
 		credential     credential
@@ -38,7 +37,6 @@ func TestSetHeaders(t *testing.T) {
 	// Create a fake HTTP request
 	req, _ := http.NewRequest("GET", "https://example.com", nil)
 
-	// Test cases
 	testCases := []struct {
 		name           string
 		credential     credential
@@ -55,6 +53,7 @@ func TestSetHeaders(t *testing.T) {
 				"Content-Type":             []string{"application/json"},
 				"X-Algolia-Api-Key":        []string{"API_KEY"},
 				"X-Algolia-Application-Id": []string{"APP_ID"},
+				"Accept-Language":          []string{"en-US,en;q=0.5"},
 			},
 		},
 	}

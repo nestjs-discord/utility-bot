@@ -24,6 +24,9 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 }
 
+// interactionCommandHandlerMap maps command names against their handler
+type interactionCommandHandlerMap map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate)
+
 func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	name := i.ApplicationCommandData().Name
 	userID := i.Member.User.ID
@@ -33,7 +36,7 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 		Str("channel-id", i.ChannelID).
 		Str("user-id", userID).
 		Interface("options", i.ApplicationCommandData().Options).
-		Msg("event: interaction application command")
+		Msg("event: interaction app command")
 
 	if checkRatelimit(userID) {
 		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -49,29 +52,20 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 		return
 	}
 
-	if interaction.ContentHandler(s, i) {
+	handlers := interactionCommandHandlerMap{
+		solved.Name:    interaction.SolvedHandler,
+		archive.Name:   interaction.ArchiveHandler,
+		reference.Name: reference.Handler,
+		stats.Name:     stats.Handler,
+		google_it.Name: google_it.Handler,
+	}
+
+	if handler, ok := handlers[name]; ok {
+		handler(s, i)
 		return
 	}
 
-	switch name {
-	case archive.Archive:
-		interaction.ArchiveHandler(s, i)
-		return
-
-	case reference.Name:
-		interaction.ReferenceHandler(s, i)
-		return
-
-	case solved.Solved:
-		interaction.SolvedHandler(s, i)
-		return
-
-	case stats.Stats:
-		interaction.StatHandler(s, i)
-		return
-
-	case google_it.Name:
-		google_it.Handler(s, i)
+	if interaction.ContentHandler(s, i) {
 		return
 	}
 
@@ -88,7 +82,7 @@ func handleInteractionApplicationCommandAutocomplete(s *discordgo.Session, i *di
 
 	switch name {
 	case reference.Name:
-		interaction.ReferenceAutocompleteHandler(s, i)
+		reference.AutocompleteHandler(s, i)
 		return
 	case google_it.Name:
 		google_it.AutocompleteHandler(s, i)
@@ -97,14 +91,12 @@ func handleInteractionApplicationCommandAutocomplete(s *discordgo.Session, i *di
 }
 
 func checkRatelimit(userID string) bool {
-	maxUsage := config.GetConfig().Ratelimit.Usage
-	if !util.IsUserModerator(userID) {
-		cache.Ratelimit.IncrementUsage(userID)
-
-		if cache.Ratelimit.GetUsageCount(userID) > maxUsage {
-			return true
-		}
+	if util.IsUserModerator(userID) {
+		return false
 	}
 
-	return false
+	cache.Ratelimit.IncrementUsage(userID)
+
+	maxUsage := config.GetConfig().Ratelimit.Usage
+	return cache.Ratelimit.GetUsageCount(userID) > maxUsage
 }

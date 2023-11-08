@@ -83,10 +83,12 @@ func Search(app App, query string) (hits []Hit, error error) {
 }
 
 func generateQueryJSONPayload(query string) ([]byte, error) {
-	payload := map[string]string{
-		"query":          query,
-		"hitsPerPage":    "24", // Because Discord commands option choices is limited to 25
-		"queryLanguages": "en",
+	payload := map[string]any{
+		"query":           query,
+		"hitsPerPage":     "24", // Because Discord commands option choices are limited to 25 items
+		"queryLanguages":  []string{"en"},
+		"removeStopWords": true,
+		"ignorePlurals":   true,
 	}
 
 	return json.Marshal(payload)

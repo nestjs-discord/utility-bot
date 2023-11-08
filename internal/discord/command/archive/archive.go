@@ -5,12 +5,12 @@ import (
 	"github.com/nestjs-discord/utility-bot/core/config"
 )
 
-const Archive = "archive"
+const Name = "archive"
 
 var permission = config.ProtectedContentPermission
 
 var Command = &discordgo.ApplicationCommand{
-	Name:                     Archive,
+	Name:                     Name,
 	Description:              "Close and lock a forum post.",
 	DefaultMemberPermissions: &permission,
 }

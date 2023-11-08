@@ -57,7 +57,10 @@ func (s *Search) Search(keyword string) ([]string, error) {
 		text = strings.ReplaceAll(text, "</b>", "")
 		text = strings.ReplaceAll(text, "  ", " ")
 		text = strings.TrimSpace(text)
-		// url := "https://google.com/search?q=" + url.QueryEscape(text)
+
+		if len(text) == 0 { // to avoid adding empty text to the response array
+			continue
+		}
 
 		res = append(res, text)
 	}

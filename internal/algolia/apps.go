@@ -17,7 +17,6 @@ func (a App) ToSlug() string {
 const (
 	Discord        App = "Discord"
 	DiscordJSGuide App = "DiscordJS Guide"
-	Express        App = "Express"
 	Fastify        App = "Fastify"
 	Necord         App = "NECORD"
 	NestCommander  App = "Nest Commander"
@@ -27,11 +26,10 @@ const (
 	TypeScript     App = "TypeScript"
 )
 
-// Apps is a map that associates App slugs with their corresponding App constants.
+// Apps is a map that associate App slugs with their corresponding App constants.
 var Apps = map[string]App{
 	Discord.ToSlug():        Discord,
 	DiscordJSGuide.ToSlug(): DiscordJSGuide,
-	Express.ToSlug():        Express,
 	Fastify.ToSlug():        Fastify,
 	Necord.ToSlug():         Necord,
 	NestCommander.ToSlug():  NestCommander,
