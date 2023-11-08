@@ -220,15 +220,6 @@ commands:
           url: "https://dontasktoask.com"
           emoji: "❓"
 
-  rules error-message:
-    description: "Telling people to be specific when seeking help. Describe errors, share messages, and provide code"
-    content: "./content/rules/error-message.md"
-    buttons:
-      -
-        - label: "Learn more about code-blocks"
-          url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
-          emoji: "🔗"
-
   rules dont-ping-mods:
     description: "Tell someone to stop pinging mods for help"
     content: "./content/rules/pinging-mods.md"
@@ -280,3 +271,12 @@ commands:
   request-info:
     description: "Ask them to run the \"npx @nestjs/cli info\" and paste the output in a code block."
     content: "./content/request-info.md"
+
+  show-the-error:
+    description: "Telling people to be specific when seeking help. Share errors, and provide the code if possible."
+    content: "./content/show-the-error.md"
+    buttons:
+      -
+        - label: "Learn more about code-blocks"
+          url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
+          emoji: "🔗"

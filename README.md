@@ -34,13 +34,13 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
 | `/rules codeblocks`            | Letting people know how to share their code in a Markdown code block           | Everyone               |
 | `/rules dm`                    | Use server to get help on NestJS; don't DM other members                       | Everyone               |
 | `/rules dont-ask-to-ask`       | Telling people to just ask their question with a link explaining why           | Everyone               |
-| `/rules error-message`         | Telling people to be specific when seeking help.                               | Everyone               |
 | `/rules dont-ping-mods`        | Tell someone to stop pinging mods for help                                     | Everyone               |
 | `/rules no-hello`              | Telling people not to say just 'hello' in the chat                             | Everyone               |
 | `/rules reproduction`          | Request for a minimum reproduction of the issue                                | Everyone               |
 | `/rules screenshot`            | When someone posts a screenshot instead of sharing their code                  | Everyone               |
 | `/javascript floating-promise` | Introduction to floating Promises in JavaScript                                | Everyone               |
 | `/request-info`                | Ask people to run `@nestjs/cli info` and provide the output.                   | Everyone               |
+| `/show-the-error`              | Telling people to be specific when seeking help.                               | Everyone               |
 
 ## Configuration
 
