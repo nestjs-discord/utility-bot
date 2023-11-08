@@ -26,12 +26,18 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
 | `/community testing`           | Show off to the community methods of testing NestJS (`jmcdo29/testing-nestjs`) | Everyone               |
 | `/docs behind-proxy`           | How to enable the trust proxy option behind a reverse proxy                    | Everyone               |
 | `/docs circular-dependency`    | Circular dependencies in NestJS and how to avoid them                          | Everyone               |
-| `/docs file-change-detected`   | How to fix when TypeScript 4.9+ on Windows causes infinite loop in watch mode  | Everyone               |
+| `/docs file-change-detected`   | How to fix when TypeScript 4.9+ on infinite loop in watch mode                 | Everyone               |
 | `/docs nest-debug`             | Debug NestJS dependencies with environment variable                            | Everyone               |
 | `/docs providers-vs-imports`   | Ensure accurate service/module listings                                        | Everyone               |
 | `/docs request-lifecycle`      | Get a grip on NestJS' request lifecycle for smooth coding                      | Everyone               |
 | `/docs resolve-dependencies`   | Nest not being able to resolve dependencies of something                       | Everyone               |
+| `/rules codeblocks`            | Letting people know how to share their code in a Markdown code block           | Everyone               |
 | `/rules dm`                    | Use server to get help on NestJS; don't DM other members                       | Everyone               |
+| `/rules dont-ask-to-ask`       | Telling people to just ask their question with a link explaining why           | Everyone               |
+| `/rules error-message`         | Telling people to be specific when seeking help.                               | Everyone               |
+| `/rules dont-ping-mods`        | Tell someone to stop pinging mods for help                                     | Everyone               |
+| `/rules no-hello`              | Telling people not to say just 'hello' in the chat                             | Everyone               |
+| `/rules reproduction`          | Request for a minimum reproduction of the issue                                | Everyone               |
 | `/rules screenshot`            | When someone posts a screenshot instead of sharing their code                  | Everyone               |
 | `/javascript floating-promise` | Introduction to floating Promises in JavaScript                                | Everyone               |
 | `/request-info`                | Ask people to run `@nestjs/cli info` and provide the output.                   | Everyone               |

@@ -1,5 +1,5 @@
 #
-# List of users who can bypass ratelimit restriction
+# List of users who can bypass ratelimit restriction, and have access to the "protected" commands.
 #
 moderators:
   - 211445675701829632 # weshuiz13
@@ -24,7 +24,7 @@ moderators:
 #
 ratelimit:
   ttl: 60  # Maximum TTL of 60 seconds
-  usage: 8 # Maximum of 8 usages within the TTL period
+  usage: 8 # Maximum of eight usages within the TTL period
   message:
     "Chill out, cowboy!\nYou don't want to overload our poor server."
 
@@ -59,15 +59,15 @@ commands:
   #     The file should be located in the "content" folder, as the Docker volume relies on this.
   #
   #   protected (optional, default is false):
-  #     If set to true, only moderators will be able to see this command.
+  #     If set to true, only moderators will be able to "see" and "use" this command.
   #
-  #   buttons (optional, max 8 rows, max 4 columns):
+  #   buttons (optional, max eight rows and four columns):
   #     An array of arrays representing rows and columns of Discord message components, specifically link buttons.
-  #     Each link button has a label, URL, and optional emoji.
+  #     Each link button has a "label", "url", and optional "emoji" field which are string.
   #     See https://discord.com/developers/docs/interactions/message-components for more information on message components.
 
   #
-  # Moderation commands
+  # Mods commands
   #
   mods cross-post:
     description: "Warn users not to cross-post, ask in relevant channels, and be patient."
@@ -90,7 +90,7 @@ commands:
 
   #
   # Public commands
-  # Only users with "Use Application Commands" permission can _see_ and _use_ these commands.
+  # Only users with "Use Application Commands" permission can "see" and "use" these commands.
   #
   community awesome:
     description: "A curated list of awesome things related to NestJS"
@@ -203,35 +203,44 @@ commands:
           url: "https://docs.nestjs.com/fundamentals/custom-providers"
           emoji: "🔗"
 
-  rules dm:
-    description: "Use server to get help on NestJS; don't DM other members."
-    content: "./content/rules/dm.md"
-
   rules codeblocks:
     description: "Letting people know how to share their code in a Markdown code block"
     content: "./content/rules/codeblocks.md"
 
-  rules screenshot:
-    description: "When someone posts a screenshot instead of sharing their code"
-    content: "./content/rules/screenshot.md"
-    buttons:
-      -
-        - label: "Learn more about code-blocks"
-          url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
-          emoji: "🔗"
+  rules dm:
+    description: "Use server to get help on NestJS; don't DM other members."
+    content: "./content/rules/dm.md"
 
   rules dont-ask-to-ask:
     description: "Telling people to just ask their question with a link explaining why"
-    content: "./content/rules/asking-to-ask.md"
+    content: "./content/rules/dont-ask-to-ask.md"
     buttons:
       -
         - label: "Learn more about asking to ask"
           url: "https://dontasktoask.com"
           emoji: "❓"
 
+  rules error-message:
+    description: "Telling people to be specific when seeking help. Describe errors, share messages, and provide code"
+    content: "./content/rules/error-message.md"
+    buttons:
+      -
+        - label: "Learn more about code-blocks"
+          url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
+          emoji: "🔗"
+
   rules dont-ping-mods:
     description: "Tell someone to stop pinging mods for help"
     content: "./content/rules/pinging-mods.md"
+
+  rules no-hello:
+    description: "Telling people not to say just 'hello' in the chat"
+    content: "./content/rules/no-hello.md"
+    buttons:
+      -
+        - label: "Why is this a thing"
+          url: "https://nohello.net/en/"
+          emoji: "❓"
 
   rules reproduction:
     description: "Request for a minimum reproduction of the issue"
@@ -246,14 +255,14 @@ commands:
           url: "https://stackoverflow.com/help/minimal-reproducible-example"
           emoji: "🔗"
 
-  rules no-hello:
-    description: "Telling people not to say just 'hello' in the chat"
-    content: "./content/rules/no-hello.md"
+  rules screenshot:
+    description: "When someone posts a screenshot instead of sharing their code"
+    content: "./content/rules/screenshot.md"
     buttons:
       -
-        - label: "Why is this a thing"
-          url: "https://nohello.net/en/"
-          emoji: "❓"
+        - label: "Learn more about code-blocks"
+          url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
+          emoji: "🔗"
 
   javascript floating-promise:
     description: "Introduction to floating Promises in JavaScript"
