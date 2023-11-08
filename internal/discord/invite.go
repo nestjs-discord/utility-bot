@@ -3,7 +3,7 @@ package discord
 import (
 	"fmt"
 	"github.com/google/go-querystring/query"
-	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/config"
 )
 
 func GenerateInviteLink() string {

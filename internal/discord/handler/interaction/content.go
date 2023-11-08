@@ -3,7 +3,7 @@ package interaction
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"

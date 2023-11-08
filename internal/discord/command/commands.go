@@ -2,7 +2,7 @@ package command
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"

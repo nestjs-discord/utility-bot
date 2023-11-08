@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/core/cache"
-	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/cache"
+	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
 	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
