@@ -1,7 +1,7 @@
 package ratelimit_test
 
 import (
-	"github.com/nestjs-discord/utility-bot/internal/ratelimit"
+	"github.com/nestjs-discord/utility-bot/pkg/ratelimit"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"

@@ -2,8 +2,8 @@ package discord
 
 import (
 	"fmt"
-	"github.com/nestjs-discord/utility-bot/core/cache"
-	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/cache"
+	"github.com/nestjs-discord/utility-bot/internal/config"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler"

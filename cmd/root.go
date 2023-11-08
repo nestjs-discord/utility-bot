@@ -3,8 +3,8 @@ package cmd
 import (
 	"github.com/nestjs-discord/utility-bot/cmd/content"
 	"github.com/nestjs-discord/utility-bot/cmd/discord"
-	"github.com/nestjs-discord/utility-bot/core/config"
-	"github.com/nestjs-discord/utility-bot/core/logger"
+	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/internal/logger"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

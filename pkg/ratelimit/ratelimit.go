@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-// item is a struct that represents a value in the map, along with its creation timestamp
+// item is a struct that represents a value in the map along with its creation timestamp
 type item struct {
 	value     int   // The usage count for this item
 	createdTs int64 // The UNIX timestamp when this item was created
@@ -52,6 +52,7 @@ func New(maxTTL int) (m *TTLMap) {
 // If the key does not exist in the map, it is added with a usage count of 1.
 func (m *TTLMap) IncrementUsage(k string) {
 	m.l.Lock()
+	defer m.l.Unlock()
 
 	_, ok := m.m[k]
 	if !ok {
@@ -62,20 +63,17 @@ func (m *TTLMap) IncrementUsage(k string) {
 	} else {
 		m.m[k].value++
 	}
-
-	m.l.Unlock()
 }
 
-// GetUsageCount returns the current usage count for the specified key.
+// GetUsageCount returns the current usage counts for the specified key.
 // If the key does not exist in the map, it returns 0.
 func (m *TTLMap) GetUsageCount(k string) (v int) {
 	m.l.Lock()
+	defer m.l.Unlock()
 
 	if it, ok := m.m[k]; ok {
 		v = it.value
 	}
-
-	m.l.Unlock()
 
 	return v
 }

@@ -2,7 +2,7 @@ package discord
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/config"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"

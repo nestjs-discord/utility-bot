@@ -1,6 +1,8 @@
 package cache
 
-import "github.com/nestjs-discord/utility-bot/internal/ratelimit"
+import (
+	"github.com/nestjs-discord/utility-bot/pkg/ratelimit"
+)
 
 var Ratelimit *ratelimit.TTLMap
 

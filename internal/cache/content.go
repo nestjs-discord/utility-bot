@@ -2,7 +2,7 @@ package cache
 
 import (
 	"fmt"
-	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"os"

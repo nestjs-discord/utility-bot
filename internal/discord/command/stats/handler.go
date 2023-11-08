@@ -4,7 +4,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
-	"github.com/nestjs-discord/utility-bot/internal/uptime"
+	"github.com/nestjs-discord/utility-bot/pkg/uptime"
 	"runtime"
 )
 

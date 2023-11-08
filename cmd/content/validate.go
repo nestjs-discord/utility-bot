@@ -1,8 +1,8 @@
 package content
 
 import (
-	"github.com/nestjs-discord/utility-bot/core/cache"
-	"github.com/nestjs-discord/utility-bot/core/config"
+	"github.com/nestjs-discord/utility-bot/internal/cache"
+	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )

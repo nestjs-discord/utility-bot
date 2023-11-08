@@ -2,8 +2,8 @@ package reference
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/algolia"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
+	"github.com/nestjs-discord/utility-bot/pkg/algolia"
 )
 
 const Name = "reference"
