@@ -271,6 +271,11 @@ commands:
   request-info:
     description: "Ask them to run the \"npx @nestjs/cli info\" and paste the output in a code block."
     content: "./content/request-info.md"
+    buttons:
+      -
+        - label: "Learn more about code-blocks"
+          url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
+          emoji: "🔗"
 
   show-the-error:
     description: "Telling people to be specific when seeking help. Share errors, and provide the code if possible."
