@@ -50,7 +50,7 @@ autoMod:
   messageTTL: 60 # Seconds
 
   # The maximum number of text channels a user can send messages to within the defined messageTTL.
-  maxChannelsLimitPerUser: 10
+  maxChannelsLimitPerUser: 3
 
   # Time-to-live for keeping a user ID in memory after being recognized as spamming (in seconds).
   # This option might be useful for temporary actions, such as deleting ongoing messages.
