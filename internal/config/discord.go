@@ -10,9 +10,11 @@ const BotPermissions int = discordgo.PermissionViewChannel |
 	discordgo.PermissionUseSlashCommands |
 	discordgo.PermissionAddReactions |
 	discordgo.PermissionUseExternalEmojis |
-	discordgo.PermissionManageThreads
+	discordgo.PermissionManageThreads |
+	discordgo.PermissionManageMessages |
+	discordgo.PermissionReadMessageHistory
 
-const BotIntents = discordgo.IntentsGuildMessages
+const BotIntents = discordgo.IntentsGuildMessages | discordgo.IntentsMessageContent
 
 const ProtectedContentPermission int64 = discordgo.PermissionManageMessages | discordgo.PermissionUseSlashCommands
 const DefaultContentPermission int64 = discordgo.PermissionUseSlashCommands

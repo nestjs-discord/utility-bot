@@ -8,7 +8,6 @@ import (
 	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
 	"github.com/rs/zerolog/log"
 	"strings"
 )
@@ -18,7 +17,6 @@ var (
 		archive.Command,
 		reference.Subcommand,
 		solved.Command,
-		stats.Command,
 		google_it.Command,
 	}
 	defaultOptions = []*discordgo.ApplicationCommandOption{
