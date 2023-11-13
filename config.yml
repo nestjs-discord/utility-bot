@@ -36,7 +36,7 @@ autoMod:
   enabled: true
 
   # Indicates whether moderators can bypass certain auto-moderation checks.
-  moderatorsBypass: false
+  moderatorsBypass: true
 
   # The Discord channel ID where auto-mod log messages will be sent.
   logChannelId: "918987870197395577"
