@@ -101,6 +101,6 @@ func (a *AutoMod) generateAlertEmbedDescription() string {
 			"Added to the denied list for the next `%d` seconds.",
 		config.GetConfig().AutoMod.MaxChannelsLimitPerUser,
 		config.GetConfig().AutoMod.MessageTTL,
-		a.denyTTL,
+		config.GetConfig().AutoMod.DenyTTL,
 	)
 }
