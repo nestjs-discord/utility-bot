@@ -38,6 +38,7 @@ func GetGuildID() string {
 type Config struct {
 	Moderators []string            `mapstructure:"moderators" validate:"required,min=1,dive,min=1"`
 	Ratelimit  Ratelimit           `mapstructure:"ratelimit" validate:"required"`
+	AutoMod    AutoMod             `mapstructure:"autoMod" validate:"required"`
 	Commands   map[string]*Command `mapstructure:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
 }
 
@@ -45,6 +46,16 @@ type Ratelimit struct {
 	TTL     int    `mapstructure:"ttl" validate:"required,min=1"`
 	Usage   int    `mapstructure:"usage" validate:"required,min=2"`
 	Message string `mapstructure:"message" validate:"required,min=3"`
+}
+
+type AutoMod struct {
+	Enabled                 bool   `mapstructure:"enabled" validate:"boolean"`
+	ModeratorsBypass        bool   `mapstructure:"moderatorsBypass" validate:"boolean"`
+	LogChannelId            string `mapstructure:"logChannelId" validate:"required,min=1"`
+	LogMentionRoleId        string `mapstructure:"logMentionRoleId" validate:"required,min=1"`
+	MessageTTL              int    `mapstructure:"messageTTL" validate:"required,min=1"`
+	MaxChannelsLimitPerUser int    `mapstructure:"maxChannelsLimitPerUser" validate:"required,min=1"`
+	DenyTTL                 int    `mapstructure:"denyTTL" validate:"required,min=1"`
 }
 
 type Command struct {

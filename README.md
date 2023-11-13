@@ -16,7 +16,6 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
 
 | Command                        | Description                                                                    | Who can execute it?    |
 |--------------------------------|--------------------------------------------------------------------------------|------------------------|
-| `/stats`                       | General bot instance statistics (resource usage)                               | Mods                   |
 | `/solved`                      | To close and mark the forum posts as solved with a tag                         | Mods, Forum post owner |
 | `/archive`                     | To close and lock the forum posts                                              | Mods                   |
 | `/mods cross-post`             | Warn users not to cross-post, ask in relevant channels, and be patient         | Mods                   |

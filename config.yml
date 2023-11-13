@@ -29,6 +29,34 @@ ratelimit:
     "Chill out, cowboy!\nYou don't want to overload our poor server."
 
 #
+# Auto-Moderation Configuration
+#
+autoMod:
+  # Enable or disable the auto-moderation feature.
+  enabled: true
+
+  # Indicates whether moderators can bypass certain auto-moderation checks.
+  moderatorsBypass: true
+
+  # The Discord channel ID where auto-mod log messages will be sent.
+  logChannelId: "918987870197395577"
+
+  # The role ID to mention when auto-mod log messages are sent.
+  # This role will be pinged in log messages to alert specific users about auto-moderation actions.
+  logMentionRoleId: "520649667684466710"
+
+  # Time-to-live for caching each message in memory (in seconds).
+  # Messages older than this duration will be removed from the cache.
+  messageTTL: 60 # Seconds
+
+  # The maximum number of text channels a user can send messages to within the defined messageTTL.
+  maxChannelsLimitPerUser: 3
+
+  # Time-to-live for keeping a user ID in memory after being recognized as spamming (in seconds).
+  # This option might be useful for temporary actions, such as deleting ongoing messages.
+  denyTTL: 120 # Seconds
+
+#
 # This configuration block defines dynamic slash commands to be displayed to Discord users.
 #
 commands:

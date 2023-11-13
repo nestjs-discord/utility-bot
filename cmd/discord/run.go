@@ -19,13 +19,14 @@ var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Starts the Discord bot",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		// Cache Markdown content
-		err := cache.Content()
+		err := cache.Content() // Cache Markdown content
 		if err != nil {
 			return err
 		}
 
 		cache.InitRatelimit(config.GetConfig().Ratelimit.TTL)
+
+		cache.InitAutoMod()
 
 		return nil
 	},
@@ -40,11 +41,18 @@ var Run = &cobra.Command{
 		// Discord event handlers
 		session.AddHandler(handler.Ready)
 
-		//session.AddHandler(handlers.MessageCreate)
+		session.AddHandler(handler.MessageCreate)
 		session.AddHandler(handler.InteractionCreate)
 
 		// We only care about receiving message events
 		session.Identify.Intents = config.BotIntents
+
+		// Fetch all the channels
+		channels, err := session.GuildChannels(config.GetGuildID())
+		if err != nil {
+			return fmt.Errorf("failed to fetch guild channels: %s", err)
+		}
+		cache.AutoMod.SetChannels(channels)
 
 		// Open a websocket connection to Discord and begin listening
 		err = session.Open()

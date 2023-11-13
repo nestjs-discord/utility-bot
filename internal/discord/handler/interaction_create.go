@@ -8,7 +8,6 @@ import (
 	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command/stats"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -56,7 +55,6 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 		solved.Name:    interaction.SolvedHandler,
 		archive.Name:   interaction.ArchiveHandler,
 		reference.Name: reference.Handler,
-		stats.Name:     stats.Handler,
 		google_it.Name: google_it.Handler,
 	}
 
