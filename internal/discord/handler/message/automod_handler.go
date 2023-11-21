@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/internal/config"
@@ -15,7 +16,9 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Skip executing auto-mod logic if the provided channel ID is not in the list of channels being tracked.
 	// This check ensures that auto-mod actions are only applied to channels marked for moderation.
 	if !cache.AutoMod.IsChannelIdTrackable(channelId) {
-		log.Debug().Interface("channel-id", channelId).Msg("auto mod: channel id is not trackable, skipping...")
+		log.Debug().
+			Str("channel-id", i.ChannelID).
+			Msg("auto mod: channel id is not trackable, skipping...")
 		return
 	}
 
@@ -27,7 +30,13 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	userId := automod.UserId(i.Author.ID)
 
 	if cache.AutoMod.IsUserInDeniedList(userId) {
-		// _ = s.ChannelMessageDelete(i.ChannelID, i.ID)
+
+		// Delete their message
+		_ = s.ChannelMessageDelete(i.ChannelID, i.ID)
+
+		// Try to ban them again
+		_ = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "spam", 7)
+
 		return
 	}
 
@@ -46,6 +55,27 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		return
 	}
 
+	// Delete their previous messages in another go routine
+	go func() {
+		userMessages := cache.AutoMod.GetUserMessages(userId)
+		for chId, msgId := range userMessages {
+			err = s.ChannelMessageDelete(chId, msgId)
+			if err != nil {
+				log.Err(err).
+					Str("channel-id", chId).
+					Str("message-id", msgId).
+					Msg("auto mod: failed to delete the message")
+
+				return
+			}
+
+			log.Debug().
+				Str("channel-id", chId).
+				Str("message-id", msgId).
+				Msg("auto mod: message delete success")
+		}
+	}()
+
 	// Add user to the denied list
 	cache.AutoMod.AddUserToDeniedList(userId)
 
@@ -54,6 +84,18 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	if err != nil {
 		log.Err(err).Msg("auto mod: failed to notify log channel about the ongoing spam")
 	}
+
+	// Ban their account
+	err = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "spam", 7)
+	if err != nil {
+		log.Err(err).Str("user-id", i.Author.ID).Msg("auto mod: failed to ban the user")
+		_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf(":hammer: Failed to ban the spammer: `%s`", err.Error()))
+		return
+	}
+
+	log.Info().Str("user-id", i.Author.ID).Msg("auto mod: banned user")
+
+	_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf(":hammer: Member banned: `%s`", i.Author.ID))
 
 	// for debugging purposes only
 	// jsonStr, _ := json.MarshalIndent(cache.AutoMod, "", "  ")

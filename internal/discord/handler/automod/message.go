@@ -46,3 +46,26 @@ func (a *AutoMod) GetUserUniqueMessages(userId UserId) map[string]string {
 
 	return uniqueMap
 }
+
+// GetUserMessages retrieves the messages associated with a user and organizes them in a map.
+// The keys of the map represent the channel IDs, and the corresponding values are the message IDs.
+//
+// Note: This function is designed to be used with an AutoMod instance and requires a valid UserId parameter.
+//
+// Parameters:
+//   - userId: The unique identifier of the user for whom messages are to be retrieved.
+//
+// Returns:
+//   - map[string]string: A map where keys are channel IDs, and values are message IDs.
+func (a *AutoMod) GetUserMessages(userId UserId) map[string]string {
+	a.sync.Lock()
+	defer a.sync.Unlock()
+
+	res := map[string]string{}
+
+	for channelId, message := range a.userMap[userId] {
+		res[string(channelId)] = message.ID
+	}
+
+	return res
+}

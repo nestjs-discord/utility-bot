@@ -12,7 +12,9 @@ const BotPermissions int = discordgo.PermissionViewChannel |
 	discordgo.PermissionUseExternalEmojis |
 	discordgo.PermissionManageThreads |
 	discordgo.PermissionManageMessages |
-	discordgo.PermissionReadMessageHistory
+	discordgo.PermissionReadMessageHistory |
+	discordgo.PermissionKickMembers |
+	discordgo.PermissionBanMembers
 
 const BotIntents = discordgo.IntentsGuildMessages | discordgo.IntentsMessageContent
 
