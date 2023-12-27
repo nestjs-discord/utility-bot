@@ -12,6 +12,7 @@ func (a *AutoMod) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.Me
 		Content:    a.generateAlertContent(),
 		Embed:      a.generateAlertEmbed(i),
 		Components: a.generateAlertComponents(i),
+		Files:      a.generateAlertFiles(i),
 	}
 }
 
@@ -30,6 +31,20 @@ func (a *AutoMod) generateAlertContent() string {
 	}
 
 	return fmt.Sprintf("<@&%s>", roleToMention)
+}
+
+func (a *AutoMod) generateAlertFiles(i *discordgo.MessageCreate) []*discordgo.File {
+	var files []*discordgo.File
+	userUniqueMessages := a.GetUserUniqueMessages(UserId(i.Author.ID))
+	for msg, msgId := range userUniqueMessages {
+		fileName := fmt.Sprintf("msg-%s.txt", msgId)
+		files = append(files, &discordgo.File{
+			Name:        fileName,
+			ContentType: "text/plain",
+			Reader:      strings.NewReader(msg),
+		})
+	}
+	return files
 }
 
 func (a *AutoMod) generateAlertComponents(i *discordgo.MessageCreate) []discordgo.MessageComponent {
