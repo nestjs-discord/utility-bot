@@ -36,6 +36,8 @@ var Run = &cobra.Command{
 			return errors.Wrap(err, "failed to create new Discord session")
 		}
 
+		log.Info().Str("link", internalDiscord.GenerateInviteLink()).Msg("server invite")
+
 		command.RegisterApplicationCommands(session)
 
 		// Discord event handlers
@@ -59,8 +61,6 @@ var Run = &cobra.Command{
 		if err != nil {
 			return fmt.Errorf("failed to open Discord connection: %v", err)
 		}
-
-		log.Info().Str("link", internalDiscord.GenerateInviteLink()).Msg("server invite")
 
 		// Graceful shutdown
 		sc := make(chan os.Signal, 1)
