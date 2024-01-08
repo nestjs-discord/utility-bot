@@ -5,6 +5,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
+	dont_ping_mods "github.com/nestjs-discord/utility-bot/internal/discord/command/dont-ping-mods"
 	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
@@ -52,10 +53,11 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 	}
 
 	handlers := interactionCommandHandlerMap{
-		solved.Name:    interaction.SolvedHandler,
-		archive.Name:   interaction.ArchiveHandler,
-		reference.Name: reference.Handler,
-		google_it.Name: google_it.Handler,
+		solved.Name:         interaction.SolvedHandler,
+		archive.Name:        interaction.ArchiveHandler,
+		reference.Name:      reference.Handler,
+		google_it.Name:      google_it.Handler,
+		dont_ping_mods.Name: dont_ping_mods.Handler,
 	}
 
 	if handler, ok := handlers[name]; ok {

@@ -5,6 +5,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
+	dont_ping_mods "github.com/nestjs-discord/utility-bot/internal/discord/command/dont-ping-mods"
 	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
@@ -18,6 +19,7 @@ var (
 		reference.Subcommand,
 		solved.Command,
 		google_it.Command,
+		dont_ping_mods.Command,
 	}
 	defaultOptions = []*discordgo.ApplicationCommandOption{
 		common.TargetOption,

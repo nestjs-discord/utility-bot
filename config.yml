@@ -1,17 +1,26 @@
 #
-# List of users who can bypass ratelimit restriction, and have access to the "protected" commands.
+# List of members who can bypass ratelimit restriction, and have access to the "protected" commands.
 #
 moderators:
-  - 211445675701829632 # weshuiz13
-  - 370903700979318784 # Script
+  # Core Team
+  - 492978759918419978 # Kamil
   - 524281921115652106 # Jay
-  - 132222189209518080 # Micael
-  - 718538147449012245 # Tony
+  - 225858983632699392 # Brunner Livio
+  - 517170598833553408 # Y Prospect
+  - 132222189209518080 # Micael (micalevisk)
+  - 570354602063691826 # markpieszak
+
+  # Community Mods
   - 118633408438992896 # wodCZ
-  - 267661647785623572 # Scott
-  - 225858983632699392 # Brunner
   - 646107453469229056 # Papooch
-  - 673658728863629360 # Maciek
+  - 267661647785623572 # Scott
+  - 370903700979318784 # Script
+  - 718538147449012245 # Tony
+  - 210984433321246720 # underfisk
+  - 673658728863629360 # Maciej Sikorski (Matthew)
+
+  # MVPs
+  - 211445675701829632 # weshuiz13
 
 #
 # This configuration is for rate limiting usage of slash commands
@@ -247,10 +256,6 @@ commands:
         - label: "Learn more about asking to ask"
           url: "https://dontasktoask.com"
           emoji: "❓"
-
-  rules dont-ping-mods:
-    description: "Tell someone to stop pinging mods for help"
-    content: "./content/rules/pinging-mods.md"
 
   rules no-hello:
     description: "Telling people not to say just 'hello' in the chat"
