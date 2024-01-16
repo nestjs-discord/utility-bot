@@ -112,7 +112,7 @@ func (a *AutoMod) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.Mess
 
 func (a *AutoMod) generateAlertEmbedDescription() string {
 	return fmt.Sprintf(
-		"User exceeded channel limit `%d` within `%d` seconds."+"\n"+
+		"Member exceeded channel limit `%d` within `%d` seconds."+"\n"+
 			"Added to the denied list for the next `%d` seconds.",
 		config.GetConfig().AutoMod.MaxChannelsLimitPerUser,
 		config.GetConfig().AutoMod.MessageTTL,

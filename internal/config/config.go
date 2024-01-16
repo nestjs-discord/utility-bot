@@ -52,7 +52,7 @@ type AutoMod struct {
 	Enabled                 bool   `mapstructure:"enabled" validate:"boolean"`
 	ModeratorsBypass        bool   `mapstructure:"moderatorsBypass" validate:"boolean"`
 	LogChannelId            string `mapstructure:"logChannelId" validate:"required,min=1"`
-	LogMentionRoleId        string `mapstructure:"logMentionRoleId" validate:"required,min=1"`
+	LogMentionRoleId        string `mapstructure:"logMentionRoleId"`
 	MessageTTL              int    `mapstructure:"messageTTL" validate:"required,min=1"`
 	MaxChannelsLimitPerUser int    `mapstructure:"maxChannelsLimitPerUser" validate:"required,min=1"`
 	DenyTTL                 int    `mapstructure:"denyTTL" validate:"required,min=1"`

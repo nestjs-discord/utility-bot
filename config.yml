@@ -52,7 +52,7 @@ autoMod:
 
   # The role ID to mention when auto-mod log messages are sent.
   # This role will be pinged in log messages to alert specific users about auto-moderation actions.
-  logMentionRoleId: "520649667684466710"
+  logMentionRoleId: ""
 
   # Time-to-live for caching each message in memory (in seconds).
   # Messages older than this duration will be removed from the cache.
