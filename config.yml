@@ -216,9 +216,9 @@ commands:
     content: "./content/docs/request-lifecycle.md"
     buttons:
       -
-        - label: "Read more"
+        - label: "Documentation reference"
           url: "https://docs.nestjs.com/faq/request-lifecycle"
-          emoji: "📖"
+          emoji: "🔗"
 
   docs resolve-dependencies:
     description: "Nest not being able to resolve dependencies of something"

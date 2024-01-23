@@ -18,6 +18,7 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
 |--------------------------------|--------------------------------------------------------------------------------|------------------------|
 | `/solved`                      | To close and mark the forum posts as solved with a tag                         | Mods, Forum post owner |
 | `/archive`                     | To close and lock the forum posts                                              | Mods                   |
+| `/dont-ping-mods`              | Tell someone to stop pinging mods for help                                     | Mods                   |
 | `/mods cross-post`             | Warn users not to cross-post, ask in relevant channels, and be patient         | Mods                   |
 | `/mods spam`                   | A friendly warning to prevent spamming in the chat                             | Mods                   |
 | `/mods elaborate`              | Please provide more context so we can better assist you with your inquiry      | Everyone               |
@@ -33,7 +34,6 @@ So we devised the idea of having a [Discord bot](https://discord.com/developers/
 | `/rules codeblocks`            | Letting people know how to share their code in a Markdown code block           | Everyone               |
 | `/rules dm`                    | Use server to get help on NestJS; don't DM other members                       | Everyone               |
 | `/rules dont-ask-to-ask`       | Telling people to just ask their question with a link explaining why           | Everyone               |
-| `/rules dont-ping-mods`        | Tell someone to stop pinging mods for help                                     | Everyone               |
 | `/rules no-hello`              | Telling people not to say just 'hello' in the chat                             | Everyone               |
 | `/rules reproduction`          | Request for a minimum reproduction of the issue                                | Everyone               |
 | `/rules screenshot`            | When someone posts a screenshot instead of sharing their code                  | Everyone               |
