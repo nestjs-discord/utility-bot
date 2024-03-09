@@ -50,6 +50,9 @@ jobs:
       - name: Build
         run: go build
 
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
+
       - name: Validate content
         run: go run . content:validate --debug
 
