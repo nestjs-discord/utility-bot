@@ -2,8 +2,8 @@ package colors_test
 
 import (
 	"github.com/charmbracelet/lipgloss"
+	"github.com/nestjs-discord/utility-bot/pkg/colors"
 	"github.com/stretchr/testify/assert"
-	"scan-hub/cmd/colors"
 	"testing"
 )
 
