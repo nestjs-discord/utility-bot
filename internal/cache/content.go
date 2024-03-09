@@ -1,10 +1,10 @@
 package cache
 
 import (
-	"fmt"
-	"github.com/nestjs-discord/utility-bot/internal/config"
-	"github.com/pkg/errors"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/rs/zerolog/log"
+
+	"fmt"
 	"os"
 	"strings"
 )
@@ -13,7 +13,7 @@ import (
 func Content() error {
 	charLimit := 2000
 
-	for _, c := range config.GetConfig().Commands {
+	for _, c := range config.GetYaml().Commands {
 		// Ignore non-markdown files
 		if !strings.HasSuffix(c.Content, ".md") {
 			return fmt.Errorf("expected '%v' file, to have '.md' extension", c.Content)
@@ -22,7 +22,7 @@ func Content() error {
 		p := c.Content
 		data, err := os.ReadFile(p)
 		if err != nil {
-			return errors.Wrapf(err, "failed to read file '%v'", p)
+			return fmt.Errorf("failed to read file '%v': %s", p, err)
 		}
 
 		c.Content = string(data)

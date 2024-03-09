@@ -3,7 +3,7 @@ package interaction
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -13,7 +13,7 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 	name, options := normalizeInteractionData(i)
 
 	// Resolve cached content by name
-	cmd, cmdExist := config.GetConfig().Commands[name]
+	cmd, cmdExist := config.GetYaml().Commands[name]
 	if !cmdExist {
 		return false
 	}

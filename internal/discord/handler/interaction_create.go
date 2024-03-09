@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
-	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
 	dont_ping_mods "github.com/nestjs-discord/utility-bot/internal/discord/command/dont-ping-mods"
 	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"
@@ -42,7 +42,7 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: config.GetConfig().Ratelimit.Message,
+				Content: config.GetYaml().Ratelimit.Message,
 				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
@@ -97,6 +97,6 @@ func checkRatelimit(userID string) bool {
 
 	cache.Ratelimit.IncrementUsage(userID)
 
-	maxUsage := config.GetConfig().Ratelimit.Usage
+	maxUsage := config.GetYaml().Ratelimit.Usage
 	return cache.Ratelimit.GetUsageCount(userID) > maxUsage
 }

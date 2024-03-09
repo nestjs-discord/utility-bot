@@ -2,12 +2,11 @@ package discord
 
 import (
 	"fmt"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
-	"github.com/nestjs-discord/utility-bot/internal/config"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"os"
@@ -24,7 +23,7 @@ var Run = &cobra.Command{
 			return err
 		}
 
-		cache.InitRatelimit(config.GetConfig().Ratelimit.TTL)
+		cache.InitRatelimit(config.GetYaml().Ratelimit.TTL)
 
 		cache.InitAutoMod()
 
@@ -33,7 +32,7 @@ var Run = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		session, err := internalDiscord.NewSession()
 		if err != nil {
-			return errors.Wrap(err, "failed to create new Discord session")
+			return fmt.Errorf("failed to create new Discord session: %s", err)
 		}
 
 		log.Info().Str("link", internalDiscord.GenerateInviteLink()).Msg("server invite")

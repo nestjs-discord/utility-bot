@@ -3,7 +3,7 @@ package automod
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func (a *AutoMod) getUsername(user *discordgo.User) string {
 }
 
 func (a *AutoMod) generateAlertContent() string {
-	roleToMention := config.GetConfig().AutoMod.LogMentionRoleId
+	roleToMention := config.GetYaml().AutoMod.LogMentionRoleId
 	if roleToMention == "" {
 		return ""
 	}
@@ -114,8 +114,8 @@ func (a *AutoMod) generateAlertEmbedDescription() string {
 	return fmt.Sprintf(
 		"Member exceeded channel limit `%d` within `%d` seconds."+"\n"+
 			"Added to the denied list for the next `%d` seconds.",
-		config.GetConfig().AutoMod.MaxChannelsLimitPerUser,
-		config.GetConfig().AutoMod.MessageTTL,
-		config.GetConfig().AutoMod.DenyTTL,
+		config.GetYaml().AutoMod.MaxChannelsLimitPerUser,
+		config.GetYaml().AutoMod.MessageTTL,
+		config.GetYaml().AutoMod.DenyTTL,
 	)
 }

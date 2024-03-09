@@ -1,10 +1,11 @@
 package interaction
 
 import (
+	"errors"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"strings"
 )
@@ -13,7 +14,7 @@ func validateInteractionForThreadPost(s *discordgo.Session, i *discordgo.Interac
 	currentChannelInfo, err := s.Channel(i.ChannelID)
 	if err != nil {
 		util.InteractionRespondError(
-			errors.Wrap(err, "failed to get current channel info"),
+			fmt.Errorf("failed to get current channel info: %s", err),
 			s, i)
 
 		return nil, false
@@ -69,7 +70,7 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	parentChannelInfo, err := s.Channel(currentChannelInfo.ParentID)
 	if err != nil {
 		util.InteractionRespondError(
-			errors.Wrap(err, "failed to get parent channel info"),
+			fmt.Errorf("failed to get parent channel info: %s", err),
 			s, i)
 		return
 	}
@@ -109,15 +110,15 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	//
 	// Assign solved tag
 	//
-	// Discord doesn't allow us to send an interaction response when the thread post is archived or closed
-	// that's why I decided to edit the channel twice, the first time for applying tags
-	// and the second time to close the thread post.
+	// Discord doesn't allow responding to an interaction when the thread post is archived or closed.
+	// Hence, editing the channel twice is necessary: first to apply tags, and second to close the thread post.
+	//
 	_, err = s.ChannelEdit(currentChannelInfo.ID, &discordgo.ChannelEdit{
 		AppliedTags: &currentChannelInfo.AppliedTags,
 	})
 	if err != nil {
 		util.InteractionRespondError(
-			errors.Wrap(err, "failed to edit the channel to apply the solved tag"),
+			fmt.Errorf("failed to edit the channel to apply the solved tag: %s", err),
 			s, i)
 		return
 	}
@@ -133,7 +134,7 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Data: &discordgo.InteractionResponseData{Content: content},
 	})
 	if err != nil {
-		util.InteractionRespondError(errors.Wrap(err, "failed to respond to interaction"), s, i)
+		util.InteractionRespondError(fmt.Errorf("failed to respond to interaction: %s", err), s, i)
 		return
 	}
 

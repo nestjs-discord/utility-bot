@@ -15,12 +15,12 @@ func StatsHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		Type: discordgo.EmbedTypeRich,
 		Fields: []*discordgo.MessageEmbedField{
 			{
-				Name:  "Total memory obtained from the OS",
-				Value: humanize.Bytes(m.Sys),
-			},
-			{
 				Name:  "Total allocated memory for heap objects",
 				Value: humanize.Bytes(m.TotalAlloc),
+			},
+			{
+				Name:  "Total memory obtained from the OS",
+				Value: humanize.Bytes(m.Sys),
 			},
 			{
 				Name:  "Allocated heap objects",

@@ -1,9 +1,9 @@
 package interaction
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
-	"github.com/pkg/errors"
 )
 
 func ArchiveHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -21,7 +21,7 @@ func ArchiveHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Data: &discordgo.InteractionResponseData{Content: content},
 	})
 	if err != nil {
-		util.InteractionRespondError(errors.Wrap(err, "failed to respond to interaction"), s, i)
+		util.InteractionRespondError(fmt.Errorf("failed to respond to interaction: %s", err), s, i)
 		return
 	}
 

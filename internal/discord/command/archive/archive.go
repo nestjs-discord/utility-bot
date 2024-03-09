@@ -2,12 +2,12 @@ package archive
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 )
 
 const Name = "archive"
 
-var permission = config.ProtectedContentPermission
+var permission = config.BotProtectedContentPermission
 
 var Command = &discordgo.ApplicationCommand{
 	Name:                     Name,

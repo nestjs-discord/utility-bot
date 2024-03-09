@@ -1,9 +1,10 @@
 package discord
 
 import (
+	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/internal/discord"
+
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/config"
-	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
@@ -12,7 +13,7 @@ var Clean = &cobra.Command{
 	Use:   "discord:clean",
 	Short: "Cleans the registered slash commands",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		dg, err := internalDiscord.NewSession()
+		dg, err := discord.NewSession()
 		if err != nil {
 			return err
 		}
@@ -25,7 +26,7 @@ var Clean = &cobra.Command{
 			return err
 		}
 
-		log.Info().Msg("successfully removed application commands")
+		log.Info().Msg("removed application commands")
 
 		return nil
 	},
