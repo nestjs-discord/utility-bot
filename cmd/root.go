@@ -3,11 +3,9 @@ package cmd
 import (
 	"github.com/nestjs-discord/utility-bot/cmd/content"
 	"github.com/nestjs-discord/utility-bot/cmd/discord"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/logger"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -30,7 +28,10 @@ var (
 )
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(func() {
+		logger.Register(debug)
+		config.Bootstrap(cfgFile)
+	})
 
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "sets log level to debug")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./config.yml)")
@@ -43,33 +44,4 @@ func init() {
 
 func Execute() error {
 	return rootCmd.Execute()
-}
-
-func initConfig() {
-	logger.Register(debug)
-
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		viper.AddConfigPath(".")
-		viper.SetConfigType("yaml")
-		viper.SetConfigName("config")
-	}
-
-	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal().Err(err).Msg("viper: config read in failed")
-	}
-
-	log.Debug().Str("path", viper.ConfigFileUsed()).Msg("config: read success")
-
-	if err := config.Unmarshal(); err != nil {
-		log.Fatal().Err(err).Msg("config: unmarshal failed")
-	}
-
-	if err := config.ValidateConfig(); err != nil {
-		log.Fatal().Err(err).Send()
-	}
 }

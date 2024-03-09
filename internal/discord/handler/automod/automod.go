@@ -2,7 +2,7 @@ package automod
 
 import (
 	"github.com/dgraph-io/ristretto"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 	"sync"
 	"time"
 )
@@ -82,5 +82,5 @@ func (a *AutoMod) getChannelsLengthByUserId(id UserId) int {
 }
 
 func (a *AutoMod) IsUserWithinMaxChannelsLimit(userId UserId) bool {
-	return a.getChannelsLengthByUserId(userId) <= config.GetConfig().AutoMod.MaxChannelsLimitPerUser
+	return a.getChannelsLengthByUserId(userId) <= config.GetYaml().AutoMod.MaxChannelsLimitPerUser
 }

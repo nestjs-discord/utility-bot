@@ -3,7 +3,7 @@ package dont_ping_mods
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -62,7 +62,7 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	// Loop over moderators defined in the configuration file
-	moderators := config.GetConfig().Moderators
+	moderators := config.GetYaml().Moderators
 	for _, modId := range moderators {
 
 		// Skip removing the person who have executed the command

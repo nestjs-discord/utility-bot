@@ -3,7 +3,7 @@ package discord
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 )
 
 func NewSession() (*discordgo.Session, error) {

@@ -5,7 +5,8 @@ package algolia
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/pkg/errors"
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -49,7 +50,7 @@ func Search(app App, query string) (hits []Hit, error error) {
 
 	jsonPayload, err := generateQueryJSONPayload(query)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to generate JSON payload")
+		return nil, fmt.Errorf("failed to generate JSON payload: %s", err)
 	}
 
 	req, err := http.NewRequest(http.MethodPost, baseURL+"query", bytes.NewBuffer(jsonPayload))
@@ -58,25 +59,25 @@ func Search(app App, query string) (hits []Hit, error error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, errors.Wrap(err, "http request failed")
+		return nil, fmt.Errorf("http request failed: %s", err)
 	}
 	defer func(Body io.ReadCloser) {
 		_ = Body.Close()
 	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.Wrapf(err, "expected status code OK but received %v", resp.Status)
+		return nil, fmt.Errorf("expected status code OK but received '%v': %s", resp.Status, err)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.Wrapf(err, "read all response body failed")
+		return nil, fmt.Errorf("read all response body failed: %s", err)
 	}
 
 	var data queryResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return nil, errors.Wrap(err, "json unmarshal failed")
+		return nil, fmt.Errorf("json unmarshal failed: %s", err)
 	}
 
 	return data.Hits, nil
@@ -107,7 +108,7 @@ func GetObject(app App, objectID string) (*Hit, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, errors.Wrap(err, "http request failed")
+		return nil, fmt.Errorf("http request failed: %s", err)
 	}
 
 	defer func(Body io.ReadCloser) {
@@ -115,18 +116,18 @@ func GetObject(app App, objectID string) (*Hit, error) {
 	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.Wrapf(err, "expected status code OK but received %v", resp.Status)
+		return nil, fmt.Errorf("expected status code OK but received '%v': %s", resp.Status, err)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, errors.Wrapf(err, "read all response body failed")
+		return nil, fmt.Errorf("read all response body failed: %s", err)
 	}
 
 	var hit Hit
 	err = json.Unmarshal(body, &hit)
 	if err != nil {
-		return nil, errors.Wrap(err, "json unmarshal failed")
+		return nil, fmt.Errorf("json unmarshal failed: %s", err)
 	}
 
 	return &hit, nil

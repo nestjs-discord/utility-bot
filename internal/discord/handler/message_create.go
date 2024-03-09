@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/message"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -17,7 +17,7 @@ func MessageCreate(s *discordgo.Session, i *discordgo.MessageCreate) {
 	log.Debug().Str("id", i.ID).Str("content", i.Content).Msg("event: message create")
 
 	// Check if auto-mod is enabled in the configuration.
-	if config.GetConfig().AutoMod.Enabled {
+	if config.GetYaml().AutoMod.Enabled {
 		message.AutoModHandler(s, i)
 	}
 

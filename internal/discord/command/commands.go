@@ -2,7 +2,7 @@ package command
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/config"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	dont_ping_mods "github.com/nestjs-discord/utility-bot/internal/discord/command/dont-ping-mods"
@@ -97,7 +97,7 @@ func generateCommandsToRegister() (normalCommands, subCommands) {
 	subCommands := subCommands{}
 	normalCommands := normalCommands{}
 
-	for cmdName, cmdData := range config.GetConfig().Commands {
+	for cmdName, cmdData := range config.GetYaml().Commands {
 		if !strings.Contains(cmdName, " ") {
 			normalCommands[cmdName] = cmdData
 			continue
@@ -118,8 +118,8 @@ func generateCommandsToRegister() (normalCommands, subCommands) {
 }
 
 // calculateCommandPermission returns the appropriate content permission level for a given command.
-// If the command is marked as protected, the function returns the ProtectedContentPermission constant.
-// Otherwise, the function returns the DefaultContentPermission constant.
+// If the command is marked as protected, the function returns the BotProtectedContentPermission constant.
+// Otherwise, the function returns the BotDefaultContentPermission constant.
 //
 // Parameters:
 // - cmdData: a pointer to a config.Command object representing the command to calculate permission for.
@@ -128,8 +128,8 @@ func generateCommandsToRegister() (normalCommands, subCommands) {
 // - An int64 representing the calculated content permission level.
 func calculateCommandPermission(cmdData *config.Command) int64 {
 	if cmdData.Protected {
-		return config.ProtectedContentPermission
+		return config.BotProtectedContentPermission
 	}
 
-	return config.DefaultContentPermission
+	return config.BotDefaultContentPermission
 }

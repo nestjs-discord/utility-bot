@@ -3,8 +3,8 @@ package message
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
-	"github.com/nestjs-discord/utility-bot/internal/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/automod"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -23,7 +23,7 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	}
 
 	// Check if the author is a moderator; if true, skip further processing.
-	if config.GetConfig().AutoMod.ModeratorsBypass && util.IsUserModerator(i.Author.ID) {
+	if config.GetYaml().AutoMod.ModeratorsBypass && util.IsUserModerator(i.Author.ID) {
 		return
 	}
 
@@ -79,7 +79,7 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Add user to the denied list
 	cache.AutoMod.AddUserToDeniedList(userId)
 
-	logChannelId := config.GetConfig().AutoMod.LogChannelId
+	logChannelId := config.GetYaml().AutoMod.LogChannelId
 	_, err = s.ChannelMessageSendComplex(logChannelId, cache.AutoMod.GenerateAlertMessage(i))
 	if err != nil {
 		log.Err(err).Msg("auto mod: failed to notify log channel about the ongoing spam")
