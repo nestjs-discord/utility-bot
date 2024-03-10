@@ -4,15 +4,15 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/nestjs-discord/utility-bot/badge/main)](https://www.codefactor.io/repository/github/nestjs-discord/utility-bot/overview/main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nestjs-discord/utility-bot)](https://goreportcard.com/report/github.com/nestjs-discord/utility-bot)
 
-A Discord bot designed to streamline the support process on the official NestJS Discord server.
+A Discord bot
+designed to streamline the support process on [the official NestJS Discord server](https://discord.gg/nestjs).
 
-As people who usually answer questions on [the official NestJS Discord server](https://discord.gg/nestjs), we've experienced that sometimes users ask questions that have already been answered many times before.
+We've developed this bot to improve your interaction with other users.
+With pre-written, perfectly formatted Markdown content delivered through slick slash commands,
+you can respond to everyday situations quickly.
+No more tedious explanations, no more typing out the same thing over and over again.
 
-There are some common cases, like when they post a new support request, they don't provide a [minimal reproduction code](https://minimum-reproduction.wtf/), or sometimes they don't even share their code, and even if they do, they don't know how to put them in [code blocks](https://gist.github.com/matthewzring/9f7bbfd102003963f9be7dbcf7d40e51#code-blocks) properly.
-
-So we devised the idea of having a [Discord bot](https://discord.com/developers/docs/intro#bots-and-apps) with predefined and well-written Markdown content as [slash commands](https://discord.com/developers/docs/interactions/application-commands) to reply to users instead of repeatedly writing and explaining.
-
-## Discord commands overview
+## Commands
 
 | Command                        | Description                                                                    | Who can execute it?    |
 |--------------------------------|--------------------------------------------------------------------------------|------------------------|
@@ -52,6 +52,68 @@ The following environment variables are required, and the rest of the configurat
 - `DISCORD_APP_ID`
 - `DISCORD_BOT_TOKEN`
 - `DISCORD_GUILD_ID`
+
+## How we handle incoming Discord updates
+
+```mermaid
+flowchart TD
+    classDef orange stroke:#f96
+    classDef green stroke:#0f0
+    
+    discordUpdate["Discord Update"]
+    discordUpdate -->|"Event"| utilityBotApp("Utility-Bot Application")
+    utilityBotApp --> eventType{"What's the event type?"}
+    eventType -->|Ready| setStatus["Set Bot status to:\n\nListening to slash-commands!"]
+    setStatus --> finish["Finish"]
+    
+    eventType -->|Interaction Create| eventInteractionCreate{"What is the type of interaction?"}
+    eventInteractionCreate -->|Application Command Autocomplete| applicationCommandAutoComplete["Slash command autocomplete flow"]:::orange
+    eventInteractionCreate -->|Application Command| checkRateLimit("Check ratelimit policy")
+    
+    checkRateLimit --> isStaticCommand{"Is static command?"}
+    
+    isStaticCommand -->|"Yes"| handleStaticCommand{"Handle static command\n(hardcoded)"}
+    handleStaticCommand -->|"/solved"| solvedCommandFlow["Solved command flow"]:::orange
+    handleStaticCommand -->|"/archive"| archiveCommandFlow["Archive command flow"]:::orange
+    handleStaticCommand -->|"/dont-ping-mods"| dontPingModsFlow["Don't ping mods flow"]:::orange
+    handleStaticCommand -->|"/google-it"| googleItFlow["Google it flow"]:::orange
+    handleStaticCommand -->|"/reference"| referenceFlow["Reference flow"]:::orange
+
+    
+    isStaticCommand -->|"No"| handleDynamicCommand("Handle dynamic command\n(config.yml)"):::green
+
+    eventType -->|Message Create| isBotMessage{"Is the message from a bot?"}
+    isBotMessage -->|No| AutoModFlow["Auto Moderation Flow"]:::orange
+    isBotMessage -->|Yes| Finish["Finish"]
+```
+
+### Auto Moderation Flow
+
+Placeholder.
+
+### Solved command
+
+Placeholder.
+
+### Archive command
+
+Placeholder.
+
+### Don't ping moderators command flow
+
+Placeholder.
+
+### Google it command flow
+
+Placeholder.
+
+### Reference command flow
+
+Placeholder.
+
+### Slash command autocomplete flow
+
+Placeholder.
 
 ## Docker usage
 
