@@ -55,6 +55,11 @@ The following environment variables are required, and the rest of the configurat
 
 ## How we handle incoming Discord updates
 
+The utility bot application listens for incoming Discord updates,
+such as message creations, interactions, and bot events.
+It then processes these updates accordingly, performing actions such as setting bot status,
+handling slash commands, moderating messages, and more.
+
 ```mermaid
 flowchart TD
 %% classes
@@ -157,20 +162,17 @@ flowchart TD
 ```mermaid
 flowchart TD
 %% classes
-    classDef orange stroke: #f96
-    classDef green stroke: #0f0
     classDef startPoint stroke: #0ff, font-size: 15pt
     classDef red stroke: #f00
 %% start point
     start["Start point"]:::startPoint
-    start --> validateChannelType
-    validateChannelType{"Is the channel \na forum post?"}
+    start --> validateChannelType{"Is the channel \na forum post?"}
     validateChannelType -->|" No "| finish-1["Respond with an error"]:::red
     validateChannelType -->|" Yes "| isTheChannelLocked{"Is the current forum\npost locked?"}
     isTheChannelLocked -->|" No "| hasPermissionToExecute{"Is the person who\nexecuted the command\nOP or a Mod?"}
     isTheChannelLocked -->|" Yes "| finish-2["Respond with an error"]:::red
     hasPermissionToExecute -->|" No "| finish-3["Respond with an error"]:::red
-    hasPermissionToExecute -->|" Yes "| findTheSolvedTag("Find the 'solved' tag metadata")
+    hasPermissionToExecute -->|" Yes "| findTheSolvedTag("Find the 'solved' tag metadata\nin the current forum post")
     findTheSolvedTag --> isSolvedTagApplied{"Is solved tag\nalready assigned\nto this forum post?"}
     isSolvedTagApplied -->|" No "| appendTheSolvedTag("Append the solved tag\nto the forum post tags\n(in memory only!)")
     isSolvedTagApplied -->|" Yes "| sendCannedResponse("Send the canned response")
@@ -178,7 +180,7 @@ flowchart TD
     validateTagsLength -->|" No "| finish-4["Respond with an error"]:::red
     validateTagsLength -->|" Yes "| editThePost("Edit the forum post and assign the tags")
     editThePost --> sendCannedResponse
-    sendCannedResponse --> editThePostAgain("Edit the forum post again to\nadjust the 'auto archive duration'")
+    sendCannedResponse --> editThePostAgain("Edit the forum post (again?) to\napply the 'auto archive duration'")
     editThePostAgain --> finish-5["Finish"]
 ```
 
@@ -189,6 +191,25 @@ Placeholder.
 ### Don't ping moderators command flow
 
 Placeholder.
+
+```mermaid
+flowchart TD
+%% classes
+    classDef startPoint stroke: #0ff, font-size: 15pt
+    classDef red stroke: #f00
+%% start point
+    start["Start point"]:::startPoint
+    start --> sendTheCannedResponse("Send the canned response")
+    sendTheCannedResponse --> isChannelForumPost{"Is the current channel\na forum post?"}
+    isChannelForumPost -->|" No "| finish["Finish"]
+
+    moderators[("\nModerator IDs")]
+
+    removeMods <-.-> moderators
+    
+    isChannelForumPost -->|" Yes "| removeMods("Remove the moderators from the forum post,\nexcept the person who executed this command")
+    removeMods --> finish
+```
 
 ### Google it command flow
 
