@@ -99,53 +99,62 @@ flowchart TD
 %% classes
     classDef orange stroke: #f96
     classDef green stroke: #0f0
-    classDef cyan stroke: #0ff
+    classDef startPoint stroke: #0ff, font-size:20pt
     classDef red stroke: #f00
 %% start point
-    start["Start point"]:::cyan
-    start ---> shouldTrackChannelID{"Should moderate the current\nchannel ID?\n(we only track text channels)"}
+    start["Start point"]:::startPoint
+    start ===> shouldTrackChannelID{"Should moderate the current\nchannel ID?\n(we only track text channels)"}
 %% channels to track
     shouldTrackChannelID -->|" No "| finish-2["Finish"]
     shouldTrackChannelID -->|" Yes "| isUserModerator{"Is message author\na moderator?"}
-    channelsToTrack --- shouldTrackChannelID
-    isUserModerator -->|" Yes "| finish-1["Finish"]
+    shouldTrackChannelID <-..-> channelsToTrack
+%% is moderator?
     isUserModerator -->|" No "| isUserInDeniedList
+    isUserModerator -->|" Yes "| finish-1["Finish"]
 %% denied list
-    deniedList --- isUserInDeniedList{"Is message author\nin the denied list?"}
+    deniedList <-.-> isUserInDeniedList{"Is message author\nin the denied list?"}
     isUserInDeniedList -->|" No "| storeTheirMessage("Store their message")
     isUserInDeniedList -->|" Yes "| take-action-secondary
     addUserToDeniedList("Add message author to the denied list")
     addUserToDeniedList --> deniedList
 %% Messages
-    storeTheirMessage --> messages
+    storeTheirMessage <-.->|"once stored\ngo back!"| messages
     storeTheirMessage --> hasExceededMessageLimits
     hasExceededMessageLimits{"Has the message author\nexceeded the limits?"}
-    hasExceededMessageLimits -->|" No "| finish-4["Finish"]
     hasExceededMessageLimits -->|" Yes "| take-action-primary-hub
+    hasExceededMessageLimits -->|" No "| finish-4["Finish"]
+    
+%% take action hub
     take-action-primary-hub(("."))
-    take-action-primary-hub --> take-action-primary
+    take-action-primary-hub --> getUserPreviousMessage("Get message author previous messages")
     take-action-primary-hub --> addUserToDeniedList
+    
+    getUserPreviousMessage <-.-> messages
+    getUserPreviousMessage --> deleteTheirMessages
 
-    subgraph In-memory temporary cache
-        channelsToTrack[("Channel IDs\nto moderate")]
-        messages[("Discord messages\n\nmap[UserID]map[ChannelID]Message")]
-        deniedList[("Denied users IDs")]
-    end
+%%    subgraph In-memory permanent cache
+        channelsToTrack[("\nChannel IDs\nto moderate")]
+%%    end
+
+%%    subgraph In-memory temporary cache
+        messages[("\nDiscord messages (temporary)\n\nmap[UserID]map[ChannelID]Message")]
+        deniedList[("\nDenied users IDs\n\n(temporary)")]
+%%    end
 
     subgraph take-action-primary["Take action - primary"]
-        class take-action-primary red
-        deleteTheirMessages("Delete their message(s)")
-        banThem("Ban their account")
-        alertModerators("Alert moderators")
+%%        class take-action-primary red
+        deleteTheirMessages("Delete their message(s)"):::red
+        banThem("Ban their account"):::red
+        alertModerators("Alert moderators"):::red
         deleteTheirMessages --> banThem
         banThem --> alertModerators
         alertModerators --> finish-5["Finish"]
     end
 
     subgraph take-action-secondary["Take action - secondary (in case the primary fails)"]
-        class take-action-secondary orange
-        deleteTheirMessage("Delete their current message")
-        banThemAgain("Ban their account")
+%%        class take-action-secondary orange
+        deleteTheirMessage("Delete their current message"):::orange
+        banThemAgain("Ban their account"):::orange
         deleteTheirMessage --> banThemAgain
         banThemAgain --> finish-3["Finish"]
     end
