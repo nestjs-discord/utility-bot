@@ -165,17 +165,17 @@ flowchart TD
     start["Start point"]:::startPoint
     start --> validateChannelType
     validateChannelType{"Is the channel \na forum post?"}
-    validateChannelType -->|" No "| finish-1["Response with an error"]:::red
+    validateChannelType -->|" No "| finish-1["Respond with an error"]:::red
     validateChannelType -->|" Yes "| isTheChannelLocked{"Is the current forum\npost locked?"}
     isTheChannelLocked -->|" No "| hasPermissionToExecute{"Is the person who\nexecuted the command\nOP or a Mod?"}
-    isTheChannelLocked -->|" Yes "| finish-2["Response with an error"]:::red
-    hasPermissionToExecute -->|" No "| finish-3["Response with an error"]:::red
+    isTheChannelLocked -->|" Yes "| finish-2["Respond with an error"]:::red
+    hasPermissionToExecute -->|" No "| finish-3["Respond with an error"]:::red
     hasPermissionToExecute -->|" Yes "| findTheSolvedTag("Find the 'solved' tag metadata")
     findTheSolvedTag --> isSolvedTagApplied{"Is solved tag\nalready assigned\nto this forum post?"}
     isSolvedTagApplied -->|" No "| appendTheSolvedTag("Append the solved tag\nto the forum post tags\n(in memory only!)")
     isSolvedTagApplied -->|" Yes "| sendCannedResponse("Send the canned response")
     appendTheSolvedTag --> validateTagsLength{"Is the length of tags\nlower than six?\n(Discord only allows\nfive tags per post)"}
-    validateTagsLength -->|" No "| finish-4["Response with an error"]:::red
+    validateTagsLength -->|" No "| finish-4["Respond with an error"]:::red
     validateTagsLength -->|" Yes "| editThePost("Edit the forum post and assign the tags")
     editThePost --> sendCannedResponse
     sendCannedResponse --> editThePostAgain("Edit the forum post again to\nadjust the 'auto archive duration'")
