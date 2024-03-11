@@ -99,50 +99,43 @@ flowchart TD
 %% classes
     classDef orange stroke: #f96
     classDef green stroke: #0f0
-    classDef startPoint stroke: #0ff, font-size:20pt
+    classDef startPoint stroke: #0ff, font-size: 20pt
     classDef red stroke: #f00
 %% start point
     start["Start point"]:::startPoint
     start ===> shouldTrackChannelID{"Should moderate the current\nchannel ID?\n(we only track text channels)"}
 %% channels to track
+    shouldTrackChannelID <-.-> channelsToTrack
     shouldTrackChannelID -->|" No "| finish-2["Finish"]
     shouldTrackChannelID -->|" Yes "| isUserModerator{"Is message author\na moderator?"}
-    shouldTrackChannelID <-..-> channelsToTrack
 %% is moderator?
-    isUserModerator -->|" No "| isUserInDeniedList
+    isUserModerator <-.-> moderators
     isUserModerator -->|" Yes "| finish-1["Finish"]
+    isUserModerator -->|" No "| isUserInDeniedList
 %% denied list
     deniedList <-.-> isUserInDeniedList{"Is message author\nin the denied list?"}
     isUserInDeniedList -->|" No "| storeTheirMessage("Store their message")
     isUserInDeniedList -->|" Yes "| take-action-secondary
-    addUserToDeniedList("Add message author to the denied list")
-    addUserToDeniedList --> deniedList
+    addUserToDeniedList("Add message author to the denied list") --> deniedList
 %% Messages
-    storeTheirMessage <-.->|"once stored\ngo back!"| messages
-    storeTheirMessage --> hasExceededMessageLimits
-    hasExceededMessageLimits{"Has the message author\nexceeded the limits?"}
+    storeTheirMessage <-.-> messages
+    storeTheirMessage -->|"Once the message\nis stored"| hasExceededMessageLimits
+    hasExceededMessageLimits{"Has the message author\nexceeded the channel limit\nwithin the\nspecified time frame?"}
     hasExceededMessageLimits -->|" Yes "| take-action-primary-hub
     hasExceededMessageLimits -->|" No "| finish-4["Finish"]
-    
 %% take action hub
     take-action-primary-hub(("."))
     take-action-primary-hub --> getUserPreviousMessage("Get message author previous messages")
     take-action-primary-hub --> addUserToDeniedList
-    
     getUserPreviousMessage <-.-> messages
     getUserPreviousMessage --> deleteTheirMessages
-
-%%    subgraph In-memory permanent cache
-        channelsToTrack[("\nChannel IDs\nto moderate")]
-%%    end
-
-%%    subgraph In-memory temporary cache
-        messages[("\nDiscord messages (temporary)\n\nmap[UserID]map[ChannelID]Message")]
-        deniedList[("\nDenied users IDs\n\n(temporary)")]
-%%    end
+%% data stores
+    moderators[("\nModerator IDs")]
+    channelsToTrack[("\nChannel IDs\nto moderate")]
+    messages[("\nDiscord messages (temporary)\n\nmap[UserID]map[ChannelID]Message")]
+    deniedList[("\nDenied users IDs\n\n(temporary)")]
 
     subgraph take-action-primary["Take action - primary"]
-%%        class take-action-primary red
         deleteTheirMessages("Delete their message(s)"):::red
         banThem("Ban their account"):::red
         alertModerators("Alert moderators"):::red
@@ -152,7 +145,6 @@ flowchart TD
     end
 
     subgraph take-action-secondary["Take action - secondary (in case the primary fails)"]
-%%        class take-action-secondary orange
         deleteTheirMessage("Delete their current message"):::orange
         banThemAgain("Ban their account"):::orange
         deleteTheirMessage --> banThemAgain
