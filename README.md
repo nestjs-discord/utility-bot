@@ -60,8 +60,9 @@ flowchart TD
 %% classes
     classDef orange stroke: #f96
     classDef green stroke: #0f0
+    classDef cyan stroke: #0ff
 %% start point
-    discordUpdate["Discord Update"]
+    discordUpdate["Discord Update"]:::cyan
     discordUpdate -->|" Event "| utilityBotApp("Utility-Bot Application")
     utilityBotApp --> eventType{"What's the event type?"}
     eventType -->|" Ready "| setStatus["Set Bot status to:\n\nListening to slash-commands!"]
@@ -95,62 +96,59 @@ we believe this additional feature will be invaluable in keeping our community s
 
 ```mermaid
 flowchart TD
+%% classes
+    classDef orange stroke: #f96
+    classDef green stroke: #0f0
+    classDef cyan stroke: #0ff
+    classDef red stroke: #f00
 %% start point
-    start["Start point"]
-    start --> shouldTrackChannelID
-    shouldTrackChannelID -->|" Yes "| isUserModerator
-    isUserModerator{"Is message author\na moderator?"}
+    start["Start point"]:::cyan
+    start ---> shouldTrackChannelID{"Should moderate the current\nchannel ID?\n(we only track text channels)"}
+%% channels to track
+    shouldTrackChannelID -->|" No "| finish-2["Finish"]
+    shouldTrackChannelID -->|" Yes "| isUserModerator{"Is message author\na moderator?"}
+    channelsToTrack --- shouldTrackChannelID
     isUserModerator -->|" Yes "| finish-1["Finish"]
     isUserModerator -->|" No "| isUserInDeniedList
+%% denied list
+    deniedList --- isUserInDeniedList{"Is message author\nin the denied list?"}
+    isUserInDeniedList -->|" No "| storeTheirMessage("Store their message")
+    isUserInDeniedList -->|" Yes "| take-action-secondary
+    addUserToDeniedList("Add message author to the denied list")
+    addUserToDeniedList --> deniedList
+%% Messages
+    storeTheirMessage --> messages
+    storeTheirMessage --> hasExceededMessageLimits
+    hasExceededMessageLimits{"Has the message author\nexceeded the limits?"}
+    hasExceededMessageLimits -->|" No "| finish-4["Finish"]
+    hasExceededMessageLimits -->|" Yes "| take-action-primary-hub
+    take-action-primary-hub(("."))
+    take-action-primary-hub --> take-action-primary
+    take-action-primary-hub --> addUserToDeniedList
+
+    subgraph In-memory temporary cache
+        channelsToTrack[("Channel IDs\nto moderate")]
+        messages[("Discord messages\n\nmap[UserID]map[ChannelID]Message")]
+        deniedList[("Denied users IDs")]
+    end
 
     subgraph take-action-primary["Take action - primary"]
+        class take-action-primary red
         deleteTheirMessages("Delete their message(s)")
         banThem("Ban their account")
         alertModerators("Alert moderators")
-        
         deleteTheirMessages --> banThem
         banThem --> alertModerators
         alertModerators --> finish-5["Finish"]
     end
 
     subgraph take-action-secondary["Take action - secondary (in case the primary fails)"]
+        class take-action-secondary orange
         deleteTheirMessage("Delete their current message")
         banThemAgain("Ban their account")
         deleteTheirMessage --> banThemAgain
         banThemAgain --> finish-3["Finish"]
     end
-
-    subgraph In-memory temporary cache
-%%        subgraph Databases
-            channelsToTrack[("Channel IDs\nto moderate")]
-            messages[("Discord messages\n\nmap[UserID]map[ChannelID]Message")]
-            deniedList[("Denied users IDs")]
-%%        end
-
-    %% channels to track
-        shouldTrackChannelID{"Should moderate the current\nchannel ID?\n(we only track text channels)"}
-        shouldTrackChannelID -->|" No "| finish-2["Finish"]
-        shouldTrackChannelID --- channelsToTrack
-    %% denied list
-        deniedList --- isUserInDeniedList
-        isUserInDeniedList{"Is message author\nin the denied list?"}
-        
-        addUserToDeniedList("Add message author to the denied list")
-        addUserToDeniedList --> deniedList
-
-    %% Messages
-        storeTheirMessage --> messages
-        storeTheirMessage --> hasExceededMessageLimits
-        hasExceededMessageLimits{"Has the message author\nexceeded the limits?"}
-        hasExceededMessageLimits -->|" No "| finish-4["Finish"]
-    end
-
-    isUserInDeniedList -->|" Yes "| take-action-secondary
-    isUserInDeniedList -->|" No "| storeTheirMessage("Store their message")
-    hasExceededMessageLimits -->|" Yes "| take-action-primary-hub
-    take-action-primary-hub(("."))
-    take-action-primary-hub --> take-action-primary
-    take-action-primary-hub --> addUserToDeniedList
 ```
 
 ### Solved command flow
