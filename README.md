@@ -57,45 +57,107 @@ The following environment variables are required, and the rest of the configurat
 
 ```mermaid
 flowchart TD
-    classDef orange stroke:#f96
-    classDef green stroke:#0f0
-    
+%% classes
+    classDef orange stroke: #f96
+    classDef green stroke: #0f0
+%% start point
     discordUpdate["Discord Update"]
-    discordUpdate -->|"Event"| utilityBotApp("Utility-Bot Application")
+    discordUpdate -->|" Event "| utilityBotApp("Utility-Bot Application")
     utilityBotApp --> eventType{"What's the event type?"}
-    eventType -->|Ready| setStatus["Set Bot status to:\n\nListening to slash-commands!"]
+    eventType -->|" Ready "| setStatus["Set Bot status to:\n\nListening to slash-commands!"]
     setStatus --> finish["Finish"]
-    
-    eventType -->|Interaction Create| eventInteractionCreate{"What is the type of interaction?"}
-    eventInteractionCreate -->|Application Command Autocomplete| applicationCommandAutoComplete["Slash command autocomplete flow"]:::orange
-    eventInteractionCreate -->|Application Command| checkRateLimit("Check ratelimit policy")
-    
+    eventType -->|" Interaction Create "| eventInteractionCreate{"What is the type of interaction?"}
+    eventInteractionCreate -->|" Application Command Autocomplete "| applicationCommandAutoComplete["Slash command autocomplete flow"]:::orange
+    eventInteractionCreate -->|" Application Command "| checkRateLimit("Check ratelimit policy")
     checkRateLimit --> isStaticCommand{"Is static command?"}
-    
-    isStaticCommand -->|"Yes"| handleStaticCommand{"Handle static command\n(hardcoded)"}
-    handleStaticCommand -->|"/solved"| solvedCommandFlow["Solved command flow"]:::orange
-    handleStaticCommand -->|"/archive"| archiveCommandFlow["Archive command flow"]:::orange
-    handleStaticCommand -->|"/dont-ping-mods"| dontPingModsFlow["Don't ping mods flow"]:::orange
-    handleStaticCommand -->|"/google-it"| googleItFlow["Google it flow"]:::orange
-    handleStaticCommand -->|"/reference"| referenceFlow["Reference flow"]:::orange
-
-    
-    isStaticCommand -->|"No"| handleDynamicCommand("Handle dynamic command\n(config.yml)"):::green
-
+    isStaticCommand -->|" Yes "| handleStaticCommand{"Handle static command\n(hardcoded)"}
+    handleStaticCommand -->|" /solved "| solvedCommandFlow["Solved cmd flow"]:::orange
+    handleStaticCommand -->|" /archive "| archiveCommandFlow["Archive cmd flow"]:::orange
+    handleStaticCommand -->|" /dont-ping-mods "| dontPingModsFlow["Don't ping mods cmd flow"]:::orange
+    handleStaticCommand -->|" /google-it "| googleItFlow["Google it cmd flow"]:::orange
+    handleStaticCommand -->|" /reference "| referenceFlow["Reference cmd flow"]:::orange
+    isStaticCommand -->|" No "| handleDynamicCommand("Handle dynamic command\n(config.yml)"):::green
     eventType -->|Message Create| isBotMessage{"Is the message from a bot?"}
-    isBotMessage -->|No| AutoModFlow["Auto Moderation Flow"]:::orange
-    isBotMessage -->|Yes| Finish["Finish"]
+    isBotMessage -->|" No "| AutoModFlow["Auto-moderation feature flow"]:::orange
+    isBotMessage -->|" Yes "| Finish["Finish"]
 ```
 
-### Auto Moderation Flow
+### Auto-moderation feature flow
+
+We have noticed that a small number of members in our community have had
+their Discord accounts taken over due to clicking on harmful links.
+Attackers who gain access to these accounts often use them to send harmful links to multiple channels.
+To prevent this, we have added an auto-moderation feature to our utility bot.
+This feature will detect and instantly ban any accounts that are sending harmful links,
+protecting our community members from clicking on them.
+Even though the bot's primary function is to send pre-written responses through slash-commands,
+we believe this additional feature will be invaluable in keeping our community safe.
+
+```mermaid
+flowchart TD
+%% start point
+    start["Start point"]
+    start --> shouldTrackChannelID
+    shouldTrackChannelID -->|" Yes "| isUserModerator
+    isUserModerator{"Is message author\na moderator?"}
+    isUserModerator -->|" Yes "| finish-1["Finish"]
+    isUserModerator -->|" No "| isUserInDeniedList
+
+    subgraph take-action-primary["Take action - primary"]
+        deleteTheirMessages("Delete their message(s)")
+        banThem("Ban their account")
+        alertModerators("Alert moderators")
+        
+        deleteTheirMessages --> banThem
+        banThem --> alertModerators
+        alertModerators --> finish-5["Finish"]
+    end
+
+    subgraph take-action-secondary["Take action - secondary (in case the primary fails)"]
+        deleteTheirMessage("Delete their current message")
+        banThemAgain("Ban their account")
+        deleteTheirMessage --> banThemAgain
+        banThemAgain --> finish-3["Finish"]
+    end
+
+    subgraph In-memory temporary cache
+%%        subgraph Databases
+            channelsToTrack[("Channel IDs\nto moderate")]
+            messages[("Discord messages\n\nmap[UserID]map[ChannelID]Message")]
+            deniedList[("Denied users IDs")]
+%%        end
+
+    %% channels to track
+        shouldTrackChannelID{"Should moderate the current\nchannel ID?\n(we only track text channels)"}
+        shouldTrackChannelID -->|" No "| finish-2["Finish"]
+        shouldTrackChannelID --- channelsToTrack
+    %% denied list
+        deniedList --- isUserInDeniedList
+        isUserInDeniedList{"Is message author\nin the denied list?"}
+        
+        addUserToDeniedList("Add message author to the denied list")
+        addUserToDeniedList --> deniedList
+
+    %% Messages
+        storeTheirMessage --> messages
+        storeTheirMessage --> hasExceededMessageLimits
+        hasExceededMessageLimits{"Has the message author\nexceeded the limits?"}
+        hasExceededMessageLimits -->|" No "| finish-4["Finish"]
+    end
+
+    isUserInDeniedList -->|" Yes "| take-action-secondary
+    isUserInDeniedList -->|" No "| storeTheirMessage("Store their message")
+    hasExceededMessageLimits -->|" Yes "| take-action-primary-hub
+    take-action-primary-hub(("."))
+    take-action-primary-hub --> take-action-primary
+    take-action-primary-hub --> addUserToDeniedList
+```
+
+### Solved command flow
 
 Placeholder.
 
-### Solved command
-
-Placeholder.
-
-### Archive command
+### Archive command flow
 
 Placeholder.
 
