@@ -3,7 +3,7 @@ module github.com/nestjs-discord/utility-bot
 go 1.20
 
 require (
-	github.com/bwmarrin/discordgo v0.27.1
+	github.com/bwmarrin/discordgo v0.28.1
 	github.com/charmbracelet/lipgloss v0.10.0
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/dustin/go-humanize v1.0.1
