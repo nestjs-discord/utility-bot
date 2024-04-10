@@ -52,7 +52,7 @@ func (a *AutoMod) generateAlertComponents(i *discordgo.MessageCreate) []discordg
 		discordgo.ActionsRow{
 			Components: []discordgo.MessageComponent{
 				discordgo.Button{
-					Emoji: discordgo.ComponentEmoji{
+					Emoji: &discordgo.ComponentEmoji{
 						Name: "🔗",
 					},
 					Label: "Jump to the message",

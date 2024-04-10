@@ -99,7 +99,7 @@ func generateReferenceComponents(hit *algolia.Hit) []discordgo.MessageComponent 
 					Label: "Read more",
 					URL:   hit.URL,
 					Style: discordgo.LinkButton,
-					Emoji: discordgo.ComponentEmoji{Name: "📖"},
+					Emoji: &discordgo.ComponentEmoji{Name: "📖"},
 				},
 			},
 		},
