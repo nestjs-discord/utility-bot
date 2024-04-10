@@ -24,7 +24,7 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	button := discordgo.Button{
-		Emoji: discordgo.ComponentEmoji{Name: "🔗"},
+		Emoji: &discordgo.ComponentEmoji{Name: "🔗"},
 		Label: "Server Rules",
 		Style: discordgo.LinkButton,
 		URL:   "https://discord.com/channels/520622812742811698/527853342152458287/769643761797431336",

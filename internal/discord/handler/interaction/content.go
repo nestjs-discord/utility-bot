@@ -83,7 +83,7 @@ func convertButtonsToMessageComponents(b [][]*config.Button) []discordgo.Message
 				Label: btn.Label,
 				URL:   btn.URL,
 				Style: discordgo.LinkButton,
-				Emoji: discordgo.ComponentEmoji{Name: btn.Emoji},
+				Emoji: &discordgo.ComponentEmoji{Name: btn.Emoji},
 			})
 		}
 		components = append(components, discordgo.ActionsRow{
