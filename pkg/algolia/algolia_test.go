@@ -17,5 +17,5 @@ func TestGetObject(t *testing.T) {
 	res, err := algolia2.GetObject(algolia2.NestJS, "1-https://docs.nestjs.com/standalone-applications")
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
-	assert.Equal(t, "https://docs.nestjs.com/standalone-applications#getting-started", res.URL)
+	assert.Equal(t, "https://docs.nestjs.com/standalone-applications", res.URL)
 }
