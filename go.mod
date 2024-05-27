@@ -12,7 +12,7 @@ require (
 	github.com/go-playground/validator/v10 v10.20.0
 	github.com/google/go-querystring v1.1.0
 	github.com/joho/godotenv v1.5.1
-	github.com/rs/zerolog v1.32.0
+	github.com/rs/zerolog v1.33.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.9.0
