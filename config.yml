@@ -202,6 +202,15 @@ commands:
     description: "Debug NestJS dependencies with environment variable"
     content: "./content/docs/nest-debug.md"
 
+  docs process-env-population:
+    description: "What to do when process.env is not populated"
+    content: "./content/docs/process-env-population.md"
+    buttons:
+      -
+        - label: "How to use the ConfigService"
+          url: "https://docs.nestjs.com/techniques/configuration#using-the-configservice"
+          emoji: "📖"
+
   docs providers-vs-imports:
     description: "Ensure accurate service/module listings"
     content: "./content/docs/providers-vs-imports.md"
