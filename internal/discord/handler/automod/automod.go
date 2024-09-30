@@ -17,7 +17,7 @@ type AutoMod struct {
 	userMap            map[UserId]map[ChannelId]Message
 	trackedChannelsIds []ChannelId
 	denyTTL            time.Duration
-	deniedList         *ristretto.Cache
+	deniedList         *ristretto.Cache[string, bool]
 }
 
 type Option struct {
@@ -26,7 +26,7 @@ type Option struct {
 }
 
 func NewAutoMod(opt Option) *AutoMod {
-	cache, err := ristretto.NewCache(&ristretto.Config{
+	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).
 		BufferItems: 64,      // number of keys per Get buffer.
