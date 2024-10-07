@@ -16,7 +16,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	github.com/tidwall/gjson v1.17.3
+	github.com/tidwall/gjson v1.18.0
 )
 
 require (
