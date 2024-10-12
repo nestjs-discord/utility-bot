@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"strings"
 )
 
@@ -14,14 +15,6 @@ func (a *AutoMod) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.Me
 		Components: a.generateAlertComponents(i),
 		Files:      a.generateAlertFiles(i),
 	}
-}
-
-func (a *AutoMod) getUsername(user *discordgo.User) string {
-	if user.Discriminator == "0" {
-		return user.Username
-	}
-
-	return user.Username + "#" + user.Discriminator
 }
 
 func (a *AutoMod) generateAlertContent() string {
@@ -73,7 +66,7 @@ func (a *AutoMod) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.Mess
 
 	embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 		Name:   "Username",
-		Value:  "`" + a.getUsername(i.Author) + "`",
+		Value:  "`" + util.FormatUsername(i.Author) + "`",
 		Inline: true,
 	})
 

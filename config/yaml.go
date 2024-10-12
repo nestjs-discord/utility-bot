@@ -4,7 +4,28 @@ type Yaml struct {
 	Moderators []string            `mapstructure:"moderators" validate:"required,min=1,dive,min=1"`
 	Ratelimit  Ratelimit           `mapstructure:"ratelimit" validate:"required"`
 	AutoMod    AutoMod             `mapstructure:"autoMod" validate:"required"`
+	Forms      map[string]Form     `mapstructure:"forms" validate:"required,min=1,dive"`
 	Commands   map[string]*Command `mapstructure:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
+}
+
+type Form struct {
+	ButtonLabel     string      `mapstructure:"buttonLabel" validate:"required,min=5"`
+	Title           string      `mapstructure:"modalTitle" validate:"required,min=10"`
+	ChannelId       string      `mapstructure:"channelId" validate:"required,min=5"`
+	ModChannelId    string      `mapstructure:"modChannelId" validate:"required,min=5"`
+	ModSkipApproval bool        `mapstructure:"modSkipApproval"`
+	Color           int         `mapstructure:"color" validate:"required"`
+	Footer          string      `mapstructure:"footer" validate:"required"`
+	Inputs          []FormInput `mapstructure:"inputs" validate:"required,min=1,max=10,dive"`
+}
+
+type FormInput struct {
+	Id          string `mapstructure:"id" validate:"required,min=5"`
+	Placeholder string `mapstructure:"placeholder" validate:"required,min=1,max=100"`
+	Multiline   bool   `mapstructure:"multiline"`
+	Min         int    `mapstructure:"min" validate:"min=0"`
+	Max         int    `mapstructure:"max" validate:"min=0,max=1000"`
+	Required    bool   `mapstructure:"required"`
 }
 
 type Ratelimit struct {

@@ -65,6 +65,94 @@ autoMod:
   # This option might be useful for temporary actions, such as deleting ongoing messages.
   denyTTL: 120 # Seconds
 
+
+# Text input documentation:
+# https://discord.com/developers/docs/interactions/message-components#text-inputs
+#
+# If the destination of the form submission (form.foo.channelId) is an announcement channel,
+# ensure the bot *explicitly* has the following permissions:
+#   - Send Messages
+#   - Manage Messages
+#   - Read Message History
+# Otherwise, the bot will panic and the container will enter a restart loop.
+# More details on announcement channels:
+# https://support.discord.com/hc/en-us/articles/360032008192-Announcement-Channels
+forms:
+  job-profiles: # Self-promotion
+    buttonLabel: "Post a new profile"
+    modalTitle: "Post a new profile"
+    channelId: 1294483543623335986 # prod: 1294483543623335986 | dev: 1294446757370925147
+    modChannelId: 1294488503744204860 # prod: 1294488503744204860 | dev: 1292911145883275356
+    modSkipApproval: false
+    color: 2600544 # dark green (#27ae60)
+    footer: "Details of this profile have not been verified, please do your own due diligence."
+    inputs:
+      - id: "about"
+        placeholder: "Shortly describe yourself!"
+        multiline: false
+        min: 15
+        max: 100
+        required: true
+      - id: "skills"
+        placeholder: "NestJS, Node.js, TypeScript, Golang, ..."
+        multiline: true
+        min: 2
+        max: 400
+        required: true
+      - id: "experiences"
+        placeholder: "Use bullet points (-) for better formatting."
+        multiline: true
+        min: 2
+        max: 600
+      - id: "location"
+        placeholder: "USA, New York - Remote"
+        min: 2
+        max: 50
+        required: true
+        multiline: false
+      - id: "links"
+        placeholder: "https://github.com/foo/bar\nhttps://your.personal-website.com/"
+        min: 0
+        max: 200
+        required: false
+        multiline: true
+
+  job-opportunities: # Job listing
+    buttonLabel: "Post a new opportunity"
+    modalTitle: "Post a new opportunity"
+    channelId: 1294483759189725265 # prod: 1294483759189725265 | dev: 1294446864036528231
+    modChannelId: 1294488539500777472 # prod: 1294488539500777472 | dev: 1292911220197953558
+    modSkipApproval: false
+    color: 14689102 # same as the official nestjs logo (#e0234e)
+    footer: "Details of this opportunity have not been verified, please do your own due diligence."
+    inputs:
+      - id: "title"
+        placeholder: "Senior Software Engineer"
+        min: 10
+        max: 100
+        multiline: false
+      - id: "compensation"
+        placeholder: "$50 per hour"
+        min: 5
+        max: 100
+        multiline: false
+      - id: "location"
+        placeholder: "USA, New York - Remote"
+        min: 5
+        max: 100
+        multiline: false
+      - id: "description"
+        placeholder: "We are seeking an engineer to assist with back-end development and server management."
+        min: 50
+        max: 1000
+        multiline: true
+      - id: "links"
+        placeholder: "https://company.com/jobs\nhttps://github.com/organization"
+        min: 10
+        max: 200
+        required: true
+        multiline: true
+
 #
 # This configuration block defines dynamic slash commands to be displayed to Discord users.
 #

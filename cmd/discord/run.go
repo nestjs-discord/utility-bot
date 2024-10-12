@@ -6,6 +6,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
+	"github.com/nestjs-discord/utility-bot/internal/discord/forms"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -36,6 +37,11 @@ var Run = &cobra.Command{
 		}
 
 		log.Info().Str("link", internalDiscord.GenerateInviteLink()).Msg("server invite")
+
+		err = forms.Init(session, config.GetYaml().Forms)
+		if err != nil {
+			return fmt.Errorf("failed to init forms: %s", err)
+		}
 
 		command.RegisterApplicationCommands(session)
 
