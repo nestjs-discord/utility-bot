@@ -130,21 +130,25 @@ forms:
         placeholder: "Senior Software Engineer"
         min: 10
         max: 100
+        required: true
         multiline: false
       - id: "compensation"
         placeholder: "$50 per hour"
         min: 5
         max: 100
+        required: true
         multiline: false
       - id: "location"
         placeholder: "USA, New York - Remote"
         min: 5
         max: 100
+        required: true
         multiline: false
       - id: "description"
         placeholder: "We are seeking an engineer to assist with back-end development and server management."
         min: 50
         max: 1000
+        required: true
         multiline: true
       - id: "links"
         placeholder: "https://company.com/jobs\nhttps://github.com/organization"
