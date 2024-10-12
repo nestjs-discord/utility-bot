@@ -18,11 +18,7 @@ func Init(session *discordgo.Session, forms map[string]config.Form) error {
 			return err
 		}
 
-		if len(messages) == 0 {
-			continue
-		}
-
-		if DoesHaveButtonComponentWithLabel(messages[0], form.ButtonLabel) {
+		if len(messages) != 0 && DoesHaveButtonComponentWithLabel(messages[0], form.ButtonLabel) {
 			continue
 		}
 
