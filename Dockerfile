@@ -1,5 +1,5 @@
 # Build stage for Golang application
-FROM golang:1.20.6-alpine AS build-stage
+FROM golang:1.23.2-alpine AS build-stage
 
 RUN apk update \
     && apk add --no-cache ca-certificates make \
