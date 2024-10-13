@@ -1,12 +1,28 @@
 package forms
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/dgraph-io/ristretto"
 	"github.com/nestjs-discord/utility-bot/config"
 )
 
+var ModActionsCache *ristretto.Cache[string, bool]
+
 // Init ensure the form channels always have interactive buttons as the last message.
 func Init(session *discordgo.Session, forms map[string]config.Form) error {
+	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
+		NumCounters: 1e7,     // number of keys to track frequency of (10M).
+		MaxCost:     1 << 30, // maximum cost of cache (1GB).
+		BufferItems: 64,      // number of keys per Get buffer.
+	})
+	if err != nil {
+		return fmt.Errorf("failed to create cache instance for mod actions: %w", err)
+	}
+	ModActionsCache = cache
+
+	//
+
 	limit := 1
 	beforeId := ""
 	afterId := ""

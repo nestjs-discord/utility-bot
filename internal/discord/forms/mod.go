@@ -2,12 +2,6 @@ package forms
 
 import "github.com/bwmarrin/discordgo"
 
-const (
-	ModAcceptBtnIdPrefix = "form-mod-accept-"
-	ModRejectBtnIdPrefix = "form-mod-reject-"
-	ModBanBtnIdPrefix    = "form-mod-ban-"
-)
-
 func GenerateModComponents(formId string, userId string) *discordgo.ActionsRow {
 	acceptBtn := discordgo.Button{
 		Label:    "Accept & Publish",

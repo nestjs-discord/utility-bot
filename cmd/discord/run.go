@@ -18,7 +18,7 @@ import (
 var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Starts the Discord bot",
-	PreRunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		err := cache.Content() // Cache Markdown content
 		if err != nil {
 			return err
@@ -28,9 +28,6 @@ var Run = &cobra.Command{
 
 		cache.InitAutoMod()
 
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
 		session, err := internalDiscord.NewSession()
 		if err != nil {
 			return fmt.Errorf("failed to create new Discord session: %s", err)

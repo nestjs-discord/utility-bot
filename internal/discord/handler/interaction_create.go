@@ -93,6 +93,25 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 	handleInteractionMessageComponentLock.Lock()
 	defer handleInteractionMessageComponentLock.Unlock()
 
+	// TODO: refactor this, it should only be called for the moderator actions, not the public interactive button!
+	cacheKey := i.Message.ID
+	cacheValue, cacheHit := forms.ModActionsCache.Get(cacheKey)
+	if cacheHit && cacheValue {
+		msg := "Race condition detected! 😅\n"
+		msg += "Another moderator has already handled this message."
+		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: msg,
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
+		})
+		return
+	}
+
+	cacheTtl := 30 * time.Second
+	forms.ModActionsCache.SetWithTTL(cacheKey, true, 1, cacheTtl)
+
 	data := i.MessageComponentData()
 
 	// Mod -> Accept button
