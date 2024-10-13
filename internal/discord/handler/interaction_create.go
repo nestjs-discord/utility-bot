@@ -52,11 +52,11 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 		Interface("options", i.ApplicationCommandData().Options).
 		Msg("event: interaction app command")
 
-	if checkRatelimit(userID) {
+	if checkRateLimit(userID) {
 		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: config.GetYaml().Ratelimit.Message,
+				Content: config.GetYaml().RateLimit.Message,
 				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
@@ -427,13 +427,13 @@ func handleInteractionApplicationCommandAutocomplete(s *discordgo.Session, i *di
 	}
 }
 
-func checkRatelimit(userID string) bool {
+func checkRateLimit(userID string) bool {
 	if util.IsUserModerator(userID) {
 		return false
 	}
 
-	cache.Ratelimit.IncrementUsage(userID)
+	cache.RateLimit.IncrementUsage(userID)
 
-	maxUsage := config.GetYaml().Ratelimit.Usage
-	return cache.Ratelimit.GetUsageCount(userID) > maxUsage
+	maxUsage := config.GetYaml().RateLimit.Usage
+	return cache.RateLimit.GetUsageCount(userID) > maxUsage
 }

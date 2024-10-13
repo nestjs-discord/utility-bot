@@ -24,7 +24,7 @@ var Run = &cobra.Command{
 			return err
 		}
 
-		cache.InitRatelimit(config.GetYaml().Ratelimit.TTL)
+		cache.InitRateLimit(config.GetYaml().RateLimit.TTL)
 
 		cache.InitAutoMod()
 

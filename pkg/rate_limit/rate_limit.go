@@ -1,15 +1,15 @@
-// Package ratelimit provides a map-based implementation of a TTL (Time to Live) rate limiter.
+// Package rate_limit provides a map-based implementation of a TTL (Time to Live) rate limiter.
 // It allows you to track usage count for each key and automatically evict stale entries from the map.
 //
 // Usage:
 //
-//	m := ratelimit.New(60) // Creates a new TTLMap with max TTL of 60 seconds
+//	m := rate_limit.New(60) // Creates a new TTLMap with max TTL of 60 seconds
 //	m.IncrementUsage("key") // Increments usage count for "key"
 //	count := m.GetUsageCount("key") // Gets the current usage count for "key"
 //
 // The TTLMap instance created with New() will automatically evict entries that have not been accessed for more than
 // the specified TTL. This eviction process is done asynchronously by a goroutine.
-package ratelimit
+package rate_limit
 
 import (
 	"sync"

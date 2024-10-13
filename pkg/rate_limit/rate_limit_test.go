@@ -1,7 +1,7 @@
-package ratelimit_test
+package rate_limit_test
 
 import (
-	"github.com/nestjs-discord/utility-bot/pkg/ratelimit"
+	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -9,7 +9,7 @@ import (
 
 func TestTTLMap(t *testing.T) {
 	// Create a new TTLMap with maxTTL 1 second
-	m := ratelimit.New(1)
+	m := rate_limit.New(1)
 
 	// Test IncrementUsage and Get methods
 	m.IncrementUsage("key1")
