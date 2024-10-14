@@ -66,7 +66,7 @@ type YamlAutoMod struct {
 	Enabled                 bool   `yaml:"enabled" validate:"boolean"`
 	ModeratorsBypass        bool   `yaml:"moderatorsBypass" validate:"boolean"`
 	LogChannelId            string `yaml:"logChannelId" validate:"required,min=1"`
-	LogMentionRoleId        string `yaml:"logMentionRoleId"`
+	LogMentionRoleId        string `yaml:"logMentionRoleId"` // TODO: remove this feature (not being used anymore)
 	MessageTTL              int    `yaml:"messageTTL" validate:"required,min=1"`
 	MaxChannelsLimitPerUser int    `yaml:"maxChannelsLimitPerUser" validate:"required,min=1"`
 	DenyTTL                 int    `yaml:"denyTTL" validate:"required,min=1"`

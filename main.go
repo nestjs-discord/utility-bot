@@ -7,6 +7,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// TODO: remove this file
+
 func main() {
 	_ = godotenv.Load()
 	logger.Register()
