@@ -2,6 +2,8 @@ package config
 
 import "github.com/bwmarrin/discordgo"
 
+// TODO: remove this file after migrating to "bot/permission"
+
 // BotPermissions represents the permissions required by the bot.
 const BotPermissions int = discordgo.PermissionViewChannel |
 	discordgo.PermissionSendMessages |

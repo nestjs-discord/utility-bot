@@ -1,13 +1,25 @@
 package logger
 
 import (
+	"log/slog"
 	"os"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
+func NewWithSubsystem(s ...string) *slog.Logger {
+	return slog.With(slog.String("subsystem", strings.Join(s, "/")))
+}
+
 func Register(debug bool) {
+	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug, // TODO: set log level from config
+	})
+	logger := slog.New(handler)
+	slog.SetDefault(logger)
+
 	// UNIX Time is faster and smaller than most timestamps
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
