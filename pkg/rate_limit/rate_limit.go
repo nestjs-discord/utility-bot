@@ -31,7 +31,7 @@ type TTLMap struct {
 // New returns a new TTLMap instance with a maximum TTL of maxTTL seconds.
 // The returned instance automatically evicts stale entries every second.
 func New(maxTTL int) (m *TTLMap) {
-	m = &TTLMap{m: make(map[string]*item, 0)}
+	m = &TTLMap{m: make(map[string]*item)}
 
 	go func() {
 		for now := range time.Tick(time.Second) {

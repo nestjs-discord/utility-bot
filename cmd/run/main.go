@@ -11,7 +11,6 @@ import (
 	"syscall"
 
 	"github.com/nestjs-discord/utility-bot/bot"
-	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/forms"
@@ -50,9 +49,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	cache.InitRateLimit(config.Yaml().RateLimit.TTL)
-
 	cache.InitAutoMod()
+
+	cache.Initialize(yamlCfg.RateLimit)
 
 	b, err := bot.NewBot(discordCfg, nil) // TODO: init handler
 	if err != nil {
