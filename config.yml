@@ -51,10 +51,6 @@ autoMod:
   # The Discord channel ID where auto-mod log messages will be sent.
   logChannelId: "918987870197395577"
 
-  # The role ID to mention when auto-mod log messages are sent.
-  # This role will be pinged in log messages to alert specific users about auto-moderation actions.
-  logMentionRoleId: ""
-
   # Time-to-live for caching each message in memory (in seconds).
   # Messages older than this duration will be removed from the cache.
   messageTTL: 60 # Seconds
