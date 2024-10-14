@@ -3,7 +3,6 @@ package automod
 import (
 	"fmt"
 	"github.com/dgraph-io/ristretto"
-	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"sync"
 	"time"
@@ -15,16 +14,12 @@ type (
 )
 
 type AutoMod struct {
+	cfg                yaml.AutoMod
 	sync               sync.RWMutex
 	userMap            map[UserId]map[ChannelId]Message
-	trackedChannelsIds []ChannelId
+	trackedChannelsIds []ChannelId // TODO: remove this in favour of the `cfg.channelIds` array
 	denyTTL            time.Duration
 	deniedList         *ristretto.Cache[string, bool]
-}
-
-type Option struct {
-	MessageTTL int
-	DenyTTL    int
 }
 
 func NewAutoMod(cfg yaml.AutoMod) (*AutoMod, error) {
@@ -38,6 +33,7 @@ func NewAutoMod(cfg yaml.AutoMod) (*AutoMod, error) {
 	}
 
 	a := &AutoMod{
+		cfg:        cfg,
 		sync:       sync.RWMutex{},
 		userMap:    make(map[UserId]map[ChannelId]Message, 0),
 		denyTTL:    time.Duration(cfg.DenyTTL) * time.Second,
@@ -86,5 +82,5 @@ func (a *AutoMod) getChannelsLengthByUserId(id UserId) int {
 }
 
 func (a *AutoMod) IsUserWithinMaxChannelsLimit(userId UserId) bool {
-	return a.getChannelsLengthByUserId(userId) <= config.Yaml().AutoMod.MaxChannelsLimitPerUser
+	return a.getChannelsLengthByUserId(userId) <= a.cfg.MaxChannelsLimitPerUser
 }
