@@ -1,19 +1,14 @@
 package automod
 
-import "github.com/bwmarrin/discordgo"
-
-func (a *AutoMod) SetChannels(channels []*discordgo.Channel) { // TODO: we should load this from the yaml config
-	for _, channel := range channels {
-		if channel.Type != discordgo.ChannelTypeGuildText {
-			continue
-		}
-		a.trackedChannelsIds = append(a.trackedChannelsIds, ChannelId(channel.ID))
+func (a *AutoMod) setChannels(channelIds []string) {
+	for _, id := range channelIds {
+		a.trackedChannelsIds = append(a.trackedChannelsIds, ChannelId(id))
 	}
 }
 
 func (a *AutoMod) IsChannelIdTrackable(channelId ChannelId) bool {
-	for _, trackedID := range a.trackedChannelsIds {
-		if trackedID == channelId {
+	for _, cid := range a.trackedChannelsIds {
+		if cid == channelId {
 			return true
 		}
 	}

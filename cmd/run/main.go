@@ -2,8 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/nestjs-discord/utility-bot/config/env"
-	"github.com/nestjs-discord/utility-bot/config/yaml"
+	"github.com/nestjs-discord/utility-bot/logger"
 	"log"
 	"log/slog"
 	"os"
@@ -11,10 +10,13 @@ import (
 	"syscall"
 
 	"github.com/nestjs-discord/utility-bot/bot"
+	"github.com/nestjs-discord/utility-bot/bot/automod"
+	"github.com/nestjs-discord/utility-bot/bot/handler"
+	"github.com/nestjs-discord/utility-bot/config/env"
+	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/forms"
-	"github.com/nestjs-discord/utility-bot/internal/logger"
 )
 
 var (
@@ -49,11 +51,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	cache.InitAutoMod()
-
 	cache.Initialize(yamlCfg.RateLimit)
 
-	b, err := bot.NewBot(discordCfg, nil) // TODO: init handler
+	iAutoMod, err := automod.NewAutoMod(yamlCfg.AutoMod)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	iHandler := handler.NewHandler(iAutoMod)
+	b, err := bot.NewBot(discordCfg, iHandler)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,13 +72,6 @@ func main() {
 	}
 
 	command.RegisterApplicationCommands(session)
-
-	// Fetch all the channels
-	channels, err := session.GuildChannels(discordCfg.GuildId)
-	if err != nil {
-		log.Fatalf("failed to fetch guild channels: %s", err)
-	}
-	cache.AutoMod.SetChannels(channels)
 
 	// Open a websocket connection to Discord and begin listening
 	err = session.Open()

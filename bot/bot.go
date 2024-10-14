@@ -4,7 +4,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
 	"github.com/nestjs-discord/utility-bot/config/env"
-	"github.com/nestjs-discord/utility-bot/internal/logger"
+	"github.com/nestjs-discord/utility-bot/logger"
 	"log/slog"
 )
 

@@ -1,8 +1,10 @@
 package automod
 
 import (
+	"fmt"
 	"github.com/dgraph-io/ristretto"
 	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"sync"
 	"time"
 )
@@ -25,26 +27,28 @@ type Option struct {
 	DenyTTL    int
 }
 
-func NewAutoMod(opt Option) *AutoMod {
+func NewAutoMod(cfg yaml.AutoMod) (*AutoMod, error) {
 	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).
 		BufferItems: 64,      // number of keys per Get buffer.
 	})
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("failed to init automod cache: %s", err)
 	}
 
 	a := &AutoMod{
 		sync:       sync.RWMutex{},
 		userMap:    make(map[UserId]map[ChannelId]Message, 0),
-		denyTTL:    time.Duration(opt.DenyTTL) * time.Second,
+		denyTTL:    time.Duration(cfg.DenyTTL) * time.Second,
 		deniedList: cache,
 	}
 
-	go a.backgroundCleaner(opt.MessageTTL)
+	go a.backgroundCleaner(cfg.MessageTTL)
 
-	return a
+	a.setChannels(cfg.ChannelIds)
+
+	return a, nil
 }
 
 func (a *AutoMod) backgroundCleaner(ttl int) {

@@ -4,7 +4,7 @@ import (
 	"flag"
 	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
-	"github.com/nestjs-discord/utility-bot/internal/logger"
+	"github.com/nestjs-discord/utility-bot/logger"
 	"log"
 	"log/slog"
 )
