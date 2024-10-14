@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+var YamlFile = "./config.yml"
+
 type YamlConfig struct {
 	Moderators YamlModerators `yaml:"moderators" validate:"required,min=1,dive,min=1"`
 	RateLimit  YamlRateLimit  `yaml:"rateLimit" validate:"required"`

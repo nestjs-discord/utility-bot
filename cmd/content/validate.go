@@ -1,6 +1,7 @@
 package content
 
 import (
+	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"log/slog"
 
@@ -16,7 +17,12 @@ var Validate = &cobra.Command{
 		slog.SetLogLoggerLevel(slog.LevelDebug)
 		// TODO: make sure slog is using text handler and the output of this commands looks readable
 
-		err := cache.Content()
+		ymlCfg, err := config.NewYamlConfig(config.YamlFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = cache.Content(ymlCfg.Commands) // TODO: avoid global instance
 		if err != nil {
 			log.Fatal(err)
 		}

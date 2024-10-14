@@ -18,17 +18,17 @@ var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Starts the Discord bot",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := cache.Content() // Cache Markdown content // TODO: avoid global instance
-		if err != nil {
-			return err
-		}
-
 		botCfg, err := config.NewBotConfig()
 		if err != nil {
 			return err
 		}
 
-		yamlCfg, err := config.NewYamlConfig("config.yml")
+		yamlCfg, err := config.NewYamlConfig(config.YamlFile)
+		if err != nil {
+			return err
+		}
+
+		err = cache.Content(yamlCfg.Commands) // Cache Markdown content // TODO: avoid global instance
 		if err != nil {
 			return err
 		}
