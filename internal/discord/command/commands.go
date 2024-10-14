@@ -3,6 +3,7 @@ package command
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	dont_ping_mods "github.com/nestjs-discord/utility-bot/internal/discord/command/dont-ping-mods"
@@ -27,8 +28,8 @@ var (
 	}
 )
 
-type subCommands = map[string]map[string]config.YamlCommand
-type normalCommands = map[string]config.YamlCommand
+type subCommands = map[string]map[string]yaml.Command
+type normalCommands = map[string]yaml.Command
 
 func RegisterApplicationCommands(s *discordgo.Session) {
 	normalCommands, subCommands := generateCommandsToRegister()
@@ -47,7 +48,7 @@ func RegisterApplicationCommands(s *discordgo.Session) {
 	log.Info().Int("len", len(commands)).Msg("registered slash commands")
 }
 
-func generateDynamicCommands(normalCommands map[string]config.YamlCommand) (commands []*discordgo.ApplicationCommand) {
+func generateDynamicCommands(normalCommands map[string]yaml.Command) (commands []*discordgo.ApplicationCommand) {
 	for k, v := range normalCommands {
 		permission := calculateCommandPermission(v)
 
@@ -110,7 +111,7 @@ func generateCommandsToRegister() (normalCommands, subCommands) {
 		subCmd := parts[1]
 
 		if subCommands[root] == nil {
-			subCommands[root] = make(map[string]config.YamlCommand)
+			subCommands[root] = make(map[string]yaml.Command)
 		}
 
 		subCommands[root][subCmd] = cmdData
@@ -124,11 +125,11 @@ func generateCommandsToRegister() (normalCommands, subCommands) {
 // Otherwise, the function returns the BotDefaultContentPermission constant.
 //
 // Parameters:
-// - cmdData: a pointer to a config.YamlCommand object representing the command to calculate permission for.
+// - cmdData: a pointer to a config.Command object representing the command to calculate permission for.
 //
 // Returns:
 // - An int64 representing the calculated content permission level.
-func calculateCommandPermission(cmdData config.YamlCommand) int64 {
+func calculateCommandPermission(cmdData yaml.Command) int64 {
 	if cmdData.Protected {
 		return config.BotProtectedContentPermission
 	}

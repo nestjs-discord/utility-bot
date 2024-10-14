@@ -1,22 +1,28 @@
 package main
 
 import (
-	"github.com/nestjs-discord/utility-bot/config"
+	"flag"
+	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
+	"github.com/nestjs-discord/utility-bot/internal/logger"
 	"log"
 	"log/slog"
 )
 
-func main() {
-	slog.SetLogLoggerLevel(slog.LevelDebug)
-	// TODO: make sure slog is using text handler and the output of this commands looks readable
+var yamlConfigPath = flag.String("yaml-config-path", "./config.yml", "")
 
-	ymlCfg, err := config.NewYamlConfig(config.YamlFile)
+func main() {
+	err := logger.Initialize("dev")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = cache.Content(ymlCfg.Commands) // TODO: avoid global instance
+	ymlCfg, err := yaml.NewConfig(*yamlConfigPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = cache.MarkdownContent(ymlCfg.Commands) // TODO: avoid global instance
 	if err != nil {
 		log.Fatal(err)
 	}

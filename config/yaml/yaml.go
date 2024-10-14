@@ -1,0 +1,86 @@
+package yaml
+
+import (
+	"fmt"
+	"gopkg.in/yaml.v3"
+	"os"
+)
+
+type Config struct {
+	Moderators Moderators `yaml:"moderators" validate:"required,min=1,dive,min=1"`
+	RateLimit  RateLimit  `yaml:"rateLimit" validate:"required"`
+	AutoMod    AutoMod    `yaml:"autoMod" validate:"required"`
+	Forms      Forms      `yaml:"forms" validate:"required,min=1,dive"`
+	Commands   Commands   `yaml:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
+}
+
+func NewConfig(path string) (*Config, error) {
+	yamlFile, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read the yaml config: %s", err)
+	}
+
+	var data Config
+	err = yaml.Unmarshal(yamlFile, &data)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal the yaml config: %s", err)
+	}
+
+	// TODO: manual validation
+
+	return &data, nil
+}
+
+type Moderators []string
+type Forms map[string]Form
+
+type Form struct {
+	ButtonLabel     string      `yaml:"buttonLabel" validate:"required,min=5"`
+	Title           string      `yaml:"modalTitle" validate:"required,min=10"`
+	ChannelId       string      `yaml:"channelId" validate:"required,min=5"`
+	ModChannelId    string      `yaml:"modChannelId" validate:"required,min=5"`
+	ModSkipApproval bool        `yaml:"modSkipApproval"`
+	Color           int         `yaml:"color" validate:"required"`
+	Footer          string      `yaml:"footer" validate:"required"`
+	Inputs          []FormInput `yaml:"inputs" validate:"required,min=1,max=10,dive"`
+}
+
+type FormInput struct {
+	Id          string `yaml:"id" validate:"required,min=5"`
+	Placeholder string `yaml:"placeholder" validate:"required,min=1,max=100"`
+	Multiline   bool   `yaml:"multiline"`
+	Min         int    `yaml:"min" validate:"min=0"`
+	Max         int    `yaml:"max" validate:"min=0,max=1000"`
+	Required    bool   `yaml:"required"`
+}
+
+type RateLimit struct {
+	TTL     int    `yaml:"ttl" validate:"required,min=1"`
+	Usage   int    `yaml:"usage" validate:"required,min=2"`
+	Message string `yaml:"message" validate:"required,min=3"`
+}
+
+type AutoMod struct {
+	Enabled                 bool   `yaml:"enabled" validate:"boolean"`
+	ModeratorsBypass        bool   `yaml:"moderatorsBypass" validate:"boolean"`
+	LogChannelId            string `yaml:"logChannelId" validate:"required,min=1"`
+	LogMentionRoleId        string `yaml:"logMentionRoleId"` // TODO: remove this feature (not being used anymore)
+	MessageTTL              int    `yaml:"messageTTL" validate:"required,min=1"`
+	MaxChannelsLimitPerUser int    `yaml:"maxChannelsLimitPerUser" validate:"required,min=1"`
+	DenyTTL                 int    `yaml:"denyTTL" validate:"required,min=1"`
+}
+
+type Commands map[string]Command
+
+type Command struct {
+	Description string             `yaml:"description" validate:"required,min=1,max=100"`
+	Content     string             `yaml:"content" validate:"required,min=1"`
+	Protected   bool               `yaml:"protected" validate:"boolean"`
+	Buttons     [][]*CommandButton `yaml:"buttons" validate:"min=0,max=8,dive,min=1,max=4,dive"`
+}
+
+type CommandButton struct {
+	Label string `yaml:"label" validate:"required,min=3,max=40"`
+	URL   string `yaml:"url" validate:"required,url,min=3"`
+	Emoji string `yaml:"emoji" validate:"regexp=^[\p{Emoji}]$"`
+}

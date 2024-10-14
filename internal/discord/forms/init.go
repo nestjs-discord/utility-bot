@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/dgraph-io/ristretto"
-	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/config/yaml"
 )
 
 var ModActionsCache *ristretto.Cache[string, bool]
 
 // Init ensure the form channels always have interactive buttons as the last message.
-func Init(cfg config.YamlForms, session *discordgo.Session) error {
+func Init(cfg yaml.Forms, session *discordgo.Session) error {
 	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).

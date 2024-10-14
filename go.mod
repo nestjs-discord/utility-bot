@@ -1,6 +1,8 @@
 module github.com/nestjs-discord/utility-bot
 
-go 1.20
+go 1.21
+
+toolchain go1.23.0
 
 require (
 	github.com/bwmarrin/discordgo v0.28.1
@@ -8,6 +10,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/go-querystring v1.1.0
 	github.com/joho/godotenv v1.5.1
+	github.com/lmittmann/tint v1.0.5
 	github.com/rs/zerolog v1.33.0
 	github.com/samber/lo v1.47.0
 	github.com/stretchr/testify v1.9.0

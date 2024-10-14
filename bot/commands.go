@@ -8,8 +8,8 @@ import (
 func (b *Bot) CleanApplicationCommands() error {
 	emptyCmd := make([]*discordgo.ApplicationCommand, 0)
 	_, err := b.session.ApplicationCommandBulkOverwrite(
-		b.cfg.AppId,
-		b.cfg.GuildId,
+		b.discordCfg.AppId,
+		b.discordCfg.GuildId,
 		emptyCmd,
 	)
 	if err != nil {

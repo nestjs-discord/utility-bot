@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"log/slog"
 
 	"fmt"
@@ -12,8 +12,8 @@ import (
 // DynamicContent is a map of command key to the markdown content
 var DynamicContent = make(map[string]string) // TODO: use this in a private struct + where the dynamic command is being handled
 
-// Content will cache Markdown content from the disk onto the memory
-func Content(commands config.YamlCommands) error {
+// MarkdownContent will cache Markdown content from the disk onto the memory
+func MarkdownContent(commands yaml.Commands) error {
 	charLimit := 2000
 
 	for _, c := range commands {
@@ -34,9 +34,12 @@ func Content(commands config.YamlCommands) error {
 			return fmt.Errorf("file '%v' contains too many characters, expected maximum of %v but received %v", p, charLimit, len(c.Content))
 		}
 
-		DynamicContent[c.Content] = string(data)
+		strData := string(data)
+
+		DynamicContent[c.Content] = strData
 
 		slog.Debug("cached file content",
+			slog.Int("char-len", len(strData)),
 			slog.String("path", p),
 		)
 	}

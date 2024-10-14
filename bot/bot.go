@@ -3,21 +3,21 @@ package bot
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
-	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/config/env"
 	"github.com/nestjs-discord/utility-bot/internal/logger"
 	"log/slog"
 )
 
 type Bot struct {
-	cfg     *config.BotConfig
-	session *discordgo.Session
-	logger  *slog.Logger
+	discordCfg *env.DiscordConfig
+	session    *discordgo.Session
+	logger     *slog.Logger
 }
 
-func NewBot(cfg *config.BotConfig, handler *handler.Handler) (*Bot, error) {
+func NewBot(discordCfg *env.DiscordConfig, handler *handler.Handler) (*Bot, error) {
 	bot := &Bot{
-		cfg:    cfg,
-		logger: logger.NewWithSubsystem("bot"),
+		discordCfg: discordCfg,
+		logger:     logger.NewWithSubsystem("bot"),
 	}
 
 	err := bot.newSession()

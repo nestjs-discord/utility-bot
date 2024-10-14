@@ -1,17 +1,17 @@
-package config
+package env
 
 import (
 	"errors"
 	"os"
 )
 
-type BotConfig struct {
+type DiscordConfig struct {
 	Token   string
 	AppId   string
 	GuildId string
 }
 
-func NewBotConfig() (*BotConfig, error) {
+func NewDiscordConfig() (*DiscordConfig, error) {
 	token := os.Getenv("DISCORD_BOT_TOKEN")
 	if token == "" {
 		return nil, errors.New("DISCORD_BOT_TOKEN environment variable not set")
@@ -27,7 +27,7 @@ func NewBotConfig() (*BotConfig, error) {
 		return nil, errors.New("DISCORD_GUILD_ID environment variable not set")
 	}
 
-	return &BotConfig{
+	return &DiscordConfig{
 		Token:   token,
 		AppId:   appId,
 		GuildId: guildId,

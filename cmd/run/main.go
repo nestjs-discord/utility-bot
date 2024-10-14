@@ -1,35 +1,51 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
+	"flag"
+	"github.com/nestjs-discord/utility-bot/config/env"
+	"github.com/nestjs-discord/utility-bot/config/yaml"
+	"log"
+	"log/slog"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/forms"
 	"github.com/nestjs-discord/utility-bot/internal/logger"
-	"log"
-	"log/slog"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
+var (
+	stage          = flag.String("stage", "dev", "prod,dev")
+	yamlConfigPath = flag.String("yaml-config-path", "./config.yml", "")
+)
+
+func init() {
+	flag.Parse()
+
+	err := logger.Initialize(*stage)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
-	_ = godotenv.Load()
-	logger.Register()
-
-	botCfg, err := config.NewBotConfig()
+	// Environment variables
+	discordCfg, err := env.NewDiscordConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	yamlCfg, err := config.NewYamlConfig(config.YamlFile)
+	// Yaml configuration
+	yamlCfg, err := yaml.NewConfig(*yamlConfigPath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = cache.Content(yamlCfg.Commands) // Cache Markdown content // TODO: avoid global instance
+	err = cache.MarkdownContent(yamlCfg.Commands) // TODO: avoid global instance
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +54,7 @@ func main() {
 
 	cache.InitAutoMod()
 
-	b, err := bot.NewBot(botCfg, nil) // TODO: init handler
+	b, err := bot.NewBot(discordCfg, nil) // TODO: init handler
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,7 +69,7 @@ func main() {
 	command.RegisterApplicationCommands(session)
 
 	// Fetch all the channels
-	channels, err := session.GuildChannels(botCfg.GuildId)
+	channels, err := session.GuildChannels(discordCfg.GuildId)
 	if err != nil {
 		log.Fatalf("failed to fetch guild channels: %s", err)
 	}
@@ -70,13 +86,15 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)
 	signalReceived := <-sc
 
-	slog.Info("shutting down",
+	slog.Info("signal received",
 		slog.String("signal", signalReceived.String()),
 	)
 
 	// Cleanly close down the Discord session
 	err = session.Close()
 	if err != nil {
-		log.Fatalf("failed to close Discord connection: %v", err)
+		log.Fatalf("unable to close the session: %v", err)
 	}
+
+	slog.Info("shutdown completed")
 }

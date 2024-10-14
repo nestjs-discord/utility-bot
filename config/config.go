@@ -1,9 +1,9 @@
 package config
 
-// TODO: remove
+import "github.com/nestjs-discord/utility-bot/config/yaml"
 
-var c YamlConfig
+var c yaml.Config // TODO: remove
 
-func Yaml() *YamlConfig {
+func Yaml() *yaml.Config { // TODO: remove
 	return &c
 }

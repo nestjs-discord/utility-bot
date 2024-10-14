@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -74,7 +75,7 @@ func normalizeInteractionData(i *discordgo.InteractionCreate) (string, []*discor
 	return name, options
 }
 
-func convertButtonsToMessageComponents(b [][]*config.YamlCommandButton) []discordgo.MessageComponent {
+func convertButtonsToMessageComponents(b [][]*yaml.CommandButton) []discordgo.MessageComponent {
 	var components []discordgo.MessageComponent
 	for _, row := range b {
 		componentsInRow := make([]discordgo.MessageComponent, 0, len(row))

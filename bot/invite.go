@@ -13,7 +13,7 @@ type inviteLinkQuery struct {
 
 func (b *Bot) logServerInviteLink() error {
 	qs := inviteLinkQuery{
-		ClientID:    b.cfg.AppId,
+		ClientID:    b.discordCfg.AppId,
 		Permissions: permission,
 		Scope:       "bot applications.commands",
 	}

@@ -7,7 +7,7 @@ import (
 
 // newSession creates a new Discord session with the provided token.
 func (b *Bot) newSession() error {
-	session, err := discordgo.New("Bot " + b.cfg.Token)
+	session, err := discordgo.New("Bot " + b.discordCfg.Token)
 	if err != nil {
 		return fmt.Errorf("unable to create the session: %v", err)
 	}

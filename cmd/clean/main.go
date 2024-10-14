@@ -2,18 +2,18 @@ package main
 
 import (
 	"github.com/nestjs-discord/utility-bot/bot"
-	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/config/env"
 	"log"
 )
 
 func main() {
-	botCfg, err := config.NewBotConfig()
+	discordCfg, err := env.NewDiscordConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// handler := handler.NewHandler()
-	b, err := bot.NewBot(botCfg, nil)
+	b, err := bot.NewBot(discordCfg, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
