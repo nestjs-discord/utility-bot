@@ -2,7 +2,10 @@ package main
 
 import (
 	"flag"
+	"github.com/nestjs-discord/utility-bot/bot/forms"
+	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/logger"
+	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 	"log"
 	"log/slog"
 	"os"
@@ -14,9 +17,6 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/handler"
 	"github.com/nestjs-discord/utility-bot/config/env"
 	"github.com/nestjs-discord/utility-bot/config/yaml"
-	"github.com/nestjs-discord/utility-bot/internal/cache"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command"
-	"github.com/nestjs-discord/utility-bot/internal/discord/forms"
 )
 
 var (
@@ -40,8 +40,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Yaml configuration
+	// YAML configuration
 	yamlCfg, err := yaml.NewConfig(*yamlConfigPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	b, err := bot.NewBot(discordCfg)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,30 +56,33 @@ func main() {
 		log.Fatal(err)
 	}
 
-	cache.Initialize(yamlCfg.RateLimit)
-
+	iRateLimit := rate_limit.New(yamlCfg.RateLimit.TTL)
 	iAutoMod, err := automod.NewAutoMod(yamlCfg.AutoMod)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	iHandler := handler.NewHandler(iAutoMod)
-	b, err := bot.NewBot(discordCfg, iHandler)
+	iForms, err := forms.NewForms(yamlCfg.Forms, b.Session()) // TODO: find a way not to pass the session
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	session := b.Session() // TODO: remove?
+	b.ApplyHandler(
+		handler.NewHandler(
+			iRateLimit,
+			iAutoMod,
+			iForms,
+		),
+	)
 
-	err = forms.Init(yamlCfg.Forms, session)
+	// command.RegisterApplicationCommands(b.Session()) // TODO: move this to the method below
+	err = b.RegisterApplicationCommands()
 	if err != nil {
-		log.Fatalf("failed to init forms: %s", err)
+		log.Fatal(err)
 	}
 
-	command.RegisterApplicationCommands(session)
-
 	// Open a websocket connection to Discord and begin listening
-	err = session.Open()
+	err = b.Open()
 	if err != nil {
 		log.Fatalf("failed to open Discord connection: %v", err)
 	}
@@ -89,7 +97,7 @@ func main() {
 	)
 
 	// Cleanly close down the Discord session
-	err = session.Close()
+	err = b.Close()
 	if err != nil {
 		log.Fatalf("unable to close the session: %v", err)
 	}

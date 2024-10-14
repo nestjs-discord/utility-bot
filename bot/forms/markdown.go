@@ -9,7 +9,7 @@ import (
 // Example:
 //
 //	https://foo.bar/x/y -> [foo.bar](<https://foo.bar/x/y>)
-func ConvertLinksToHyperlinks(input string) string {
+func ConvertLinksToHyperlinks(input string) string { // TODO: make this a private (method)
 	// Regular expression to match URLs
 	urlRegex := `https?://[^\s]+`
 	re := regexp.MustCompile(urlRegex)

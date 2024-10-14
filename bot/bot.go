@@ -14,7 +14,7 @@ type Bot struct {
 	logger     *slog.Logger
 }
 
-func NewBot(discordCfg *env.DiscordConfig, handler *handler.Handler) (*Bot, error) {
+func NewBot(discordCfg *env.DiscordConfig) (*Bot, error) {
 	bot := &Bot{
 		discordCfg: discordCfg,
 		logger:     logger.NewWithSubsystem("bot"),
@@ -25,8 +25,6 @@ func NewBot(discordCfg *env.DiscordConfig, handler *handler.Handler) (*Bot, erro
 		return nil, err
 	}
 
-	bot.applyHandler(handler)
-
 	err = bot.logServerInviteLink()
 	if err != nil {
 		return nil, err
@@ -35,7 +33,7 @@ func NewBot(discordCfg *env.DiscordConfig, handler *handler.Handler) (*Bot, erro
 	return bot, nil
 }
 
-func (b *Bot) applyHandler(h *handler.Handler) {
+func (b *Bot) ApplyHandler(h *handler.Handler) {
 	b.session.AddHandler(h.Ready)
 	b.session.AddHandler(h.InteractionCreate)
 	b.session.AddHandler(h.MessageCreate)

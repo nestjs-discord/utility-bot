@@ -1,12 +1,7 @@
 package cache
 
 import (
-	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 )
 
-var RateLimit *rate_limit.TTLMap
-
-func Initialize(cfg yaml.RateLimit) {
-	RateLimit = rate_limit.New(cfg.TTL)
-}
+var RateLimit *rate_limit.TTLMap // TODO: remove after replacing it with the one in the handler struct
