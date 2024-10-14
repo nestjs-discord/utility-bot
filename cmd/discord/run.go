@@ -51,9 +51,6 @@ var Run = &cobra.Command{
 
 		command.RegisterApplicationCommands(session)
 
-		// We only care about receiving message events
-		session.Identify.Intents = config.BotIntents
-
 		// Fetch all the channels
 		channels, err := session.GuildChannels(botCfg.GuildId)
 		if err != nil {
