@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+// TODO: rename this package to "google"
+
 var client = &http.Client{
 	Timeout: 2 * time.Second,
 	Transport: &http.Transport{

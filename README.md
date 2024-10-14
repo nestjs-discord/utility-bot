@@ -53,6 +53,19 @@ The following environment variables are required, and the rest of the configurat
 - `DISCORD_BOT_TOKEN`
 - `DISCORD_GUILD_ID`
 
+## Running
+
+```shell
+# validating the markdown content on the disk (to be used in CI/CD)
+go run cmd/validate/main.go
+
+# launching the discord bot
+go run cmd/run/main.go
+
+# cleaning the registered application commands on the server (to ease development)
+go run cmd/clean/main.go
+```
+
 ## How we handle incoming Discord updates
 
 The utility bot application listens for incoming Discord updates,
