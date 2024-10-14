@@ -9,7 +9,7 @@ var AutoMod *automod.AutoMod
 
 func InitAutoMod() {
 	AutoMod = automod.NewAutoMod(automod.Option{
-		MessageTTL: config.GetYaml().AutoMod.MessageTTL,
-		DenyTTL:    config.GetYaml().AutoMod.DenyTTL,
+		MessageTTL: config.Yaml().AutoMod.MessageTTL,
+		DenyTTL:    config.Yaml().AutoMod.DenyTTL,
 	})
 }

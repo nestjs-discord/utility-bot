@@ -2,7 +2,6 @@ package discord
 
 import (
 	"github.com/nestjs-discord/utility-bot/bot"
-	"github.com/nestjs-discord/utility-bot/bot/handler"
 	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/spf13/cobra"
 )
@@ -16,8 +15,8 @@ var Clean = &cobra.Command{
 			return err
 		}
 
-		handler := handler.NewHandler()
-		bot, err := bot.NewBot(botCfg, handler)
+		// handler := handler.NewHandler()
+		bot, err := bot.NewBot(botCfg, nil)
 		if err != nil {
 			return err
 		}

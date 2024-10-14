@@ -27,8 +27,8 @@ var (
 	}
 )
 
-type subCommands = map[string]map[string]*config.Command
-type normalCommands = map[string]*config.Command
+type subCommands = map[string]map[string]config.YamlCommand
+type normalCommands = map[string]config.YamlCommand
 
 func RegisterApplicationCommands(s *discordgo.Session) {
 	normalCommands, subCommands := generateCommandsToRegister()
@@ -36,7 +36,9 @@ func RegisterApplicationCommands(s *discordgo.Session) {
 	commands = append(commands, generateDynamicCommands(normalCommands)...)
 	commands = append(commands, generateDynamicSubcommands(subCommands)...)
 
-	_, err := s.ApplicationCommandBulkOverwrite(config.GetAppID(), config.GetGuildID(), commands)
+	appId := ""   // TODO: load from the bot config
+	guildId := "" // TODO: load from the bot config
+	_, err := s.ApplicationCommandBulkOverwrite(appId, guildId, commands)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to bulk overwrite application commands")
 		return
@@ -45,7 +47,7 @@ func RegisterApplicationCommands(s *discordgo.Session) {
 	log.Info().Int("len", len(commands)).Msg("registered slash commands")
 }
 
-func generateDynamicCommands(normalCommands map[string]*config.Command) (commands []*discordgo.ApplicationCommand) {
+func generateDynamicCommands(normalCommands map[string]config.YamlCommand) (commands []*discordgo.ApplicationCommand) {
 	for k, v := range normalCommands {
 		permission := calculateCommandPermission(v)
 
@@ -97,7 +99,7 @@ func generateCommandsToRegister() (normalCommands, subCommands) {
 	subCommands := subCommands{}
 	normalCommands := normalCommands{}
 
-	for cmdName, cmdData := range config.GetYaml().Commands {
+	for cmdName, cmdData := range config.Yaml().Commands {
 		if !strings.Contains(cmdName, " ") {
 			normalCommands[cmdName] = cmdData
 			continue
@@ -108,7 +110,7 @@ func generateCommandsToRegister() (normalCommands, subCommands) {
 		subCmd := parts[1]
 
 		if subCommands[root] == nil {
-			subCommands[root] = make(map[string]*config.Command, 0)
+			subCommands[root] = make(map[string]config.YamlCommand)
 		}
 
 		subCommands[root][subCmd] = cmdData
@@ -122,11 +124,11 @@ func generateCommandsToRegister() (normalCommands, subCommands) {
 // Otherwise, the function returns the BotDefaultContentPermission constant.
 //
 // Parameters:
-// - cmdData: a pointer to a config.Command object representing the command to calculate permission for.
+// - cmdData: a pointer to a config.YamlCommand object representing the command to calculate permission for.
 //
 // Returns:
 // - An int64 representing the calculated content permission level.
-func calculateCommandPermission(cmdData *config.Command) int64 {
+func calculateCommandPermission(cmdData config.YamlCommand) int64 {
 	if cmdData.Protected {
 		return config.BotProtectedContentPermission
 	}

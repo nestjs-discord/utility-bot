@@ -1,5 +1,6 @@
 #
-# List of members who can bypass ratelimit restriction, and have access to the "protected" commands.
+# List of approved members who have the privilege to bypass
+# rate limit restrictions and access the "protected" commands.
 #
 moderators:
   # Core Team
@@ -31,7 +32,7 @@ moderators:
 # `usage` specifies the maximum number of times a particular slash command can be used within the `ttl` period
 # before further usage is prevented
 #
-ratelimit:
+rateLimit:
   ttl: 60  # Maximum TTL of 60 seconds
   usage: 8 # Maximum of eight usages within the TTL period
   message:

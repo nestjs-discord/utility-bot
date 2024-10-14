@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-// Content will cache local Markdown content on memory
+// Content will cache Markdown content from the disk onto the memory
 func Content() error {
 	charLimit := 2000
 
-	for _, c := range config.GetYaml().Commands {
+	for _, c := range config.Yaml().Commands {
 		// Ignore non-markdown files
 		if !strings.HasSuffix(c.Content, ".md") {
 			return fmt.Errorf("expected '%v' file, to have '.md' extension", c.Content)

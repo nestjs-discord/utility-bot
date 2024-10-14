@@ -17,7 +17,7 @@ func MessageCreate(s *discordgo.Session, i *discordgo.MessageCreate) {
 	log.Debug().Str("id", i.ID).Str("content", i.Content).Msg("event: message create")
 
 	// Check if auto-mod is enabled in the configuration.
-	if config.GetYaml().AutoMod.Enabled {
+	if config.Yaml().AutoMod.Enabled {
 		message.AutoModHandler(s, i)
 	}
 

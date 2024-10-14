@@ -2,12 +2,11 @@ package discord
 
 import (
 	"fmt"
+	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
-	internalDiscord "github.com/nestjs-discord/utility-bot/internal/discord"
 	"github.com/nestjs-discord/utility-bot/internal/discord/command"
 	"github.com/nestjs-discord/utility-bot/internal/discord/forms"
-	"github.com/nestjs-discord/utility-bot/internal/discord/handler"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"os"
@@ -19,40 +18,44 @@ var Run = &cobra.Command{
 	Use:   "discord:run",
 	Short: "Starts the Discord bot",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := cache.Content() // Cache Markdown content
+		err := cache.Content() // Cache Markdown content // TODO: avoid global instance
 		if err != nil {
 			return err
 		}
 
-		cache.InitRateLimit(config.GetYaml().RateLimit.TTL)
+		botCfg, err := config.NewBotConfig()
+		if err != nil {
+			return err
+		}
+
+		yamlCfg, err := config.NewYamlConfig("config.yml")
+		if err != nil {
+			return err
+		}
+
+		cache.InitRateLimit(config.Yaml().RateLimit.TTL)
 
 		cache.InitAutoMod()
 
-		session, err := internalDiscord.NewSession()
+		b, err := bot.NewBot(botCfg, nil) // TODO: init handler
 		if err != nil {
-			return fmt.Errorf("failed to create new Discord session: %s", err)
+			return err
 		}
 
-		log.Info().Str("link", internalDiscord.GenerateInviteLink()).Msg("server invite")
+		session := b.Session() // TODO: remove?
 
-		err = forms.Init(session, config.GetYaml().Forms)
+		err = forms.Init(yamlCfg.Forms, session)
 		if err != nil {
 			return fmt.Errorf("failed to init forms: %s", err)
 		}
 
 		command.RegisterApplicationCommands(session)
 
-		// Discord event handlers
-		session.AddHandler(handler.Ready)
-
-		session.AddHandler(handler.MessageCreate)
-		session.AddHandler(handler.InteractionCreate)
-
 		// We only care about receiving message events
 		session.Identify.Intents = config.BotIntents
 
 		// Fetch all the channels
-		channels, err := session.GuildChannels(config.GetGuildID())
+		channels, err := session.GuildChannels(botCfg.GuildId)
 		if err != nil {
 			return fmt.Errorf("failed to fetch guild channels: %s", err)
 		}

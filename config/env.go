@@ -6,26 +6,14 @@ import (
 
 // TODO: remove this file
 
-var (
-	discordAppId    = "DISCORD_APP_ID"
-	discordBotToken = "DISCORD_BOT_TOKEN"
-	discordGuildId  = "DISCORD_GUILD_ID"
-	// List of environment variables to perform validation using the validateEnvVars function.
-	toValidate = []string{
-		discordAppId,
-		discordBotToken,
-		discordGuildId,
-	}
-)
-
 func GetAppID() string {
-	return os.Getenv(discordAppId)
+	return os.Getenv("DISCORD_APP_ID")
 }
 
 func GetBotToken() string {
-	return os.Getenv(discordBotToken)
+	return os.Getenv("DISCORD_BOT_TOKEN")
 }
 
 func GetGuildID() string {
-	return os.Getenv(discordGuildId)
+	return os.Getenv("DISCORD_GUILD_ID")
 }

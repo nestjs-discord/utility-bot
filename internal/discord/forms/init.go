@@ -10,7 +10,7 @@ import (
 var ModActionsCache *ristretto.Cache[string, bool]
 
 // Init ensure the form channels always have interactive buttons as the last message.
-func Init(session *discordgo.Session, forms map[string]config.Form) error {
+func Init(cfg config.YamlForms, session *discordgo.Session) error {
 	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).
@@ -28,7 +28,7 @@ func Init(session *discordgo.Session, forms map[string]config.Form) error {
 	afterId := ""
 	aroundId := ""
 
-	for formId, form := range forms {
+	for formId, form := range cfg {
 		messages, err := session.ChannelMessages(form.ChannelId, limit, beforeId, afterId, aroundId)
 		if err != nil {
 			return err

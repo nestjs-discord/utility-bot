@@ -18,7 +18,7 @@ func (a *AutoMod) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.Me
 }
 
 func (a *AutoMod) generateAlertContent() string {
-	roleToMention := config.GetYaml().AutoMod.LogMentionRoleId
+	roleToMention := config.Yaml().AutoMod.LogMentionRoleId
 	if roleToMention == "" {
 		return ""
 	}
@@ -107,8 +107,8 @@ func (a *AutoMod) generateAlertEmbedDescription() string {
 	return fmt.Sprintf(
 		"Member exceeded channel limit `%d` within `%d` seconds."+"\n"+
 			"Added to the denied list for the next `%d` seconds.",
-		config.GetYaml().AutoMod.MaxChannelsLimitPerUser,
-		config.GetYaml().AutoMod.MessageTTL,
-		config.GetYaml().AutoMod.DenyTTL,
+		config.Yaml().AutoMod.MaxChannelsLimitPerUser,
+		config.Yaml().AutoMod.MessageTTL,
+		config.Yaml().AutoMod.DenyTTL,
 	)
 }

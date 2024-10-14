@@ -82,5 +82,5 @@ func (a *AutoMod) getChannelsLengthByUserId(id UserId) int {
 }
 
 func (a *AutoMod) IsUserWithinMaxChannelsLimit(userId UserId) bool {
-	return a.getChannelsLengthByUserId(userId) <= config.GetYaml().AutoMod.MaxChannelsLimitPerUser
+	return a.getChannelsLengthByUserId(userId) <= config.Yaml().AutoMod.MaxChannelsLimitPerUser
 }

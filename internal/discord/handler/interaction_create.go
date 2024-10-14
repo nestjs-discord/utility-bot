@@ -16,6 +16,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
+	"log/slog"
 	"strings"
 	"sync"
 	"time"
@@ -42,21 +43,21 @@ func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 type interactionCommandHandlerMap map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate)
 
 func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	name := i.ApplicationCommandData().Name
+	data := i.ApplicationCommandData()
 	userID := i.Member.User.ID
 
-	log.Debug().Str("name", name).
-		Str("guild-id", i.GuildID).
-		Str("channel-id", i.ChannelID).
-		Str("user-id", userID).
-		Interface("options", i.ApplicationCommandData().Options).
-		Msg("event: interaction app command")
+	slog.Debug("event: interaction app command",
+		slog.String("userId", userID),
+		slog.String("channelId", i.ChannelID),
+		slog.String("name", data.Name),
+		slog.Any("options", i.ApplicationCommandData().Options),
+	)
 
 	if checkRateLimit(userID) {
 		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: config.GetYaml().RateLimit.Message,
+				Content: config.Yaml().RateLimit.Message,
 				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
@@ -74,7 +75,7 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 		dont_ping_mods.Name: dont_ping_mods.Handler,
 	}
 
-	if handler, ok := handlers[name]; ok {
+	if handler, ok := handlers[data.Name]; ok {
 		handler(s, i)
 		return
 	}
@@ -118,7 +119,7 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 	if strings.HasPrefix(data.CustomID, forms.ModAcceptBtnIdPrefix) {
 		formId := strings.TrimPrefix(data.CustomID, forms.ModAcceptBtnIdPrefix)
 
-		form, ok := config.GetYaml().Forms[formId]
+		form, ok := config.Yaml().Forms[formId]
 		if !ok {
 			return
 		}
@@ -236,7 +237,7 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 
 	inputFormId := strings.TrimPrefix(data.CustomID, forms.FormButtonIdPrefix)
 
-	form, ok := config.GetYaml().Forms[inputFormId]
+	form, ok := config.Yaml().Forms[inputFormId]
 	if !ok {
 		return // form does not exist in the YAML config
 	}
@@ -292,7 +293,7 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 	}
 
 	formId := strings.TrimPrefix(modalCustomId, forms.FormModalIdPrefix)
-	form, ok := config.GetYaml().Forms[formId]
+	form, ok := config.Yaml().Forms[formId]
 	if !ok {
 		return // skip invalid forms
 	}
@@ -434,6 +435,6 @@ func checkRateLimit(userID string) bool {
 
 	cache.RateLimit.IncrementUsage(userID)
 
-	maxUsage := config.GetYaml().RateLimit.Usage
+	maxUsage := config.Yaml().RateLimit.Usage
 	return cache.RateLimit.GetUsageCount(userID) > maxUsage
 }

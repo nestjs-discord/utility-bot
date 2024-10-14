@@ -11,7 +11,7 @@ type inviteLinkQuery struct {
 	Scope       string `url:"scope"`
 }
 
-func (b *Bot) InviteLink() (string, error) {
+func (b *Bot) logServerInviteLink() error {
 	qs := inviteLinkQuery{
 		ClientID:    b.cfg.AppId,
 		Permissions: permission,
@@ -20,9 +20,14 @@ func (b *Bot) InviteLink() (string, error) {
 
 	v, err := query.Values(qs)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate querystring: %v", err)
+		return fmt.Errorf("failed to generate querystring: %v", err)
 	}
 
-	link := "https://discord.com/api/oauth2/authorize?" + v.Encode()
-	return link, nil
+	b.logger.Info(
+		fmt.Sprintf("server invite link: %s",
+			"https://discord.com/api/oauth2/authorize?"+v.Encode(),
+		),
+	)
+
+	return nil
 }

@@ -20,6 +20,10 @@ func (b *Bot) newSession() error {
 	return nil
 }
 
+func (b *Bot) Session() *discordgo.Session { // TODO: shouldn't this be isolated or removed?
+	return b.session
+}
+
 // Open creates a websocket connection to Discord.
 // See: https://discord.com/developers/docs/topics/gateway#connecting
 func (b *Bot) Open() error {

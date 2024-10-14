@@ -23,7 +23,7 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	}
 
 	// Check if the author is a moderator; if true, skip further processing.
-	if config.GetYaml().AutoMod.ModeratorsBypass && util.IsUserModerator(i.Author.ID) {
+	if config.Yaml().AutoMod.ModeratorsBypass && util.IsUserModerator(i.Author.ID) {
 		return
 	}
 
@@ -79,7 +79,7 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Add user to the denied list
 	cache.AutoMod.AddUserToDeniedList(userId)
 
-	logChannelId := config.GetYaml().AutoMod.LogChannelId
+	logChannelId := config.Yaml().AutoMod.LogChannelId
 	_, err = s.ChannelMessageSendComplex(logChannelId, cache.AutoMod.GenerateAlertMessage(i))
 	if err != nil {
 		log.Err(err).Msg("auto mod: failed to notify log channel about the ongoing spam")

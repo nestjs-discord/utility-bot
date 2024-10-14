@@ -13,7 +13,7 @@ func NewWithSubsystem(s ...string) *slog.Logger {
 	return slog.With(slog.String("subsystem", strings.Join(s, "/")))
 }
 
-func Register(debug bool) {
+func Register() {
 	w := os.Stdout
 	level := slog.LevelDebug // TODO: set log level from config
 	handler := slog.NewTextHandler(w, &slog.HandlerOptions{

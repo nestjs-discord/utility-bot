@@ -2,7 +2,7 @@ package automod
 
 import "github.com/bwmarrin/discordgo"
 
-func (a *AutoMod) SetChannels(channels []*discordgo.Channel) {
+func (a *AutoMod) SetChannels(channels []*discordgo.Channel) { // TODO: we should load this from the yaml config
 	for _, channel := range channels {
 		if channel.Type != discordgo.ChannelTypeGuildText {
 			continue

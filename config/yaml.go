@@ -1,58 +1,86 @@
 package config
 
-type Yaml struct {
-	Moderators []string            `mapstructure:"moderators" validate:"required,min=1,dive,min=1"`
-	RateLimit  RateLimit           `mapstructure:"rateLimit" validate:"required"`
-	AutoMod    AutoMod             `mapstructure:"autoMod" validate:"required"`
-	Forms      map[string]Form     `mapstructure:"forms" validate:"required,min=1,dive"`
-	Commands   map[string]*Command `mapstructure:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
+import (
+	"fmt"
+	"gopkg.in/yaml.v3"
+	"os"
+)
+
+type YamlConfig struct {
+	Moderators YamlModerators `yaml:"moderators" validate:"required,min=1,dive,min=1"`
+	RateLimit  YamlRateLimit  `yaml:"rateLimit" validate:"required"`
+	AutoMod    YamlAutoMod    `yaml:"autoMod" validate:"required"`
+	Forms      YamlForms      `yaml:"forms" validate:"required,min=1,dive"`
+	Commands   YamlCommands   `yaml:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
 }
 
-type Form struct {
-	ButtonLabel     string      `mapstructure:"buttonLabel" validate:"required,min=5"`
-	Title           string      `mapstructure:"modalTitle" validate:"required,min=10"`
-	ChannelId       string      `mapstructure:"channelId" validate:"required,min=5"`
-	ModChannelId    string      `mapstructure:"modChannelId" validate:"required,min=5"`
-	ModSkipApproval bool        `mapstructure:"modSkipApproval"`
-	Color           int         `mapstructure:"color" validate:"required"`
-	Footer          string      `mapstructure:"footer" validate:"required"`
-	Inputs          []FormInput `mapstructure:"inputs" validate:"required,min=1,max=10,dive"`
+func NewYamlConfig(path string) (*YamlConfig, error) {
+	yamlFile, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read the yaml config: %s", err)
+	}
+
+	var data YamlConfig
+	err = yaml.Unmarshal(yamlFile, &data)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal the yaml config: %s", err)
+	}
+
+	// TODO: manual validation
+
+	return &data, nil
 }
 
-type FormInput struct {
-	Id          string `mapstructure:"id" validate:"required,min=5"`
-	Placeholder string `mapstructure:"placeholder" validate:"required,min=1,max=100"`
-	Multiline   bool   `mapstructure:"multiline"`
-	Min         int    `mapstructure:"min" validate:"min=0"`
-	Max         int    `mapstructure:"max" validate:"min=0,max=1000"`
-	Required    bool   `mapstructure:"required"`
+type YamlModerators []string
+type YamlForms map[string]YamlForm
+
+type YamlForm struct {
+	ButtonLabel     string          `yaml:"buttonLabel" validate:"required,min=5"`
+	Title           string          `yaml:"modalTitle" validate:"required,min=10"`
+	ChannelId       string          `yaml:"channelId" validate:"required,min=5"`
+	ModChannelId    string          `yaml:"modChannelId" validate:"required,min=5"`
+	ModSkipApproval bool            `yaml:"modSkipApproval"`
+	Color           int             `yaml:"color" validate:"required"`
+	Footer          string          `yaml:"footer" validate:"required"`
+	Inputs          []YamlFormInput `yaml:"inputs" validate:"required,min=1,max=10,dive"`
 }
 
-type RateLimit struct {
-	TTL     int    `mapstructure:"ttl" validate:"required,min=1"`
-	Usage   int    `mapstructure:"usage" validate:"required,min=2"`
-	Message string `mapstructure:"message" validate:"required,min=3"`
+type YamlFormInput struct {
+	Id          string `yaml:"id" validate:"required,min=5"`
+	Placeholder string `yaml:"placeholder" validate:"required,min=1,max=100"`
+	Multiline   bool   `yaml:"multiline"`
+	Min         int    `yaml:"min" validate:"min=0"`
+	Max         int    `yaml:"max" validate:"min=0,max=1000"`
+	Required    bool   `yaml:"required"`
 }
 
-type AutoMod struct {
-	Enabled                 bool   `mapstructure:"enabled" validate:"boolean"`
-	ModeratorsBypass        bool   `mapstructure:"moderatorsBypass" validate:"boolean"`
-	LogChannelId            string `mapstructure:"logChannelId" validate:"required,min=1"`
-	LogMentionRoleId        string `mapstructure:"logMentionRoleId"`
-	MessageTTL              int    `mapstructure:"messageTTL" validate:"required,min=1"`
-	MaxChannelsLimitPerUser int    `mapstructure:"maxChannelsLimitPerUser" validate:"required,min=1"`
-	DenyTTL                 int    `mapstructure:"denyTTL" validate:"required,min=1"`
+type YamlRateLimit struct {
+	TTL     int    `yaml:"ttl" validate:"required,min=1"`
+	Usage   int    `yaml:"usage" validate:"required,min=2"`
+	Message string `yaml:"message" validate:"required,min=3"`
 }
 
-type Command struct {
-	Description string      `mapstructure:"description" validate:"required,min=1,max=100"`
-	Content     string      `mapstructure:"content" validate:"required,min=1"`
-	Protected   bool        `mapstructure:"protected" validate:"boolean"`
-	Buttons     [][]*Button `mapstructure:"buttons" validate:"min=0,max=8,dive,min=1,max=4,dive"`
+type YamlAutoMod struct {
+	Enabled                 bool   `yaml:"enabled" validate:"boolean"`
+	ModeratorsBypass        bool   `yaml:"moderatorsBypass" validate:"boolean"`
+	LogChannelId            string `yaml:"logChannelId" validate:"required,min=1"`
+	LogMentionRoleId        string `yaml:"logMentionRoleId"`
+	MessageTTL              int    `yaml:"messageTTL" validate:"required,min=1"`
+	MaxChannelsLimitPerUser int    `yaml:"maxChannelsLimitPerUser" validate:"required,min=1"`
+	DenyTTL                 int    `yaml:"denyTTL" validate:"required,min=1"`
 }
 
-type Button struct {
-	Label string `mapstructure:"label" validate:"required,min=3,max=40"`
-	URL   string `mapstructure:"url" validate:"required,url,min=3"`
-	Emoji string `mapstructure:"emoji" validate:"regexp=^[\p{Emoji}]$"`
+type YamlCommands map[string]YamlCommand
+
+type YamlCommand struct {
+	Description string                 `yaml:"description" validate:"required,min=1,max=100"`
+	Content     string                 `yaml:"content" validate:"required,min=1"`
+	Protected   bool                   `yaml:"protected" validate:"boolean"`
+	Buttons     [][]*YamlCommandButton `yaml:"buttons" validate:"min=0,max=8,dive,min=1,max=4,dive"`
+}
+
+type YamlCommandButton struct {
+	Label string `yaml:"label" validate:"required,min=3,max=40"`
+	URL   string `yaml:"url" validate:"required,url,min=3"`
+	Emoji string `yaml:"emoji" validate:"regexp=^[\p{Emoji}]$"`
 }

@@ -13,7 +13,7 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 	name, options := normalizeInteractionData(i)
 
 	// Resolve cached content by name
-	cmd, cmdExist := config.GetYaml().Commands[name]
+	cmd, cmdExist := config.Yaml().Commands[name]
 	if !cmdExist {
 		return false
 	}
@@ -74,7 +74,7 @@ func normalizeInteractionData(i *discordgo.InteractionCreate) (string, []*discor
 	return name, options
 }
 
-func convertButtonsToMessageComponents(b [][]*config.Button) []discordgo.MessageComponent {
+func convertButtonsToMessageComponents(b [][]*config.YamlCommandButton) []discordgo.MessageComponent {
 	var components []discordgo.MessageComponent
 	for _, row := range b {
 		componentsInRow := make([]discordgo.MessageComponent, 0, len(row))

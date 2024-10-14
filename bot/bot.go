@@ -27,6 +27,11 @@ func NewBot(cfg *config.BotConfig, handler *handler.Handler) (*Bot, error) {
 
 	bot.applyHandler(handler)
 
+	err = bot.logServerInviteLink()
+	if err != nil {
+		return nil, err
+	}
+
 	return bot, nil
 }
 
