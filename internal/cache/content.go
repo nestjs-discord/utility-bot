@@ -2,7 +2,7 @@ package cache
 
 import (
 	"github.com/nestjs-discord/utility-bot/config"
-	"github.com/rs/zerolog/log"
+	"log/slog"
 
 	"fmt"
 	"os"
@@ -33,7 +33,9 @@ func Content() error {
 			return fmt.Errorf("file '%v' contains too many characters, expected maximum of %v but received %v", p, charLimit, len(c.Content))
 		}
 
-		log.Debug().Str("path", p).Msg("cached file content")
+		slog.Debug("cached file content",
+			slog.String("path", p),
+		)
 	}
 
 	return nil

@@ -11,14 +11,13 @@ var Clean = &cobra.Command{
 	Use:   "discord:clean",
 	Short: "Cleans the registered slash commands",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		h := handler.NewHandler()
+		botCfg, err := config.NewBotConfig()
+		if err != nil {
+			return err
+		}
 
-		bot, err := bot.NewBot(
-			bot.WithToken(config.GetBotToken()),
-			bot.WithAppId(config.GetAppID()),
-			bot.WithGuildId(config.GetGuildID()),
-			bot.WithHandler(h),
-		)
+		handler := handler.NewHandler()
+		bot, err := bot.NewBot(botCfg, handler)
 		if err != nil {
 			return err
 		}

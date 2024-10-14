@@ -4,6 +4,8 @@ import (
 	"os"
 )
 
+// TODO: remove this file
+
 var (
 	discordAppId    = "DISCORD_APP_ID"
 	discordBotToken = "DISCORD_BOT_TOKEN"

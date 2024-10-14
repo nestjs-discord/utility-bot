@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/nestjs-discord/utility-bot/pkg/colors"
 	"github.com/nestjs-discord/utility-bot/pkg/validation"
 )
 
@@ -57,10 +56,10 @@ func validateYaml() {
 	for _, err := range err.(validator.ValidationErrors) {
 		fmt.Println(divider)
 
-		msg := colors.Red.Render(err.Translate(validation.Trans))
-		msg += fmt.Sprintf("\n struct namespace:\t%s", colors.Yellow.Render(err.StructNamespace()))
-		msg += fmt.Sprintf("\n validation tag:\t%s", colors.Blue.Render(err.Tag()))
-		msg += fmt.Sprintf("\n current value:\t\t'%s'", colors.Purple.Render(fmt.Sprint(err.Value())))
+		msg := err.Translate(validation.Trans)
+		msg += fmt.Sprintf("\n struct namespace:\t%s", err.StructNamespace())
+		msg += fmt.Sprintf("\n validation tag:\t%s", err.Tag())
+		msg += fmt.Sprintf("\n current value:\t\t'%s'", fmt.Sprint(err.Value()))
 		// msg += fmt.Sprintf("\n\traw error message: %s", err.Error())
 
 		fmt.Println(msg)
@@ -68,5 +67,5 @@ func validateYaml() {
 
 	fmt.Println(divider)
 
-	log.Fatal(colors.Red.Render("config validation failed"))
+	log.Fatal("config validation failed")
 }

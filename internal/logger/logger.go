@@ -14,25 +14,17 @@ func NewWithSubsystem(s ...string) *slog.Logger {
 }
 
 func Register(debug bool) {
-	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelDebug, // TODO: set log level from config
+	w := os.Stdout
+	level := slog.LevelDebug // TODO: set log level from config
+	handler := slog.NewTextHandler(w, &slog.HandlerOptions{
+		Level: level,
 	})
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
-	// UNIX Time is faster and smaller than most timestamps
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-
+	// TODO: remove zero log dependency
 	log.Logger = log.Output(zerolog.ConsoleWriter{
-		Out: os.Stderr,
+		Out: os.Stdout,
 	})
-
-	// The Default level for this example is info
-	if debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-		log.Debug().Msg("debug mode activated")
-		return
-	}
-
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 }
