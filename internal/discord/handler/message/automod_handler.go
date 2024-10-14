@@ -3,15 +3,15 @@ package message
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	automod2 "github.com/nestjs-discord/utility-bot/bot/automod"
 	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
-	"github.com/nestjs-discord/utility-bot/internal/discord/handler/automod"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 )
 
 func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
-	channelId := automod.ChannelId(i.ChannelID)
+	channelId := automod2.ChannelId(i.ChannelID)
 
 	// Skip executing auto-mod logic if the provided channel ID is not in the list of channels being tracked.
 	// This check ensures that auto-mod actions are only applied to channels marked for moderation.
@@ -27,7 +27,7 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		return
 	}
 
-	userId := automod.UserId(i.Author.ID)
+	userId := automod2.UserId(i.Author.ID)
 
 	if cache.AutoMod.IsUserInDeniedList(userId) {
 
@@ -40,7 +40,7 @@ func AutoModHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		return
 	}
 
-	message, err := automod.NewMessage(i.ID, i.Content)
+	message, err := automod2.NewMessage(i.ID, i.Content)
 	if err != nil {
 		log.Err(err).Msg("auto mod: failed to init new message")
 		return

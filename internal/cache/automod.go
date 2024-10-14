@@ -1,11 +1,11 @@
 package cache
 
 import (
+	"github.com/nestjs-discord/utility-bot/bot/automod"
 	"github.com/nestjs-discord/utility-bot/config"
-	"github.com/nestjs-discord/utility-bot/internal/discord/handler/automod"
 )
 
-var AutoMod *automod.AutoMod
+var AutoMod *automod.AutoMod // TODO: avoid global instance
 
 func InitAutoMod() {
 	AutoMod = automod.NewAutoMod(automod.Option{

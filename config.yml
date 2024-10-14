@@ -66,6 +66,57 @@ autoMod:
   # This option might be useful for temporary actions, such as deleting ongoing messages.
   denyTTL: 120 # Seconds
 
+  # List of channel ids that should be tracked by this feature
+  channelIds:
+    # Information
+    # - "527853342152458287" # welcome (read-only)
+    # - "525389275769077771" # resources (read-only)
+    # - "669488633228558339" # roles (read-only)
+    # - "669642626001010709" # partners (read-only)
+
+    # Core Team
+    # - "808120635682586644" # moderator-mvp-exchange (private)
+    # - "523471550104731659" # general (private)
+    # - "918987870197395577" # bot-test (private)
+    # - "1028324313180413982" # auto mod messages (private)
+    # - "1294488503744204860" # mod-profiles (private)
+    # - "1294488539500777472" # mod-opportunities (private)
+    # - "598294041150619662" # marketing (private)
+    # - "613075872915783682" # core-team-devops (private)
+
+    # Community Modules
+    - "626341204442742784" # community-packages
+
+    # Community
+    - "523472945205608454" # showcase
+    - "523473854694424576" # media
+    - "585224763513765937" # hangout
+    - "679231901109714945" # share-your-pet
+
+    # Development
+    - "939229065527820369" # contributing-to-nest
+    # - "610578507579392153" # code-review (read-only)
+
+    # Languages
+    - "810948706902736918" # German
+    - "744635201690533956" # Spanish
+    - "810948689295048714" # French
+    - "810948655846260766" # Polish
+    - "811732928517767179" # Portuguese
+    - "815841356894306304" # Russian
+    - "1208424317285830686" # Romanian
+    - "975075877274660865" # Turkish
+    - "934100953324466186" # Korean
+    - "1068390891489874010" # Korean
+    - "1099202167484719194" # Persian
+    - "1155462622251073656" # Arabic
+
+    # Discord
+    - "524255662545305600" # server-suggestions
+
+    # Bots
+    # - "926544704034734111" # bots-info (read-only)
+    - "926544725606035527" # bot-commands
 
 # Text input documentation:
 # https://discord.com/developers/docs/interactions/message-components#text-inputs
