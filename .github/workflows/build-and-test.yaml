@@ -48,7 +48,7 @@ jobs:
             ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
       - name: Build
-        run: go build
+        run: go build cmd/run/main.go
 
       - name: Copy .env.example to .env
         run: cp .env.example .env
