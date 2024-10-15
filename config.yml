@@ -5,7 +5,7 @@
 moderators:
   # Core Team
   - 492978759918419978 # Kamil
-  - 524281921115652106 # Jay
+  - 524281921115652106 # jmcdo29
   - 225858983632699392 # Brunner Livio
   - 517170598833553408 # Y Prospect
   - 132222189209518080 # Micael (micalevisk)
@@ -35,8 +35,7 @@ moderators:
 rateLimit:
   ttl: 60  # Maximum TTL of 60 seconds
   usage: 8 # Maximum of eight usages within the TTL period
-  message:
-    "Chill out, cowboy!\nYou don't want to overload our poor server."
+  message: "Chill out, cowboy!\nYou don't want to overload our poor server."
 
 #
 # Auto-Moderation Configuration
@@ -153,9 +152,9 @@ forms:
         min: 2
         max: 600
       - id: "location"
-        placeholder: "Czechia, Budweis - Remote, On-site in South Bohemia, willing to relocate within Europe"
+        placeholder: "Germany, Berlin - Remote, On-site in Mitte, willing to relocate within Europe"
         min: 2
-        max: 50
+        max: 150
         required: true
         multiline: false
       - id: "links"
@@ -187,9 +186,9 @@ forms:
         required: true
         multiline: false
       - id: "location"
-        placeholder: "Czechia, Budweis - Remote, On-site in South Bohemia, willing to relocate within Europe"
+        placeholder: "Germany, Berlin - Remote, On-site in Mitte, willing to relocate within Europe"
         min: 5
-        max: 100
+        max: 150
         required: true
         multiline: false
       - id: "description"
