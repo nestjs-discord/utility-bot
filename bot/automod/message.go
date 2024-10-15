@@ -3,7 +3,7 @@ package automod
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/infra/config"
 	"log/slog"
 )
 

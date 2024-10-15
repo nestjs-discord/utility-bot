@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
-	"github.com/nestjs-discord/utility-bot/config/yaml"
-	"github.com/nestjs-discord/utility-bot/logger"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log"
 	"log/slog"
 )

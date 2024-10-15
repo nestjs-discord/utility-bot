@@ -2,8 +2,8 @@ package markdown
 
 import (
 	"fmt"
-	"github.com/nestjs-discord/utility-bot/config/yaml"
-	"github.com/nestjs-discord/utility-bot/logger"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log/slog"
 	"os"
 	"strings"

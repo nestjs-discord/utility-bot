@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/dgraph-io/ristretto"
-	"github.com/nestjs-discord/utility-bot/config/yaml"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"sync"
 )
 

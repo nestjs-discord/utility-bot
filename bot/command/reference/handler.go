@@ -4,28 +4,28 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/command/common"
+	algolia2 "github.com/nestjs-discord/utility-bot/infra/services/algolia"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
-	"github.com/nestjs-discord/utility-bot/pkg/algolia"
 	"strings"
 )
 
 var emojis = map[string]string{
-	algolia.Discord.ToSlug():        "<:discord:1106968504877461616>",
-	algolia.DiscordJSGuide.ToSlug(): "<:discordjs:1106968508950122637>",
-	algolia.Fastify.ToSlug():        "<:fastify:1106968514109116486>",
-	algolia.Necord.ToSlug():         "<:necord:1106968169580613723>",
-	algolia.NestCommander.ToSlug():  "<:commander:1106968502432190484>",
-	algolia.NestJS.ToSlug():         "<:nestjs:1106967607434817698>",
-	algolia.Ogma.ToSlug():           "<:ogma:1106968518160814180>",
-	algolia.TypeORM.ToSlug():        "<:typeorm:1106976838695264348>",
-	algolia.TypeScript.ToSlug():     "<:typescript:1106968521692414043>",
+	algolia2.Discord.ToSlug():        "<:discord:1106968504877461616>",
+	algolia2.DiscordJSGuide.ToSlug(): "<:discordjs:1106968508950122637>",
+	algolia2.Fastify.ToSlug():        "<:fastify:1106968514109116486>",
+	algolia2.Necord.ToSlug():         "<:necord:1106968169580613723>",
+	algolia2.NestCommander.ToSlug():  "<:commander:1106968502432190484>",
+	algolia2.NestJS.ToSlug():         "<:nestjs:1106967607434817698>",
+	algolia2.Ogma.ToSlug():           "<:ogma:1106968518160814180>",
+	algolia2.TypeORM.ToSlug():        "<:typeorm:1106976838695264348>",
+	algolia2.TypeScript.ToSlug():     "<:typescript:1106968521692414043>",
 }
 
 func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 
 	for _, option := range options {
-		app, ok := algolia.Apps[option.Name]
+		app, ok := algolia2.Apps[option.Name]
 		if !ok {
 			continue
 		}
@@ -40,7 +40,7 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			return
 		}
 
-		hit, err := algolia.GetObject(app, objectID)
+		hit, err := algolia2.GetObject(app, objectID)
 		if err != nil {
 			util.InteractionRespondError(err, s, i)
 			return
@@ -55,12 +55,12 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 		// Add title
 		content.WriteString("**")
-		content.WriteString(algolia.GetFormattedHierarchy(*hit))
+		content.WriteString(algolia2.GetFormattedHierarchy(*hit))
 		content.WriteString("**\n")
 
 		// Add description (if present)
 		if hit.Content != "" {
-			content.WriteString(algolia.Truncate(hit.Content, 350) + "\n")
+			content.WriteString(algolia2.Truncate(hit.Content, 350) + "\n")
 		}
 
 		err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -91,7 +91,7 @@ func parseReferenceOptions(option *discordgo.ApplicationCommandInteractionDataOp
 	return flags
 }
 
-func generateReferenceComponents(hit *algolia.Hit) []discordgo.MessageComponent {
+func generateReferenceComponents(hit *algolia2.Hit) []discordgo.MessageComponent {
 	components := []discordgo.MessageComponent{
 		discordgo.ActionsRow{
 			Components: []discordgo.MessageComponent{

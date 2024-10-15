@@ -2,6 +2,8 @@ package bot
 
 import (
 	"fmt"
+	"github.com/nestjs-discord/utility-bot/infra/config"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"log/slog"
 	"strings"
 
@@ -12,8 +14,6 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/command/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/command/reference"
 	"github.com/nestjs-discord/utility-bot/bot/command/solved"
-	"github.com/nestjs-discord/utility-bot/config"
-	"github.com/nestjs-discord/utility-bot/config/yaml"
 )
 
 var (

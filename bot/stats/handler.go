@@ -3,9 +3,11 @@ package stats
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
-	"github.com/nestjs-discord/utility-bot/pkg/uptime"
 	"runtime"
+	"time"
 )
+
+var uptime = time.Now()
 
 func Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	var m runtime.MemStats
@@ -48,7 +50,7 @@ func Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 			},
 			{
 				Name:  "Uptime",
-				Value: uptime.Uptime(),
+				Value: humanize.Time(uptime), // TODO: replace with unix timestamp
 			},
 		},
 	}

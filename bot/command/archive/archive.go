@@ -2,7 +2,7 @@ package archive
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/config"
+	"github.com/nestjs-discord/utility-bot/infra/config"
 )
 
 const Name = "archive"

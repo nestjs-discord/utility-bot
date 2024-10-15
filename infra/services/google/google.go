@@ -1,4 +1,4 @@
-package search
+package google
 
 import (
 	"fmt"
@@ -10,8 +10,6 @@ import (
 	"time"
 )
 
-// TODO: rename this package to "google"
-
 var client = &http.Client{
 	Timeout: 2 * time.Second,
 	Transport: &http.Transport{
@@ -21,13 +19,13 @@ var client = &http.Client{
 	},
 }
 
-type Search struct{}
+type Google struct{}
 
-func NewSearch() *Search {
-	return &Search{}
+func NewGoogle() *Google {
+	return &Google{}
 }
 
-func (s *Search) Search(keyword string) ([]string, error) {
+func (s *Google) Search(keyword string) ([]string, error) {
 	keyword = strings.TrimSpace(keyword) // normalize
 	apiUrl := "https://google.com/complete/search?client=gws-wiz&xssi=t&hl=en-US&authuser=0&dpr=1&q=" +
 		url.QueryEscape(keyword)

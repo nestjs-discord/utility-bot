@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/nestjs-discord/utility-bot/bot"
-	"github.com/nestjs-discord/utility-bot/config/env"
+	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"log"
 )
 

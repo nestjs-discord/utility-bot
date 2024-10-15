@@ -2,7 +2,7 @@ package reference
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/pkg/algolia"
+	algolia2 "github.com/nestjs-discord/utility-bot/infra/services/algolia"
 )
 
 func AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -10,7 +10,7 @@ func AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	var choices []*discordgo.ApplicationCommandOptionChoice
 
 	for _, rootOption := range rootOptions {
-		app, ok := algolia.Apps[rootOption.Name]
+		app, ok := algolia2.Apps[rootOption.Name]
 		if !ok {
 			continue
 		}
@@ -20,7 +20,7 @@ func AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			break // reply empty choices at the bottom
 		}
 
-		hits, err := algolia.Search(app, query)
+		hits, err := algolia2.Search(app, query)
 		if err != nil {
 			break // reply empty choices at the bottom
 		}
@@ -29,7 +29,7 @@ func AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 		for _, hit := range hits {
 			choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
-				Name:  algolia.Truncate(algolia.GetFormattedHierarchy(hit), 95),
+				Name:  algolia2.Truncate(algolia2.GetFormattedHierarchy(hit), 95),
 				Value: hit.ObjectID,
 			})
 		}

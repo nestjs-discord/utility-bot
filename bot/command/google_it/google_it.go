@@ -2,7 +2,7 @@ package google_it
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/pkg/search"
+	"github.com/nestjs-discord/utility-bot/infra/services/google"
 )
 
 const (
@@ -10,7 +10,7 @@ const (
 	OptionSuffix = "-suggestion"
 )
 
-var searchClient = search.NewSearch()
+var googleClient = google.NewGoogle() // TODO: don't use global instance
 
 func init() {
 	elements := []string{"first", "second", "third", "fourth"}
@@ -21,7 +21,7 @@ func init() {
 			Name:         opt + OptionSuffix,
 			Description:  opt + " suggestion",
 			Type:         discordgo.ApplicationCommandOptionString,
-			Required:     i == 0, // only the first element is required
+			Required:     i == 0, // only the first item is required
 			Autocomplete: true,
 			MinLength:    &minLength,
 		})
@@ -30,6 +30,6 @@ func init() {
 
 var Command = &discordgo.ApplicationCommand{
 	Name:        Name,
-	Description: "Telling people to search Google/StackOverflow before asking on our server",
+	Description: "Tell someone to search on Google or StackOverflow!",
 	Type:        discordgo.ChatApplicationCommand,
 }

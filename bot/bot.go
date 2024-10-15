@@ -3,8 +3,8 @@ package bot
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
-	"github.com/nestjs-discord/utility-bot/config/env"
-	"github.com/nestjs-discord/utility-bot/logger"
+	"github.com/nestjs-discord/utility-bot/infra/config/env"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log/slog"
 )
 

@@ -6,7 +6,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderator"
-	"github.com/nestjs-discord/utility-bot/logger"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 	"log/slog"
 )

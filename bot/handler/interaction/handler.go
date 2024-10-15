@@ -1,10 +1,10 @@
 package interaction
 
 import (
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log/slog"
 
 	"github.com/nestjs-discord/utility-bot/bot/moderator"
-	"github.com/nestjs-discord/utility-bot/logger"
 )
 
 type Handler struct {

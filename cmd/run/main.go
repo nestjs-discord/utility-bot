@@ -6,7 +6,9 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderator"
-	"github.com/nestjs-discord/utility-bot/logger"
+	"github.com/nestjs-discord/utility-bot/infra/config/env"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 	"log"
 	"log/slog"
@@ -17,8 +19,6 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/automod"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
-	"github.com/nestjs-discord/utility-bot/config/env"
-	"github.com/nestjs-discord/utility-bot/config/yaml"
 )
 
 var (
