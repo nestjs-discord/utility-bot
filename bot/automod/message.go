@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/config"
-	"github.com/nestjs-discord/utility-bot/internal/discord/util"
-	"github.com/rs/zerolog/log"
 	"log/slog"
 )
 
@@ -87,7 +85,7 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	}
 
 	// Check if the author is a moderator; if true, skip further processing.
-	if config.Yaml().AutoMod.ModeratorsBypass && util.IsUserModerator(i.Author.ID) {
+	if a.cfg.ModeratorsBypass && a.moderator.IsUserModerator(i.Author.ID) {
 		return
 	}
 
@@ -106,7 +104,7 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 
 	message, err := NewMessage(i.ID, i.Content)
 	if err != nil {
-		log.Err(err).Msg("auto mod: failed to init new message")
+		a.logger.Error(fmt.Sprintf("failed to create message: %s", err))
 		return
 	}
 
@@ -125,18 +123,16 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		for chId, msgId := range userMessages {
 			err = s.ChannelMessageDelete(chId, msgId)
 			if err != nil {
-				log.Err(err).
-					Str("channel-id", chId).
-					Str("message-id", msgId).
-					Msg("auto mod: failed to delete the message")
-
+				a.logger.Error(fmt.Sprintf("failed to delete message: %s", err),
+					slog.String("channelId", chId),
+					slog.String("messageId", msgId),
+				)
 				return
 			}
-
-			log.Debug().
-				Str("channel-id", chId).
-				Str("message-id", msgId).
-				Msg("auto mod: message delete success")
+			a.logger.Debug(fmt.Sprintf("deleted message"),
+				slog.String("channelId", chId),
+				slog.String("messageId", msgId),
+			)
 		}
 	}()
 
@@ -146,18 +142,25 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	logChannelId := config.Yaml().AutoMod.LogChannelId
 	_, err = s.ChannelMessageSendComplex(logChannelId, a.GenerateAlertMessage(i))
 	if err != nil {
-		log.Err(err).Msg("auto mod: failed to notify log channel about the ongoing spam")
+		a.logger.Error("failed to alert moderators about the ongoing spam",
+			slog.Any("err", err),
+		)
 	}
 
 	// Ban their account
 	err = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "spam", 7)
 	if err != nil {
-		log.Err(err).Str("user-id", i.Author.ID).Msg("auto mod: failed to ban the user")
+		a.logger.Error("failed to ban a spammer",
+			slog.String("userId", i.Author.ID),
+			slog.Any("err", err),
+		)
 		_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf(":hammer: Failed to ban the spammer: `%s`", err.Error()))
 		return
 	}
 
-	log.Info().Str("user-id", i.Author.ID).Msg("auto mod: banned user")
+	a.logger.Info("banned a user",
+		slog.String("userId", i.Author.ID),
+	)
 
 	_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf(":hammer: Member banned: `%s`", i.Author.ID))
 

@@ -61,7 +61,9 @@ func main() {
 	}
 
 	iRateLimit := rate_limit.New(yamlCfg.RateLimit.TTL)
-	iAutoMod, err := automod.NewAutoMod(yamlCfg.AutoMod)
+
+	iModerator := moderator.NewModerator(yamlCfg.Moderators)
+	iAutoMod, err := automod.NewAutoMod(yamlCfg.AutoMod, iModerator)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,7 +73,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	iModerator := moderator.NewModerator(yamlCfg.Moderators)
 	interactionHandler := interaction.NewHandler(iModerator)
 
 	b.ApplyHandler(

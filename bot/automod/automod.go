@@ -3,6 +3,7 @@ package automod
 import (
 	"fmt"
 	"github.com/dgraph-io/ristretto"
+	"github.com/nestjs-discord/utility-bot/bot/moderator"
 	"github.com/nestjs-discord/utility-bot/config/yaml"
 	"github.com/nestjs-discord/utility-bot/logger"
 	"log/slog"
@@ -11,7 +12,7 @@ import (
 )
 
 type (
-	UserId string
+	UserId string // TODO: remove this type
 )
 
 type AutoMod struct { // TODO: rename to antispam
@@ -21,9 +22,10 @@ type AutoMod struct { // TODO: rename to antispam
 	userMap    map[UserId]map[string]Message
 	denyTTL    time.Duration
 	deniedList *ristretto.Cache[string, bool]
+	moderator  *moderator.Moderator
 }
 
-func NewAutoMod(cfg yaml.AutoMod) (*AutoMod, error) {
+func NewAutoMod(cfg yaml.AutoMod, moderator *moderator.Moderator) (*AutoMod, error) {
 	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).
@@ -40,6 +42,7 @@ func NewAutoMod(cfg yaml.AutoMod) (*AutoMod, error) {
 		userMap:    make(map[UserId]map[string]Message),
 		denyTTL:    time.Duration(cfg.DenyTTL) * time.Second,
 		deniedList: cache,
+		moderator:  moderator,
 	}
 
 	go a.backgroundCleaner(cfg.MessageTTL)

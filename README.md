@@ -242,5 +242,5 @@ Placeholder.
 # brings down the previous container
 # builds and starts a new container
 # prints the container logs
-make docker-redeploy
+make redeploy
 ```

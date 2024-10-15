@@ -12,8 +12,6 @@ import (
 
 const subsystemKey = "subsystem"
 
-var Level = slog.LevelDebug // TODO: set log level from config
-
 func NewWithSubsystem(s ...string) *slog.Logger {
 	return slog.With(
 		slog.String(subsystemKey, strings.Join(s, "/")),
@@ -35,7 +33,7 @@ func Initialize(stage string) error {
 
 func newProductionLogger() *slog.Logger {
 	opts := &slog.HandlerOptions{
-		Level: Level,
+		Level: slog.LevelInfo,
 	}
 	handler := slog.NewJSONHandler(os.Stdout, opts)
 	return slog.New(handler)
@@ -43,7 +41,7 @@ func newProductionLogger() *slog.Logger {
 
 func newDevelopmentLogger() *slog.Logger {
 	opts := &tint.Options{
-		Level:      Level,
+		Level:      slog.LevelDebug,
 		TimeFormat: time.Kitchen,
 	}
 	handler := tint.NewHandler(os.Stdout, opts)
