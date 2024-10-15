@@ -55,10 +55,7 @@ func main() {
 	}
 
 	iMarkdown := markdown.NewMarkdown()
-	err = iMarkdown.CacheCommands(yamlCfg.Commands)
-	if err != nil {
-		log.Fatal(err)
-	}
+	iMarkdown.CacheCommands(yamlCfg.Commands)
 
 	iModerator := moderator.NewModerator(yamlCfg.Moderators)
 	iRateLimit := rate_limit.NewRateLimit(yamlCfg.RateLimit, iModerator)

@@ -23,10 +23,7 @@ func main() {
 	}
 
 	iMarkdown := markdown.NewMarkdown()
-	err = iMarkdown.CacheCommands(ymlCfg.Commands)
-	if err != nil {
-		log.Fatal(err)
-	}
+	iMarkdown.CacheCommands(ymlCfg.Commands)
 
 	slog.Info("Good job! everything looks fine :)")
 }
