@@ -9,8 +9,9 @@ import (
 )
 
 type Handler struct {
-	logger    *slog.Logger
-	rateLimit *rate_limit.TTLMap // for the application commands
+	logger     *slog.Logger
+	moderators []string
+	rateLimit  *rate_limit.TTLMap // for the application commands
 
 	autoMod *automod.AutoMod
 	forms   *forms.Forms
@@ -18,14 +19,26 @@ type Handler struct {
 }
 
 func NewHandler(
+	moderators []string,
 	rateLimit *rate_limit.TTLMap,
 	autoMod *automod.AutoMod,
 	forms *forms.Forms,
 ) *Handler {
 	return &Handler{
-		logger:    logger.NewWithSubsystem("bot", "handler"),
-		rateLimit: rateLimit,
-		autoMod:   autoMod,
-		forms:     forms,
+		logger:     logger.NewWithSubsystem("bot", "handler"),
+		moderators: moderators,
+		rateLimit:  rateLimit,
+		autoMod:    autoMod,
+		forms:      forms,
 	}
+}
+
+func (h *Handler) isModerator(userId string) bool {
+	for _, id := range h.moderators {
+		if id == userId {
+			return true
+		}
+	}
+
+	return false
 }

@@ -9,17 +9,15 @@ import (
 )
 
 type (
-	UserId    string
-	ChannelId string
+	UserId string
 )
 
 type AutoMod struct {
-	cfg                yaml.AutoMod
-	sync               sync.RWMutex
-	userMap            map[UserId]map[ChannelId]Message
-	trackedChannelsIds []ChannelId // TODO: remove this in favour of the `cfg.channelIds` array
-	denyTTL            time.Duration
-	deniedList         *ristretto.Cache[string, bool]
+	cfg        yaml.AutoMod
+	sync       sync.RWMutex
+	userMap    map[UserId]map[string]Message
+	denyTTL    time.Duration
+	deniedList *ristretto.Cache[string, bool]
 }
 
 func NewAutoMod(cfg yaml.AutoMod) (*AutoMod, error) {
@@ -35,16 +33,18 @@ func NewAutoMod(cfg yaml.AutoMod) (*AutoMod, error) {
 	a := &AutoMod{
 		cfg:        cfg,
 		sync:       sync.RWMutex{},
-		userMap:    make(map[UserId]map[ChannelId]Message, 0),
+		userMap:    make(map[UserId]map[string]Message),
 		denyTTL:    time.Duration(cfg.DenyTTL) * time.Second,
 		deniedList: cache,
 	}
 
 	go a.backgroundCleaner(cfg.MessageTTL)
 
-	a.setChannels(cfg.ChannelIds)
-
 	return a, nil
+}
+
+func (a *AutoMod) Enabled() bool {
+	return a.cfg.Enabled
 }
 
 func (a *AutoMod) backgroundCleaner(ttl int) {

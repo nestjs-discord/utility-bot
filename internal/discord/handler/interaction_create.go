@@ -4,14 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	forms2 "github.com/nestjs-discord/utility-bot/bot/forms"
+	"github.com/nestjs-discord/utility-bot/bot/command/archive"
+	"github.com/nestjs-discord/utility-bot/bot/command/dont_ping_mods"
+	"github.com/nestjs-discord/utility-bot/bot/command/google_it"
+	"github.com/nestjs-discord/utility-bot/bot/command/reference"
+	"github.com/nestjs-discord/utility-bot/bot/command/solved"
+	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command/archive"
-	dont_ping_mods "github.com/nestjs-discord/utility-bot/internal/discord/command/dont-ping-mods"
-	google_it "github.com/nestjs-discord/utility-bot/internal/discord/command/google-it"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command/reference"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -96,7 +96,7 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 
 	// TODO: refactor this, it should only be called for the moderator actions, not the public interactive button!
 	cacheKey := i.Message.ID
-	cacheValue, cacheHit := forms2.ModActionsCache.Get(cacheKey)
+	cacheValue, cacheHit := forms.ModActionsCache.Get(cacheKey)
 	if cacheHit && cacheValue {
 		msg := "Race condition detected! 😅\n"
 		msg += "Another moderator has already handled this message."
@@ -111,13 +111,13 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	cacheTtl := 30 * time.Second
-	forms2.ModActionsCache.SetWithTTL(cacheKey, true, 1, cacheTtl)
+	forms.ModActionsCache.SetWithTTL(cacheKey, true, 1, cacheTtl)
 
 	data := i.MessageComponentData()
 
 	// Mod -> Accept button
-	if strings.HasPrefix(data.CustomID, forms2.ModAcceptBtnIdPrefix) {
-		formId := strings.TrimPrefix(data.CustomID, forms2.ModAcceptBtnIdPrefix)
+	if strings.HasPrefix(data.CustomID, forms.ModAcceptBtnIdPrefix) {
+		formId := strings.TrimPrefix(data.CustomID, forms.ModAcceptBtnIdPrefix)
 
 		form, ok := config.Yaml().Forms[formId]
 		if !ok {
@@ -142,7 +142,7 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 		}
 
 		// send the interactive form button again (since we deleted the last one)
-		err = forms2.SendFormButton(s, form.ChannelId, formId, form.ButtonLabel)
+		err = forms.SendFormButton(s, form.ChannelId, formId, form.ButtonLabel)
 		if err != nil {
 			msg := fmt.Errorf("failed to send the interactive form button again (after deleting): %s", err)
 			util.InteractionRespondError(msg, s, i)
@@ -151,7 +151,7 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 
 		// at the point, since we know a new interactive form button is sent into the public channel
 		// so it is safe to delete the old message that has the interactive form button
-		if len(messages) == 1 && forms2.DoesHaveButtonComponentWithLabel(messages[0], form.ButtonLabel) {
+		if len(messages) == 1 && forms.DoesHaveButtonComponentWithLabel(messages[0], form.ButtonLabel) {
 			_ = s.ChannelMessageDelete(form.ChannelId, messages[0].ID)
 		}
 
@@ -180,7 +180,7 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	// Mod -> Reject button
-	if strings.HasPrefix(data.CustomID, forms2.ModRejectBtnIdPrefix) {
+	if strings.HasPrefix(data.CustomID, forms.ModRejectBtnIdPrefix) {
 		//formId := strings.TrimPrefix(data.CustomID, forms.ModRejectBtnIdPrefix)
 
 		msgEdit := discordgo.NewMessageEdit(i.ChannelID, i.Message.ID)
@@ -200,8 +200,8 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	// Mod -> Ban button
-	if strings.HasPrefix(data.CustomID, forms2.ModBanBtnIdPrefix) {
-		userIdToBan := strings.TrimPrefix(data.CustomID, forms2.ModBanBtnIdPrefix)
+	if strings.HasPrefix(data.CustomID, forms.ModBanBtnIdPrefix) {
+		userIdToBan := strings.TrimPrefix(data.CustomID, forms.ModBanBtnIdPrefix)
 
 		banReason := fmt.Sprintf("Banned by %s (%s)",
 			i.Member.User.GlobalName,
@@ -231,11 +231,11 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	// Form interactive button (to open modal)
-	if !strings.HasPrefix(data.CustomID, forms2.FormButtonIdPrefix) {
+	if !strings.HasPrefix(data.CustomID, forms.FormButtonIdPrefix) {
 		return // not a form interactive button, skip it
 	}
 
-	inputFormId := strings.TrimPrefix(data.CustomID, forms2.FormButtonIdPrefix)
+	inputFormId := strings.TrimPrefix(data.CustomID, forms.FormButtonIdPrefix)
 
 	form, ok := config.Yaml().Forms[inputFormId]
 	if !ok {
@@ -274,7 +274,7 @@ func handleInteractionMessageComponent(s *discordgo.Session, i *discordgo.Intera
 		Type: discordgo.InteractionResponseModal,
 		Data: &discordgo.InteractionResponseData{
 			//CustomID:   forms.FormModalIdPrefix + i.Interaction.Member.User.ID,
-			CustomID:   forms2.FormModalIdPrefix + inputFormId,
+			CustomID:   forms.FormModalIdPrefix + inputFormId,
 			Title:      form.Title,
 			Components: components,
 		},
@@ -288,18 +288,18 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 	data := i.ModalSubmitData()
 
 	modalCustomId := data.CustomID
-	if !strings.HasPrefix(modalCustomId, forms2.FormModalIdPrefix) {
+	if !strings.HasPrefix(modalCustomId, forms.FormModalIdPrefix) {
 		return // skip it
 	}
 
-	formId := strings.TrimPrefix(modalCustomId, forms2.FormModalIdPrefix)
+	formId := strings.TrimPrefix(modalCustomId, forms.FormModalIdPrefix)
 	form, ok := config.Yaml().Forms[formId]
 	if !ok {
 		return // skip invalid forms
 	}
 
 	// map of the 'input id' to the 'user given value'
-	var userInput []forms2.UserInput
+	var userInput []forms.UserInput
 	for _, parentComp := range data.Components {
 		switch row := parentComp.(type) {
 		case *discordgo.ActionsRow:
@@ -310,13 +310,13 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 					val = strings.ReplaceAll(val, "\n\n", "\n") // remove double next lines
 					val = strings.ReplaceAll(val, "\t", " ")    // replace the tab character
 					val = strings.ReplaceAll(val, "  ", " ")    // remove double spaces
-					val = forms2.ConvertLinksToHyperlinks(val)
+					val = forms.ConvertLinksToHyperlinks(val)
 
 					if val == "" {
 						continue
 					}
 
-					userInput = append(userInput, forms2.UserInput{
+					userInput = append(userInput, forms.UserInput{
 						InputId: child.CustomID,
 						Value:   val,
 					})
@@ -387,7 +387,7 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 		// the user who fills the modal should know their request is going to be in a pending state.
 		respContent += "\n\nModerators will review your request shortly. 🔎"
 
-		message.Components = append(message.Components, forms2.GenerateModComponents(formId, i.Member.User.ID))
+		message.Components = append(message.Components, forms.GenerateModComponents(formId, i.Member.User.ID))
 	}
 
 	sentMessage, err := s.ChannelMessageSendComplex(channelId, message)
@@ -429,7 +429,7 @@ func handleInteractionApplicationCommandAutocomplete(s *discordgo.Session, i *di
 }
 
 func checkRateLimit(userID string) bool {
-	if util.IsUserModerator(userID) {
+	if util.IsUserModerator(userID) { // TODO: fix this
 		return false
 	}
 

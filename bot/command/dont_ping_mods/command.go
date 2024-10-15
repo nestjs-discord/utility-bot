@@ -2,8 +2,8 @@ package dont_ping_mods
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/command/common"
 	"github.com/nestjs-discord/utility-bot/config"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command/common"
 )
 
 const Name = "dont-ping-mods"

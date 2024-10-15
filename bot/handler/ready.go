@@ -25,8 +25,8 @@ func (h *Handler) Ready(s *discordgo.Session, m *discordgo.Ready) {
 func (h *Handler) updateStatus(s *discordgo.Session) error {
 	activities := []*discordgo.Activity{ // TODO: can this be better?
 		{
-			Name: "slash commands",
-			Type: discordgo.ActivityTypeListening,
+			Name: "NestJS 😎🍿",
+			Type: discordgo.ActivityTypeWatching,
 		},
 	}
 

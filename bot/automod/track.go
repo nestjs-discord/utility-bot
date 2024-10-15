@@ -1,13 +1,7 @@
 package automod
 
-func (a *AutoMod) setChannels(channelIds []string) {
-	for _, id := range channelIds {
-		a.trackedChannelsIds = append(a.trackedChannelsIds, ChannelId(id))
-	}
-}
-
-func (a *AutoMod) IsChannelIdTrackable(channelId ChannelId) bool {
-	for _, cid := range a.trackedChannelsIds {
+func (a *AutoMod) IsChannelIdTrackable(channelId string) bool {
+	for _, cid := range a.cfg.ChannelIds {
 		if cid == channelId {
 			return true
 		}
@@ -15,6 +9,6 @@ func (a *AutoMod) IsChannelIdTrackable(channelId ChannelId) bool {
 	return false
 }
 
-func (a *AutoMod) GetTrackedChannelIds() []ChannelId {
-	return a.trackedChannelsIds
+func (a *AutoMod) GetTrackedChannelIds() []string {
+	return a.cfg.ChannelIds
 }

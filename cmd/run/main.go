@@ -46,6 +46,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Initialize the Discord bot
 	b, err := bot.NewBot(discordCfg)
 	if err != nil {
 		log.Fatal(err)
@@ -69,13 +70,13 @@ func main() {
 
 	b.ApplyHandler(
 		handler.NewHandler(
+			yamlCfg.Moderators,
 			iRateLimit,
 			iAutoMod,
 			iForms,
 		),
 	)
 
-	// command.RegisterApplicationCommands(b.Session()) // TODO: move this to the method below
 	err = b.RegisterApplicationCommands()
 	if err != nil {
 		log.Fatal(err)

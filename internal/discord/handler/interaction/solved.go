@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/discord/command/solved"
+	"github.com/nestjs-discord/utility-bot/bot/command/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 	"strings"
@@ -125,11 +125,11 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	// Send the canned response
 	content := "This post has been marked as resolved. :white_check_mark:\n" +
-                   "Please read through the conversation and resolution, if you are having the same issue. " +
-                   "If you were the original author of the post and the issue is still fresh (within a few days) " +
-	           "and you are still have having trouble, continue to reply here. If you are not the original " + 
-	           "author of the post or the post has aged, start a new thread linking this one as relevant to " +
-                   "your problem, providing as much additional information as possible."
+		"Please read through the conversation and resolution, if you are having the same issue. " +
+		"If you were the original author of the post and the issue is still fresh (within a few days) " +
+		"and you are still have having trouble, continue to reply here. If you are not the original " +
+		"author of the post or the post has aged, start a new thread linking this one as relevant to " +
+		"your problem, providing as much additional information as possible."
 
 	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
