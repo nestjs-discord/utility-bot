@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
-	"github.com/nestjs-discord/utility-bot/internal/cache"
+	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/logger"
 	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 	"log"
@@ -52,7 +52,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = cache.MarkdownContent(yamlCfg.Commands) // TODO: avoid global instance
+	iMarkdown := markdown.NewMarkdown()
+	err = iMarkdown.CacheCommands(yamlCfg.Commands)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,6 +75,7 @@ func main() {
 			iRateLimit,
 			iAutoMod,
 			iForms,
+			iMarkdown,
 		),
 	)
 

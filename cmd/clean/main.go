@@ -13,7 +13,7 @@ func main() {
 	}
 
 	// handler := handler.NewHandler()
-	b, err := bot.NewBot(discordCfg, nil)
+	b, err := bot.NewBot(discordCfg)
 	if err != nil {
 		log.Fatal(err)
 	}

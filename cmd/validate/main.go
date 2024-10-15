@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/config/yaml"
-	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/logger"
 	"log"
 	"log/slog"
@@ -22,7 +22,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = cache.MarkdownContent(ymlCfg.Commands) // TODO: avoid global instance
+	iMarkdown := markdown.NewMarkdown()
+	err = iMarkdown.CacheCommands(ymlCfg.Commands)
 	if err != nil {
 		log.Fatal(err)
 	}
