@@ -10,6 +10,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/command/reference"
 	"github.com/nestjs-discord/utility-bot/bot/command/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
+	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
@@ -310,7 +311,7 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 					val = strings.ReplaceAll(val, "\n\n", "\n") // remove double next lines
 					val = strings.ReplaceAll(val, "\t", " ")    // replace the tab character
 					val = strings.ReplaceAll(val, "  ", " ")    // remove double spaces
-					val = forms.ConvertLinksToHyperlinks(val)
+					val = markdown.ConvertLinksToHyperlinks(val)
 
 					if val == "" {
 						continue

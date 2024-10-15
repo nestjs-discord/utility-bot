@@ -1,4 +1,4 @@
-package forms
+package markdown
 
 import (
 	"github.com/stretchr/testify/assert"
