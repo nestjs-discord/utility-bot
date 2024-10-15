@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dgraph-io/ristretto"
 	"github.com/nestjs-discord/utility-bot/config/yaml"
+	"sync"
 )
 
 const (
@@ -18,11 +19,13 @@ const (
 type Forms struct {
 	cfg             yaml.Forms
 	modActionsCache *ristretto.Cache[string, bool]
+	modActionLock   sync.RWMutex
 }
 
 func NewForms(cfg yaml.Forms, session *discordgo.Session) (*Forms, error) {
 	forms := &Forms{
-		cfg: cfg,
+		cfg:           cfg,
+		modActionLock: sync.RWMutex{},
 	}
 
 	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{

@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
+	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
+	"github.com/nestjs-discord/utility-bot/bot/moderator"
 	"github.com/nestjs-discord/utility-bot/logger"
 	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 	"log"
@@ -69,13 +71,17 @@ func main() {
 		log.Fatal(err)
 	}
 
+	iModerator := moderator.NewModerator(yamlCfg.Moderators)
+	interactionHandler := interaction.NewHandler(iModerator)
+
 	b.ApplyHandler(
 		handler.NewHandler(
-			yamlCfg.Moderators,
+			interactionHandler,
 			iRateLimit,
 			iAutoMod,
 			iForms,
 			iMarkdown,
+			iModerator,
 		),
 	)
 

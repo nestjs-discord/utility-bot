@@ -15,33 +15,12 @@ import (
 	"github.com/nestjs-discord/utility-bot/internal/cache"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
-	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"log/slog"
 	"strings"
 	"sync"
 	"time"
 )
-
-func InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	switch i.Type {
-	case discordgo.InteractionApplicationCommand:
-		handleInteractionApplicationCommand(s, i)
-		return
-	case discordgo.InteractionMessageComponent: // interactive button (form)
-		handleInteractionMessageComponent(s, i)
-		return
-	case discordgo.InteractionModalSubmit: // modal submit (form)
-		handleInteractionModalSubmit(s, i)
-		return
-	case discordgo.InteractionApplicationCommandAutocomplete:
-		handleInteractionApplicationCommandAutocomplete(s, i)
-		return
-	}
-}
-
-// interactionCommandHandlerMap maps command names against their handler
-type interactionCommandHandlerMap map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate)
 
 func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	data := i.ApplicationCommandData()
@@ -55,29 +34,31 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 	)
 
 	if checkRateLimit(userID) {
-		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Content: config.Yaml().RateLimit.Message,
 				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
-		if err != nil {
-			util.InteractionRespondError(err, s, i)
-		}
 		return
 	}
 
-	handlers := interactionCommandHandlerMap{
-		solved.Name:         interaction.SolvedHandler,
-		archive.Name:        interaction.ArchiveHandler,
-		reference.Name:      reference.Handler,
-		google_it.Name:      google_it.Handler,
-		dont_ping_mods.Name: dont_ping_mods.Handler,
-	}
-
-	if handler, ok := handlers[data.Name]; ok {
-		handler(s, i)
+	switch data.Name {
+	case solved.Name:
+		interaction.SolvedHandler(s, i)
+		return
+	case archive.Name:
+		interaction.ArchiveHandler(s, i)
+		return
+	case reference.Name:
+		reference.Handler(s, i)
+		return
+	case google_it.Name:
+		google_it.Handler(s, i)
+		return
+	case dont_ping_mods.Name:
+		dont_ping_mods.Handler(s, i)
 		return
 	}
 
@@ -85,7 +66,7 @@ func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.Inte
 		return
 	}
 
-	interaction.DefaultHandler(s, i)
+	interaction.UnknownHandler(s, i)
 }
 
 // // TODO: refactor - to prevent race condition (when moderators click on the accept/reject/ban buttons)
@@ -409,24 +390,6 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 			Flags:   discordgo.MessageFlagsEphemeral,
 		},
 	})
-}
-
-func handleInteractionApplicationCommandAutocomplete(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	name := i.ApplicationCommandData().Name
-	log.Debug().Str("name", name).
-		Str("guild-id", i.GuildID).
-		Str("channel-id", i.ChannelID).
-		Interface("options", i.ApplicationCommandData().Options).
-		Msg("event: interaction application command autocomplete")
-
-	switch name {
-	case reference.Name:
-		reference.AutocompleteHandler(s, i)
-		return
-	case google_it.Name:
-		google_it.AutocompleteHandler(s, i)
-		return
-	}
 }
 
 func checkRateLimit(userID string) bool {

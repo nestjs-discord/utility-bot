@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/dgraph-io/ristretto"
 	"github.com/nestjs-discord/utility-bot/config/yaml"
+	"github.com/nestjs-discord/utility-bot/logger"
+	"log/slog"
 	"sync"
 	"time"
 )
@@ -12,7 +14,8 @@ type (
 	UserId string
 )
 
-type AutoMod struct {
+type AutoMod struct { // TODO: rename to antispam
+	logger     *slog.Logger
 	cfg        yaml.AutoMod
 	sync       sync.RWMutex
 	userMap    map[UserId]map[string]Message
@@ -31,6 +34,7 @@ func NewAutoMod(cfg yaml.AutoMod) (*AutoMod, error) {
 	}
 
 	a := &AutoMod{
+		logger:     logger.NewWithSubsystem("bot", "antispam"),
 		cfg:        cfg,
 		sync:       sync.RWMutex{},
 		userMap:    make(map[UserId]map[string]Message),

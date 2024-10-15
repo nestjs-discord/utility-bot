@@ -21,7 +21,7 @@ func (h *Handler) MessageCreate(s *discordgo.Session, i *discordgo.MessageCreate
 		h.autoMod.Handler(s, i)
 	}
 
-	if !h.isModerator(i.Author.ID) {
+	if !h.moderator.IsUserModerator(i.Author.ID) {
 		return
 	}
 

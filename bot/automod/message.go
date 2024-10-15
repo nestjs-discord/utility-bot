@@ -6,6 +6,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
+	"log/slog"
 )
 
 type Message struct {
@@ -79,9 +80,9 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Skip executing auto-mod logic if the provided channel ID is not in the list of channels being tracked.
 	// This check ensures that auto-mod actions are only applied to channels marked for moderation.
 	if !a.IsChannelIdTrackable(channelId) {
-		log.Debug().
-			Str("channel-id", i.ChannelID).
-			Msg("auto mod: channel id is not trackable, skipping...")
+		a.logger.Debug("auto mod: channel id is not trackable, skipping...",
+			slog.String("channelId", channelId),
+		)
 		return
 	}
 
@@ -98,7 +99,7 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		_ = s.ChannelMessageDelete(i.ChannelID, i.ID)
 
 		// Try to ban them again
-		_ = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "spam", 7)
+		_ = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "The antispam feature flagged this user!", 7)
 
 		return
 	}
@@ -166,8 +167,7 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 }
 
 func (a *AutoMod) TrackHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
-	content := "AutoMod is tracking the following text channels.\n"
-	content += "> Forum channels are ignored by default.\n"
+	content := "### Antispam feature is tracking the following channels: 👇\n"
 	for _, channelId := range a.cfg.ChannelIds {
 		content += fmt.Sprintf("- <#%s>\n", channelId)
 	}
