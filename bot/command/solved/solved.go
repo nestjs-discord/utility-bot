@@ -43,3 +43,5 @@ var Command = &discordgo.ApplicationCommand{
 		},
 	},
 }
+
+// TODO: handler

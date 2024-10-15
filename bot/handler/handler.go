@@ -7,14 +7,12 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderator"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
-	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 	"log/slog"
 )
 
 type Handler struct {
 	logger             *slog.Logger
 	interactionHandler *interaction.Handler
-	rateLimit          *rate_limit.TTLMap // for the application commands
 	autoMod            *automod.AutoMod
 	forms              *forms.Forms
 	markdown           *markdown.Markdown
@@ -24,7 +22,6 @@ type Handler struct {
 
 func NewHandler(
 	interactionHandler *interaction.Handler,
-	rateLimit *rate_limit.TTLMap,
 	autoMod *automod.AutoMod,
 	forms *forms.Forms,
 	markdown *markdown.Markdown,
@@ -33,7 +30,6 @@ func NewHandler(
 	h := &Handler{
 		logger:             logger.NewWithSubsystem("bot", "handler"),
 		interactionHandler: interactionHandler,
-		rateLimit:          rateLimit,
 		autoMod:            autoMod,
 		forms:              forms,
 		markdown:           markdown,

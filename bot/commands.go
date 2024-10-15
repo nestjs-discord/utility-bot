@@ -2,7 +2,6 @@ package bot
 
 import (
 	"fmt"
-	"github.com/nestjs-discord/utility-bot/infra/config"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"log/slog"
 	"strings"
@@ -34,11 +33,11 @@ var (
 
 type subCommandsType = map[string]yaml.Commands
 
-func (b *Bot) RegisterApplicationCommands() error {
-	normalCmd, subCmd := generateCommandsToRegister()
+func (b *Bot) RegisterApplicationCommands(cfgCommands yaml.Commands) error {
+	normalCmd, subCmd := b.generateCommandsToRegister(cfgCommands)
 
-	commands = append(commands, generateDynamicCommands(normalCmd)...)
-	commands = append(commands, generateDynamicSubcommands(subCmd)...)
+	commands = append(commands, b.generateDynamicCommands(normalCmd)...)
+	commands = append(commands, b.generateDynamicSubcommands(subCmd)...)
 
 	_, err := b.session.ApplicationCommandBulkOverwrite(
 		b.discordCfg.AppId,
@@ -55,9 +54,9 @@ func (b *Bot) RegisterApplicationCommands() error {
 	return nil
 }
 
-func generateDynamicCommands(normalCommands yaml.Commands) (commands []*discordgo.ApplicationCommand) {
+func (b *Bot) generateDynamicCommands(normalCommands yaml.Commands) (commands []*discordgo.ApplicationCommand) {
 	for k, v := range normalCommands {
-		perm := calculateCommandPermission(v)
+		perm := b.calculateCommandPermission(v)
 
 		cmd := &discordgo.ApplicationCommand{
 			Name:                     k,
@@ -72,14 +71,14 @@ func generateDynamicCommands(normalCommands yaml.Commands) (commands []*discordg
 	return
 }
 
-func generateDynamicSubcommands(subCommands subCommandsType) (commands []*discordgo.ApplicationCommand) {
+func (b *Bot) generateDynamicSubcommands(subCommands subCommandsType) (commands []*discordgo.ApplicationCommand) {
 	for k, v := range subCommands {
 		var perm int64 = 0
 		var options []*discordgo.ApplicationCommandOption
 
 		for s, sd := range v {
 			if perm == 0 {
-				perm = calculateCommandPermission(sd)
+				perm = b.calculateCommandPermission(sd)
 			}
 
 			options = append(options, &discordgo.ApplicationCommandOption{
@@ -103,11 +102,11 @@ func generateDynamicSubcommands(subCommands subCommandsType) (commands []*discor
 	return
 }
 
-func generateCommandsToRegister() (yaml.Commands, subCommandsType) {
+func (b *Bot) generateCommandsToRegister(cfgCommands yaml.Commands) (yaml.Commands, subCommandsType) {
 	subCommands := subCommandsType{}
 	normalCommands := yaml.Commands{}
 
-	for cmdName, cmdData := range config.Yaml().Commands {
+	for cmdName, cmdData := range cfgCommands {
 		if !strings.Contains(cmdName, " ") {
 			normalCommands[cmdName] = cmdData
 			continue
@@ -136,7 +135,7 @@ func generateCommandsToRegister() (yaml.Commands, subCommandsType) {
 //
 // Returns:
 // - An int64 representing the calculated content permission level.
-func calculateCommandPermission(cmdData yaml.Command) int64 {
+func (b *Bot) calculateCommandPermission(cmdData yaml.Command) int64 {
 	if cmdData.Protected {
 		return permissionProtected
 	}

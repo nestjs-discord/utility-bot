@@ -6,10 +6,10 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderator"
+	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
-	"github.com/nestjs-discord/utility-bot/pkg/rate_limit"
 	"log"
 	"log/slog"
 	"os"
@@ -60,9 +60,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	iRateLimit := rate_limit.New(yamlCfg.RateLimit.TTL)
-
 	iModerator := moderator.NewModerator(yamlCfg.Moderators)
+	iRateLimit := rate_limit.NewRateLimit(yamlCfg.RateLimit, iModerator)
+
 	iAutoMod, err := automod.NewAutoMod(yamlCfg.AutoMod, iModerator)
 	if err != nil {
 		log.Fatal(err)
@@ -73,12 +73,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	interactionHandler := interaction.NewHandler(iModerator)
+	interactionHandler := interaction.NewHandler(iModerator, iRateLimit, iMarkdown)
 
 	b.ApplyHandler(
 		handler.NewHandler(
 			interactionHandler,
-			iRateLimit,
 			iAutoMod,
 			iForms,
 			iMarkdown,
@@ -86,7 +85,7 @@ func main() {
 		),
 	)
 
-	err = b.RegisterApplicationCommands()
+	err = b.RegisterApplicationCommands(yamlCfg.Commands)
 	if err != nil {
 		log.Fatal(err)
 	}

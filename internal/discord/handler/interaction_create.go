@@ -4,70 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/bot/command/archive"
-	"github.com/nestjs-discord/utility-bot/bot/command/dont_ping_mods"
-	"github.com/nestjs-discord/utility-bot/bot/command/google_it"
-	"github.com/nestjs-discord/utility-bot/bot/command/reference"
-	"github.com/nestjs-discord/utility-bot/bot/command/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/infra/config"
-	"github.com/nestjs-discord/utility-bot/internal/cache"
-	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/samber/lo"
-	"log/slog"
 	"strings"
 	"sync"
 	"time"
 )
-
-func handleInteractionApplicationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	data := i.ApplicationCommandData()
-	userID := i.Member.User.ID
-
-	slog.Debug("event: interaction app command",
-		slog.String("userId", userID),
-		slog.String("channelId", i.ChannelID),
-		slog.String("name", data.Name),
-		slog.Any("options", i.ApplicationCommandData().Options),
-	)
-
-	if checkRateLimit(userID) {
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: config.Yaml().RateLimit.Message,
-				Flags:   discordgo.MessageFlagsEphemeral,
-			},
-		})
-		return
-	}
-
-	switch data.Name {
-	case solved.Name:
-		interaction.SolvedHandler(s, i)
-		return
-	case archive.Name:
-		interaction.ArchiveHandler(s, i)
-		return
-	case reference.Name:
-		reference.Handler(s, i)
-		return
-	case google_it.Name:
-		google_it.Handler(s, i)
-		return
-	case dont_ping_mods.Name:
-		dont_ping_mods.Handler(s, i)
-		return
-	}
-
-	if interaction.ContentHandler(s, i) {
-		return
-	}
-
-	interaction.UnknownHandler(s, i)
-}
 
 // // TODO: refactor - to prevent race condition (when moderators click on the accept/reject/ban buttons)
 var handleInteractionMessageComponentLock = sync.Mutex{}
@@ -390,15 +335,4 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 			Flags:   discordgo.MessageFlagsEphemeral,
 		},
 	})
-}
-
-func checkRateLimit(userID string) bool {
-	if util.IsUserModerator(userID) { // TODO: fix this
-		return false
-	}
-
-	cache.RateLimit.IncrementUsage(userID)
-
-	maxUsage := config.Yaml().RateLimit.Usage
-	return cache.RateLimit.GetUsageCount(userID) > maxUsage
 }

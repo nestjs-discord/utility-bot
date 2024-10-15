@@ -1,20 +1,19 @@
-package interaction
+package markdown
 
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/command/common"
-	"github.com/nestjs-discord/utility-bot/infra/config"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 )
 
-func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
-	name, options := normalizeInteractionData(i)
+func (m *Markdown) ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
+	name, options := m.normalizeInteractionData(i)
 
 	// Resolve cached content by name
-	cmd, cmdExist := config.Yaml().Commands[name]
+	cmd, cmdExist := m.commands[name]
 	if !cmdExist {
 		return false
 	}
@@ -36,7 +35,7 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content:    content,
-			Components: convertButtonsToMessageComponents(cmd.Buttons),
+			Components: m.convertButtonsToMessageComponents(cmd.Buttons),
 			Flags:      flags,
 		},
 	})
@@ -59,7 +58,7 @@ func ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
 
 // normalizeInteractionData normalizes the interaction data received from a Discord interaction create event.
 // It extracts the name and options from the interaction data, accounting for sub-commands if present.
-func normalizeInteractionData(i *discordgo.InteractionCreate) (string, []*discordgo.ApplicationCommandInteractionDataOption) {
+func (m *Markdown) normalizeInteractionData(i *discordgo.InteractionCreate) (string, []*discordgo.ApplicationCommandInteractionDataOption) {
 	name := i.ApplicationCommandData().Name
 	options := i.ApplicationCommandData().Options
 
@@ -75,9 +74,9 @@ func normalizeInteractionData(i *discordgo.InteractionCreate) (string, []*discor
 	return name, options
 }
 
-func convertButtonsToMessageComponents(b [][]*yaml.CommandButton) []discordgo.MessageComponent {
+func (m *Markdown) convertButtonsToMessageComponents(buttons yaml.CommandButtons) []discordgo.MessageComponent {
 	var components []discordgo.MessageComponent
-	for _, row := range b {
+	for _, row := range buttons {
 		componentsInRow := make([]discordgo.MessageComponent, 0, len(row))
 		for _, btn := range row {
 			componentsInRow = append(componentsInRow, discordgo.Button{

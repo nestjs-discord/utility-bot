@@ -10,14 +10,14 @@ import (
 )
 
 type Markdown struct {
-	logger *slog.Logger
-	data   map[string]string
+	logger   *slog.Logger
+	commands yaml.Commands
 }
 
 func NewMarkdown() *Markdown {
 	return &Markdown{
-		logger: logger.NewWithSubsystem("bot", "markdown"),
-		data:   make(map[string]string),
+		logger:   logger.NewWithSubsystem("bot", "markdown"),
+		commands: make(yaml.Commands),
 	}
 }
 
@@ -25,7 +25,7 @@ func NewMarkdown() *Markdown {
 func (m *Markdown) CacheCommands(commands yaml.Commands) error {
 	charLimit := 2000
 
-	for _, c := range commands {
+	for cmdName, c := range commands { // TODO: concurrent loop
 		// Ignore non-markdown files
 		if !strings.HasSuffix(c.Content, ".md") {
 			return fmt.Errorf("expected '%v' file, to have '.md' extension", c.Content)
@@ -43,11 +43,12 @@ func (m *Markdown) CacheCommands(commands yaml.Commands) error {
 			return fmt.Errorf("the '%v' file contains too many characters, expected maximum of %d but received %d", p, charLimit, len(c.Content))
 		}
 
-		m.data[c.Content] = string(data)
+		c.Content = string(data)
+		m.commands[cmdName] = c
 
 		m.logger.Debug("cached content",
-			slog.Int("char-len", len(m.data[c.Content])),
-			slog.String("path", p),
+			slog.Int("char-len", len(c.Content)),
+			slog.String("name", cmdName),
 		)
 	}
 

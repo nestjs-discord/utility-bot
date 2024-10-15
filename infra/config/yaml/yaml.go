@@ -73,11 +73,13 @@ type AutoMod struct {
 type Commands map[string]Command
 
 type Command struct {
-	Description string             `yaml:"description" validate:"required,min=1,max=100"`
-	Content     string             `yaml:"content" validate:"required,min=1"`
-	Protected   bool               `yaml:"protected" validate:"boolean"`
-	Buttons     [][]*CommandButton `yaml:"buttons" validate:"min=0,max=8,dive,min=1,max=4,dive"`
+	Description string         `yaml:"description" validate:"required,min=1,max=100"`
+	Content     string         `yaml:"content" validate:"required,min=1"`
+	Protected   bool           `yaml:"protected" validate:"boolean"`
+	Buttons     CommandButtons `yaml:"buttons" validate:"min=0,max=8,dive,min=1,max=4,dive"`
 }
+
+type CommandButtons [][]*CommandButton
 
 type CommandButton struct {
 	Label string `yaml:"label" validate:"required,min=3,max=40"`
