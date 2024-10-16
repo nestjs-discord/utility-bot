@@ -97,8 +97,8 @@ func (a *AutoMod) generateAlertEmbedDescription() string {
 	return fmt.Sprintf(
 		"Member exceeded channel limit `%d` within `%d` seconds."+"\n"+
 			"Added to the denied list for the next `%d` seconds.",
-		a.cfg.MaxChannelsLimitPerUser,
-		a.cfg.MessageTTL,
-		a.cfg.DenyTTL,
+		a.cfg.MaxChannelsPerUser,
+		a.cfg.MessageTTLSec,
+		a.cfg.DenyTTLSec,
 	)
 }

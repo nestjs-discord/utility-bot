@@ -40,12 +40,12 @@ func NewAutoMod(cfg yaml.AutoMod, moderator *moderator.Moderator) (*AutoMod, err
 		cfg:        cfg,
 		sync:       sync.RWMutex{},
 		userMap:    make(map[UserId]map[string]Message),
-		denyTTL:    time.Duration(cfg.DenyTTL) * time.Second,
+		denyTTL:    time.Duration(cfg.DenyTTLSec) * time.Second,
 		deniedList: cache,
 		moderator:  moderator,
 	}
 
-	go a.backgroundCleaner(cfg.MessageTTL)
+	go a.backgroundCleaner(cfg.MessageTTLSec)
 
 	return a, nil
 }
@@ -89,5 +89,5 @@ func (a *AutoMod) getChannelsLengthByUserId(id UserId) int {
 }
 
 func (a *AutoMod) IsUserWithinMaxChannelsLimit(userId UserId) bool {
-	return a.getChannelsLengthByUserId(userId) <= a.cfg.MaxChannelsLimitPerUser
+	return a.getChannelsLengthByUserId(userId) <= a.cfg.MaxChannelsPerUser
 }

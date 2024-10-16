@@ -1,83 +1,54 @@
-#
-# List of approved members who have the privilege to bypass
-# rate limit restrictions and access the "protected" commands.
-#
 moderators:
   # Core Team
-  - 492978759918419978 # Kamil
-  - 524281921115652106 # jmcdo29
-  - 225858983632699392 # Brunner Livio
-  - 517170598833553408 # Y Prospect
-  - 132222189209518080 # Micael (micalevisk)
-  - 570354602063691826 # markpieszak
+  - "NDkyOTc4NzU5OTE4NDE5OTc4" # Kamil
+  - "NTI0MjgxOTIxMTE1NjUyMTA2" # jmcdo29
+  - "MjI1ODU4OTgzNjMyNjk5Mzky" # Brunner Livio
+  - "NTE3MTcwNTk4ODMzNTUzNDA4" # Y Prospect
+  - "MTMyMjIyMTg5MjA5NTE4MDgw" # Micael (micalevisk)
+  - "NTcwMzU0NjAyMDYzNjkxODI2" # markpieszak
 
   # Community Mods
-  - 118633408438992896 # wodCZ
-  - 646107453469229056 # Papooch
-  - 267661647785623572 # Scott
-  - 370903700979318784 # Script
-  - 718538147449012245 # Tony
-  - 210984433321246720 # underfisk
-  - 673658728863629360 # Maciej Sikorski (Matthew)
+  - "MTE4NjMzNDA4NDM4OTkyODk2" # wodCZ
+  - "NjQ2MTA3NDUzNDY5MjI5MDU2" # Papooch
+  - "MjY3NjYxNjQ3Nzg1NjIzNTcy" # Scott
+  - "MzcwOTAzNzAwOTc5MzE4Nzg0" # Script
+  - "NzE4NTM4MTQ3NDQ5MDEyMjQ1" # Tony
+  - "MjEwOTg0NDMzMzIxMjQ2NzIw" # underfisk
+  - "NjczNjU4NzI4ODYzNjI5MzYw" # Maciej Sikorski (Matthew)
 
   # MVPs
-  - 211445675701829632 # weshuiz13
+  - "MjExNDQ1Njc1NzAxODI5NjMy" # weshuiz13
 
-#
-# This configuration is for rate limiting usage of slash commands
-#
-# `ttl` specifies the maximum time to live (in seconds) for each usage of a slash command,
-# after which the usage count will reset to 0
-#
-# `usage` specifies the maximum number of times a particular slash command can be used within the `ttl` period
-# before further usage is prevented
-#
-rateLimit:
-  ttl: 60  # Maximum TTL of 60 seconds
-  usage: 8 # Maximum of eight usages within the TTL period
-  message: "Chill out, cowboy!\nYou don't want to overload our poor server."
+rateLimit: # only applies to the application commands
+  ttlSec: 60
+  maxUsage: 8
+  message: >
+    Chill out, cowboy!
+    You don't want to overload our poor server.
 
-#
-# Auto-Moderation Configuration
-#
-autoMod:
-  # Enable or disable the auto-moderation feature.
+antispam: # flags the users who spam messages on multiple channels in a short timeframe.
   enabled: true
-
-  # Indicates whether moderators can bypass certain auto-moderation checks.
+  logChannelId: "918987870197395577" # TODO: migrate to the "auto mod messages" channel
   moderatorsBypass: true
+  messageTTLSec: 60 # how long the messages should be kept in the memory.
+  maxChannelsPerUser: 3 # the maximum number of channels a user can send messages in within the defined TTL timeframe.
+  denyTTLSec: 120 # how long a spammer user ID should be kept in the memory (to delete their future messages).
+  trackedChannelIds:
+    # Information (read-only)
+    # - "527853342152458287" # welcome
+    # - "525389275769077771" # resources
+    # - "669488633228558339" # roles
+    # - "669642626001010709" # partners
 
-  # The Discord channel ID where auto-mod log messages will be sent.
-  logChannelId: "918987870197395577"
-
-  # Time-to-live for caching each message in memory (in seconds).
-  # Messages older than this duration will be removed from the cache.
-  messageTTL: 60 # Seconds
-
-  # The maximum number of text channels a user can send messages to within the defined messageTTL.
-  maxChannelsLimitPerUser: 3
-
-  # Time-to-live for keeping a user ID in memory after being recognized as spamming (in seconds).
-  # This option might be useful for temporary actions, such as deleting ongoing messages.
-  denyTTL: 120 # Seconds
-
-  # List of channel ids that should be tracked by this feature
-  channelIds:
-    # Information
-    # - "527853342152458287" # welcome (read-only)
-    # - "525389275769077771" # resources (read-only)
-    # - "669488633228558339" # roles (read-only)
-    # - "669642626001010709" # partners (read-only)
-
-    # Core Team
-    # - "808120635682586644" # moderator-mvp-exchange (private)
-    # - "523471550104731659" # general (private)
-    # - "918987870197395577" # bot-test (private)
-    # - "1028324313180413982" # auto mod messages (private)
-    # - "1294488503744204860" # mod-profiles (private)
-    # - "1294488539500777472" # mod-opportunities (private)
-    # - "598294041150619662" # marketing (private)
-    # - "613075872915783682" # core-team-devops (private)
+    # Core Team (private)
+    # - "808120635682586644" # moderator-mvp-exchange
+    # - "918987870197395577" # bot-test
+    # - "1028324313180413982" # auto mod messages
+    # - "1294488503744204860" # mod-profiles
+    # - "1294488539500777472" # mod-opportunities
+    # - "598294041150619662" # marketing
+    # - "523471550104731659" # general (archived)
+    # - "613075872915783682" # core-team-devops (archived)
 
     # Community Modules
     - "626341204442742784" # community-packages
@@ -212,6 +183,7 @@ archiveCommand:
     If you have a similar issue and cannot resolve it after reading this thread, please open a new post.
 
 solvedCommand:
+  description: "Close and mark a forum post as solved."
   response: > # TODO: can the unnecessary next line characters be removed from here somehow?
     This post has been marked as resolved. ✅
     Please read through the conversation and resolution, if you are having the same issue.
@@ -280,8 +252,7 @@ commands:
     description: "Please provide more context so we can better assist you with your inquiry."
     content: "./content/mods/elaborate.md"
     buttons:
-      -
-        - label: "What is a reproduction repository?"
+      - - label: "What is a reproduction repository?"
           url: "https://minimum-reproduction.wtf/"
           emoji: "🔗"
 
@@ -292,8 +263,7 @@ commands:
     description: "A curated list of awesome things related to NestJS"
     content: "./content/community/awesome.md"
     buttons:
-      -
-        - label: "View repository on GitHub"
+      - - label: "View repository on GitHub"
           url: "https://github.com/nestjs/awesome-nestjs"
           emoji: "🔗"
 
@@ -301,8 +271,7 @@ commands:
     description: "A GitHub repository to show off to the community methods of testing NestJS"
     content: "./content/community/testing.md"
     buttons:
-      -
-        - label: "View repository on GitHub"
+      - - label: "View repository on GitHub"
           url: "https://github.com/jmcdo29/testing-nestjs"
           emoji: "🔗"
 
@@ -310,15 +279,13 @@ commands:
     description: "How to enable the trust proxy option when NestJS app is behind a reverse proxy"
     content: "./content/docs/behind-proxy.md"
     buttons:
-      -
-        - label: "Express trust proxy docs"
+      - - label: "Express trust proxy docs"
           url: "https://expressjs.com/en/guide/behind-proxies.html"
           emoji: "🔗"
         - label: "Fastify trustProxy docs"
           url: "https://fastify.dev/docs/latest/Reference/Server#trustproxy"
           emoji: "🔗"
-      -
-        - label: "@nestjs/throttler docs"
+      - - label: "@nestjs/throttler docs"
           url: "https://docs.nestjs.com/security/rate-limiting#proxies"
           emoji: "📖"
 
@@ -326,12 +293,10 @@ commands:
     description: "Circular dependencies in NestJS and how to avoid them"
     content: "./content/docs/circular-dependency.md"
     buttons:
-      -
-        - label: "Read rest of the documentation"
+      - - label: "Read rest of the documentation"
           url: "https://docs.nestjs.com/fundamentals/circular-dependency"
           emoji: "📖"
-      -
-        - label: "How to avoid circular dependencies"
+      - - label: "How to avoid circular dependencies"
           url: "https://trilon.io/blog/avoiding-circular-dependencies-in-nestjs"
           emoji: "📝"
 
@@ -339,12 +304,10 @@ commands:
     description: "How to fix when TypeScript 4.9+ on Windows causes infinite loop in watch mode"
     content: "./content/docs/file-change-detected.md"
     buttons:
-      -
-        - label: "TypeScript documentation"
+      - - label: "TypeScript documentation"
           url: "https://www.typescriptlang.org/tsconfig#watch-watchDirectory"
           emoji: "🔗"
-      -
-        - label: "New strategy for detecting file changes"
+      - - label: "New strategy for detecting file changes"
           url: "https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#file-watching-now-uses-file-system-events"
           emoji: "📝"
 
@@ -352,8 +315,7 @@ commands:
     description: "Create hybrid apps with NestJS and microservices"
     content: "./content/docs/hybrid-app.md"
     buttons:
-      -
-        - label: "Read more"
+      - - label: "Read more"
           url: "https://docs.nestjs.com/faq/hybrid-application"
           emoji: "📖"
 
@@ -365,8 +327,7 @@ commands:
     description: "What to do when process.env is not populated"
     content: "./content/docs/process-env-population.md"
     buttons:
-      -
-        - label: "How to use the ConfigService"
+      - - label: "How to use the ConfigService"
           url: "https://docs.nestjs.com/techniques/configuration#using-the-configservice"
           emoji: "📖"
 
@@ -374,8 +335,7 @@ commands:
     description: "Ensure accurate service/module listings"
     content: "./content/docs/providers-vs-imports.md"
     buttons:
-      -
-        - label: "Read more"
+      - - label: "Read more"
           url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
           emoji: "📖"
 
@@ -383,8 +343,7 @@ commands:
     description: "Get a grip on NestJS' request lifecycle for smooth coding"
     content: "./content/docs/request-lifecycle.md"
     buttons:
-      -
-        - label: "Documentation reference"
+      - - label: "Documentation reference"
           url: "https://docs.nestjs.com/faq/request-lifecycle"
           emoji: "🔗"
 
@@ -392,16 +351,13 @@ commands:
     description: "Nest not being able to resolve dependencies of something"
     content: "./content/docs/resolve-dependencies.md"
     buttons:
-      -
-        - label: "Read more about this error"
+      - - label: "Read more about this error"
           url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
           emoji: "📖"
-      -
-        - label: "Standard NestJS provider practices"
+      - - label: "Standard NestJS provider practices"
           url: "https://docs.nestjs.com/fundamentals/custom-providers#di-fundamentals"
           emoji: "🔗"
-      -
-        - label: "Circular dependency"
+      - - label: "Circular dependency"
           url: "https://docs.nestjs.com/faq/common-errors#circular-dependency-error"
           emoji: "🔗"
         - label: "Custom providers"
@@ -420,8 +376,7 @@ commands:
     description: "Telling people to just ask their question with a link explaining why"
     content: "./content/rules/dont-ask-to-ask.md"
     buttons:
-      -
-        - label: "Learn more about asking to ask"
+      - - label: "Learn more about asking to ask"
           url: "https://dontasktoask.com"
           emoji: "❓"
 
@@ -429,8 +384,7 @@ commands:
     description: "Telling people not to say just 'hello' in the chat"
     content: "./content/rules/no-hello.md"
     buttons:
-      -
-        - label: "Why is this a thing"
+      - - label: "Why is this a thing"
           url: "https://nohello.net/en/"
           emoji: "❓"
 
@@ -438,12 +392,10 @@ commands:
     description: "Request for a minimum reproduction of the issue"
     content: "./content/rules/reproduction.md"
     buttons:
-      -
-        - label: "Learn more about minimum reproductions"
+      - - label: "Learn more about minimum reproductions"
           url: "https://minimum-reproduction.wtf"
           emoji: "📖"
-      -
-        - label: "SO Minimum Reproduction Description"
+      - - label: "SO Minimum Reproduction Description"
           url: "https://stackoverflow.com/help/minimal-reproducible-example"
           emoji: "🔗"
 
@@ -451,8 +403,7 @@ commands:
     description: "When someone posts a screenshot instead of sharing their code"
     content: "./content/rules/screenshot.md"
     buttons:
-      -
-        - label: "Learn more about code-blocks"
+      - - label: "Learn more about code-blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"
 
@@ -460,12 +411,10 @@ commands:
     description: "Introduction to floating Promises in JavaScript"
     content: "./content/javascript/floating-promise.md"
     buttons:
-      -
-        - label: "Learn more about Promises, async/await"
+      - - label: "Learn more about Promises, async/await"
           url: "https://javascript.info/async"
           emoji: "📖"
-      -
-        - label: "Eslint rule to prevent async code errors"
+      - - label: "Eslint rule to prevent async code errors"
           url: "https://typescript-eslint.io/rules/no-floating-promises/"
           emoji: "🔗"
 
@@ -473,8 +422,7 @@ commands:
     description: "Ask them to run the \"npx @nestjs/cli info\" and paste the output in a code block."
     content: "./content/request-info.md"
     buttons:
-      -
-        - label: "Learn more about code-blocks"
+      - - label: "Learn more about code-blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"
 
@@ -482,7 +430,6 @@ commands:
     description: "Telling people to be specific when seeking help. Share errors, and provide the code if possible."
     content: "./content/show-the-error.md"
     buttons:
-      -
-        - label: "Learn more about code-blocks"
+      - - label: "Learn more about code-blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"

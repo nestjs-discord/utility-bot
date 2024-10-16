@@ -9,7 +9,7 @@ import (
 type Config struct {
 	Moderators Moderators `yaml:"moderators" validate:"required,min=1,dive,min=1"`
 	RateLimit  RateLimit  `yaml:"rateLimit" validate:"required"`
-	AutoMod    AutoMod    `yaml:"autoMod" validate:"required"`
+	AutoMod    AutoMod    `yaml:"antispam" validate:"required"`
 	Forms      Forms      `yaml:"forms" validate:"required,min=1,dive"`
 	Commands   Commands   `yaml:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
 }
@@ -55,19 +55,19 @@ type FormInput struct {
 }
 
 type RateLimit struct {
-	TTL     int    `yaml:"ttl" validate:"required,min=1"`
-	Usage   int    `yaml:"usage" validate:"required,min=2"`
-	Message string `yaml:"message" validate:"required,min=3"`
+	TTLSec   int    `yaml:"ttlSec" validate:"required,min=1"`
+	MaxUsage int    `yaml:"maxUsage" validate:"required,min=2"`
+	Message  string `yaml:"message" validate:"required,min=3"`
 }
 
-type AutoMod struct {
-	Enabled                 bool     `yaml:"enabled" validate:"boolean"`
-	ModeratorsBypass        bool     `yaml:"moderatorsBypass" validate:"boolean"`
-	LogChannelId            string   `yaml:"logChannelId" validate:"required,min=1"`
-	MessageTTL              int      `yaml:"messageTTL" validate:"required,min=1"`
-	MaxChannelsLimitPerUser int      `yaml:"maxChannelsLimitPerUser" validate:"required,min=1"`
-	DenyTTL                 int      `yaml:"denyTTL" validate:"required,min=1"`
-	ChannelIds              []string `yaml:"channelIds"`
+type AutoMod struct { // TODO: rename to antispam
+	Enabled            bool     `yaml:"enabled" validate:"boolean"`
+	ModeratorsBypass   bool     `yaml:"moderatorsBypass" validate:"boolean"`
+	LogChannelId       string   `yaml:"logChannelId" validate:"required,min=1"`
+	MessageTTLSec      int      `yaml:"messageTTLSec" validate:"required,min=1"`
+	MaxChannelsPerUser int      `yaml:"maxChannelsPerUser" validate:"required,min=1"`
+	DenyTTLSec         int      `yaml:"denyTTLSec" validate:"required,min=1"`
+	TrackedChannelIds  []string `yaml:"trackedChannelIds"`
 }
 
 type Commands map[string]Command
