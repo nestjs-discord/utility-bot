@@ -196,13 +196,6 @@ solvedCommand:
   solvedTags: # TODO: fill the values
     123: "123"
 
-
-
-#
-# This configuration block defines dynamic slash commands to be displayed to Discord users.
-#
-commands:
-  #
   # For each command, use a key to define the command name.
   # If a key contains a single space character, it becomes a sub-command.
   #
@@ -228,25 +221,25 @@ commands:
   #     What will be the response of this command when executed.
   #
   #   protected (optional, default is false):
-  #     If set to true, only moderators will be able to "see" and "use" this command.
+  #     If set to true, only moderators will be able to see and use this command.
   #
   #   buttons (optional, max eight rows and four columns):
   #     An array of arrays representing rows and columns of Discord message components, specifically link buttons.
-  #     Each link button has the "label", "url", and optional "emoji" string fields.
+  #     Each link button has label, url, and an optional emoji string field.
   #     See https://discord.com/developers/docs/interactions/message-components for more information on message components.
-
+commands:
   #
   # Moderator commands (hidden from the public users)
   #
   mods cross-post:
     description: "Warn users not to cross-post, ask in relevant channels, and be patient."
-    content: "./content/mods/cross-post.md"
     protected: true
+    content: "./content/mods/cross-post.md"
 
   mods spam:
     description: "A friendly warning to prevent spamming in the chat"
-    content: "./content/mods/spam.md"
     protected: true
+    content: "./content/mods/spam.md"
 
   mods elaborate:
     description: "Please provide more context so we can better assist you with your inquiry."

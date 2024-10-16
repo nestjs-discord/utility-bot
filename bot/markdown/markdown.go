@@ -11,9 +11,9 @@ type Markdown struct {
 	commands yaml.Commands
 }
 
-func NewMarkdown() *Markdown {
+func NewMarkdown(commands yaml.Commands) *Markdown {
 	return &Markdown{
 		logger:   logger.NewWithSubsystem("bot", "markdown"),
-		commands: make(yaml.Commands),
+		commands: commands,
 	}
 }

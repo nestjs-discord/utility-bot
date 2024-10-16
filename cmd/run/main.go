@@ -35,7 +35,7 @@ func init() {
 	}
 }
 
-func main() {
+func initDependencies() *bot.Bot {
 	// Environment variables
 	discordCfg, err := env.NewDiscordConfig()
 	if err != nil {
@@ -54,8 +54,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	iMarkdown := markdown.NewMarkdown()
-	iMarkdown.CacheCommands(yamlCfg.Commands)
+	iMarkdown := markdown.NewMarkdown(yamlCfg.Commands)
 
 	iModerators, err := moderators.NewModerators(yamlCfg.Moderators)
 	if err != nil {
@@ -91,25 +90,28 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Open a websocket connection to Discord and begin listening
-	err = b.Open()
+	return b
+}
+
+func main() {
+	b := initDependencies()
+	err := b.OpenWebsocketConnection()
 	if err != nil {
-		log.Fatalf("failed to open Discord connection: %v", err)
+		log.Fatalf("bot open failed: %v", err)
 	}
 
 	// Graceful shutdown
 	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM) // TODO: remove unnecessary ones
 	signalReceived := <-sc
 
 	slog.Info("signal received",
 		slog.String("signal", signalReceived.String()),
 	)
 
-	// Cleanly close down the Discord session
 	err = b.Close()
 	if err != nil {
-		log.Fatalf("unable to close the session: %v", err)
+		log.Fatalf("bot close failed: %v", err)
 	}
 
 	slog.Info("shutdown completed")

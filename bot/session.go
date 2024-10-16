@@ -24,9 +24,9 @@ func (b *Bot) Session() *discordgo.Session { // TODO: shouldn't this be isolated
 	return b.session
 }
 
-// Open creates a websocket connection to Discord.
+// OpenWebsocketConnection creates a websocket connection to Discord.
 // See: https://discord.com/developers/docs/topics/gateway#connecting
-func (b *Bot) Open() error {
+func (b *Bot) OpenWebsocketConnection() error {
 	err := b.session.Open()
 	if err != nil {
 		return fmt.Errorf("unable to open the session: %v", err)

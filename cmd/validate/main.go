@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log"
@@ -17,13 +16,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ymlCfg, err := yaml.NewConfig(*yamlConfigPath)
+	_, err = yaml.NewConfig(*yamlConfigPath)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	iMarkdown := markdown.NewMarkdown()
-	iMarkdown.CacheCommands(ymlCfg.Commands)
 
 	slog.Info("Good job! everything looks fine :)")
 }
