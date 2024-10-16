@@ -9,7 +9,7 @@ import (
 type Config struct {
 	Moderators Moderators `yaml:"moderators" validate:"required,min=1,dive,min=1"`
 	RateLimit  RateLimit  `yaml:"rateLimit" validate:"required"`
-	AutoMod    AutoMod    `yaml:"antispam" validate:"required"`
+	Antispam   Antispam   `yaml:"antispam" validate:"required"`
 	Forms      Forms      `yaml:"forms" validate:"required,min=1,dive"`
 	Commands   Commands   `yaml:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
 }
@@ -60,7 +60,7 @@ type RateLimit struct {
 	Message  string `yaml:"message" validate:"required,min=3"`
 }
 
-type AutoMod struct { // TODO: rename to antispam
+type Antispam struct {
 	Enabled            bool     `yaml:"enabled" validate:"boolean"`
 	ModeratorsBypass   bool     `yaml:"moderatorsBypass" validate:"boolean"`
 	LogChannelId       string   `yaml:"logChannelId" validate:"required,min=1"`

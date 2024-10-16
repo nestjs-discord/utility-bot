@@ -15,9 +15,9 @@ type (
 	UserId string // TODO: remove this type
 )
 
-type AutoMod struct { // TODO: rename to antispam
+type Antispam struct {
 	logger     *slog.Logger
-	cfg        yaml.AutoMod
+	cfg        yaml.Antispam
 	sync       sync.RWMutex
 	userMap    map[UserId]map[string]Message
 	denyTTL    time.Duration
@@ -25,7 +25,7 @@ type AutoMod struct { // TODO: rename to antispam
 	moderator  *moderator.Moderator
 }
 
-func NewAutoMod(cfg yaml.AutoMod, moderator *moderator.Moderator) (*AutoMod, error) {
+func NewAntispam(cfg yaml.Antispam, moderator *moderator.Moderator) (*Antispam, error) {
 	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).
@@ -35,7 +35,7 @@ func NewAutoMod(cfg yaml.AutoMod, moderator *moderator.Moderator) (*AutoMod, err
 		return nil, fmt.Errorf("failed to init automod cache: %s", err)
 	}
 
-	a := &AutoMod{
+	a := &Antispam{
 		logger:     logger.NewWithSubsystem("bot", "antispam"),
 		cfg:        cfg,
 		sync:       sync.RWMutex{},
@@ -50,11 +50,11 @@ func NewAutoMod(cfg yaml.AutoMod, moderator *moderator.Moderator) (*AutoMod, err
 	return a, nil
 }
 
-func (a *AutoMod) Enabled() bool {
+func (a *Antispam) Enabled() bool {
 	return a.cfg.Enabled
 }
 
-func (a *AutoMod) backgroundCleaner(ttl int) {
+func (a *Antispam) backgroundCleaner(ttl int) {
 	for now := range time.Tick(time.Second) {
 		a.sync.Lock()
 
@@ -77,7 +77,7 @@ func (a *AutoMod) backgroundCleaner(ttl int) {
 	}
 }
 
-func (a *AutoMod) getChannelsLengthByUserId(id UserId) int {
+func (a *Antispam) getChannelsLengthByUserId(id UserId) int {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
@@ -88,6 +88,6 @@ func (a *AutoMod) getChannelsLengthByUserId(id UserId) int {
 	return 0
 }
 
-func (a *AutoMod) IsUserWithinMaxChannelsLimit(userId UserId) bool {
+func (a *Antispam) IsUserWithinMaxChannelsLimit(userId UserId) bool {
 	return a.getChannelsLengthByUserId(userId) <= a.cfg.MaxChannelsPerUser
 }

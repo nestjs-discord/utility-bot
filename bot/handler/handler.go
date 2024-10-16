@@ -13,7 +13,7 @@ import (
 type Handler struct {
 	logger             *slog.Logger
 	interactionHandler *interaction.Handler
-	autoMod            *automod.AutoMod
+	antispam           *automod.Antispam
 	forms              *forms.Forms
 	markdown           *markdown.Markdown
 	moderator          *moderator.Moderator
@@ -22,7 +22,7 @@ type Handler struct {
 
 func NewHandler(
 	interactionHandler *interaction.Handler,
-	autoMod *automod.AutoMod,
+	antispam *automod.Antispam,
 	forms *forms.Forms,
 	markdown *markdown.Markdown,
 	moderator *moderator.Moderator,
@@ -30,7 +30,7 @@ func NewHandler(
 	h := &Handler{
 		logger:             logger.NewWithSubsystem("bot", "handler"),
 		interactionHandler: interactionHandler,
-		autoMod:            autoMod,
+		antispam:           antispam,
 		forms:              forms,
 		markdown:           markdown,
 		moderator:          moderator,

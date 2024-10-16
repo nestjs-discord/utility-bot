@@ -1,6 +1,6 @@
 package automod
 
-func (a *AutoMod) IsChannelIdTrackable(channelId string) bool {
+func (a *Antispam) IsChannelIdTrackable(channelId string) bool {
 	for _, cid := range a.cfg.TrackedChannelIds {
 		if cid == channelId {
 			return true
@@ -9,6 +9,6 @@ func (a *AutoMod) IsChannelIdTrackable(channelId string) bool {
 	return false
 }
 
-func (a *AutoMod) GetTrackedChannelIds() []string {
+func (a *Antispam) GetTrackedChannelIds() []string {
 	return a.cfg.TrackedChannelIds
 }

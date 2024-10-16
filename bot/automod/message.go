@@ -26,7 +26,7 @@ func NewMessage(ID string, content string) (Message, error) {
 	}, nil
 }
 
-func (a *AutoMod) StoreMessage(userId UserId, channelId string, message Message) {
+func (a *Antispam) StoreMessage(userId UserId, channelId string, message Message) {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
@@ -37,7 +37,7 @@ func (a *AutoMod) StoreMessage(userId UserId, channelId string, message Message)
 	a.userMap[userId][channelId] = message
 }
 
-func (a *AutoMod) GetUserUniqueMessages(userId UserId) map[string]string {
+func (a *Antispam) GetUserUniqueMessages(userId UserId) map[string]string {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
@@ -52,14 +52,14 @@ func (a *AutoMod) GetUserUniqueMessages(userId UserId) map[string]string {
 // GetUserMessages retrieves the messages associated with a user and organizes them in a map.
 // The keys of the map represent the channel IDs, and the corresponding values are the message IDs.
 //
-// Note: This function is designed to be used with an AutoMod instance and requires a valid UserId parameter.
+// Note: This function is designed to be used with an Antispam instance and requires a valid UserId parameter.
 //
 // Parameters:
 //   - userId: The unique identifier of the user for whom messages are to be retrieved.
 //
 // Returns:
 //   - map[string]string: A map where keys are channel IDs, and values are message IDs.
-func (a *AutoMod) GetUserMessages(userId UserId) map[string]string {
+func (a *Antispam) GetUserMessages(userId UserId) map[string]string {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
@@ -72,7 +72,7 @@ func (a *AutoMod) GetUserMessages(userId UserId) map[string]string {
 	return res
 }
 
-func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
+func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	channelId := i.ChannelID
 
 	// Skip executing auto-mod logic if the provided channel ID is not in the list of channels being tracked.
@@ -108,7 +108,7 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		return
 	}
 
-	// Store the user message in the AutoMod cache.
+	// Cache the message.
 	a.StoreMessage(userId, channelId, message)
 
 	// Check if the user has sent messages to an excessive number of channels within the defined maximum channels limit.
@@ -139,7 +139,7 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Add user to the denied list
 	a.AddUserToDeniedList(userId)
 
-	logChannelId := config.Yaml().AutoMod.LogChannelId
+	logChannelId := config.Yaml().Antispam.LogChannelId
 	_, err = s.ChannelMessageSendComplex(logChannelId, a.GenerateAlertMessage(i))
 	if err != nil {
 		a.logger.Error("failed to alert moderators about the ongoing spam",
@@ -150,7 +150,7 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Ban their account
 	err = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "spam", 7)
 	if err != nil {
-		a.logger.Error("failed to ban a spammer",
+		a.logger.Error("failed to ban the spammer",
 			slog.String("userId", i.Author.ID),
 			slog.Any("err", err),
 		)
@@ -165,11 +165,11 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf(":hammer: Member banned: `%s`", i.Author.ID))
 
 	// for debugging purposes only
-	// jsonStr, _ := json.MarshalIndent(cache.AutoMod, "", "  ")
+	// jsonStr, _ := json.MarshalIndent(cache.Antispam, "", "  ")
 	// _, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("```json\n%s\n```", string(jsonStr)))
 }
 
-func (a *AutoMod) TrackHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
+func (a *Antispam) TrackHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	content := "### Antispam feature is tracking the following channels: 👇\n"
 	for _, channelId := range a.cfg.TrackedChannelIds {
 		content += fmt.Sprintf("- <#%s>\n", channelId)

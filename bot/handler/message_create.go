@@ -17,8 +17,8 @@ func (h *Handler) MessageCreate(s *discordgo.Session, i *discordgo.MessageCreate
 		slog.String("content", i.Message.Content),
 	)
 
-	if h.autoMod.Enabled() {
-		h.autoMod.Handler(s, i)
+	if h.antispam.Enabled() {
+		h.antispam.Handler(s, i)
 	}
 
 	if !h.moderator.IsUserModerator(i.Author.ID) {
@@ -26,8 +26,8 @@ func (h *Handler) MessageCreate(s *discordgo.Session, i *discordgo.MessageCreate
 	}
 
 	switch i.Content {
-	case "!automod":
-		h.autoMod.TrackHandler(s, i)
+	case "!antispam":
+		h.antispam.TrackHandler(s, i)
 		return
 	case "!stats":
 		stats.Handler(s, i)

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (a *AutoMod) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.MessageSend {
+func (a *Antispam) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.MessageSend {
 	return &discordgo.MessageSend{
 		Content:    "",
 		Embed:      a.generateAlertEmbed(i),
@@ -16,7 +16,7 @@ func (a *AutoMod) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.Me
 	}
 }
 
-func (a *AutoMod) generateAlertFiles(i *discordgo.MessageCreate) []*discordgo.File {
+func (a *Antispam) generateAlertFiles(i *discordgo.MessageCreate) []*discordgo.File {
 	var files []*discordgo.File
 	userUniqueMessages := a.GetUserUniqueMessages(UserId(i.Author.ID))
 	for msg, msgId := range userUniqueMessages {
@@ -30,7 +30,7 @@ func (a *AutoMod) generateAlertFiles(i *discordgo.MessageCreate) []*discordgo.Fi
 	return files
 }
 
-func (a *AutoMod) generateAlertComponents(i *discordgo.MessageCreate) []discordgo.MessageComponent {
+func (a *Antispam) generateAlertComponents(i *discordgo.MessageCreate) []discordgo.MessageComponent {
 	return []discordgo.MessageComponent{
 		discordgo.ActionsRow{
 			Components: []discordgo.MessageComponent{
@@ -47,7 +47,7 @@ func (a *AutoMod) generateAlertComponents(i *discordgo.MessageCreate) []discordg
 	}
 }
 
-func (a *AutoMod) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.MessageEmbed {
+func (a *Antispam) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.MessageEmbed {
 	embed := &discordgo.MessageEmbed{
 		Title:       "Spam alert! 🚨",
 		Color:       0xff0000, // Red
@@ -93,7 +93,7 @@ func (a *AutoMod) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.Mess
 	return embed
 }
 
-func (a *AutoMod) generateAlertEmbedDescription() string {
+func (a *Antispam) generateAlertEmbedDescription() string {
 	return fmt.Sprintf(
 		"Member exceeded channel limit `%d` within `%d` seconds."+"\n"+
 			"Added to the denied list for the next `%d` seconds.",
