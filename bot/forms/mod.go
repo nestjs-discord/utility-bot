@@ -2,7 +2,7 @@ package forms
 
 import "github.com/bwmarrin/discordgo"
 
-func GenerateModComponents(formId string, userId string) *discordgo.ActionsRow {
+func (f *Forms) generateModComponents(formId string, userId string) *discordgo.ActionsRow {
 	acceptBtn := discordgo.Button{
 		Label:    "Accept & Publish",
 		Style:    discordgo.SecondaryButton,

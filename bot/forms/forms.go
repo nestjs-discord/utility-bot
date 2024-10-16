@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"fmt"
 	dgo "github.com/bwmarrin/discordgo"
 	"github.com/dgraph-io/ristretto"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
@@ -11,6 +12,11 @@ type Forms struct {
 	cfg             yaml.Forms
 	modActionsCache *ristretto.Cache[string, bool]
 	modActionLock   sync.RWMutex
+}
+
+type userInput struct {
+	InputId string
+	Value   string
 }
 
 func NewForms(cfg yaml.Forms, session *dgo.Session) (*Forms, error) {
@@ -52,7 +58,11 @@ func NewForms(cfg yaml.Forms, session *dgo.Session) (*Forms, error) {
 	return f, nil
 }
 
-type UserInput struct { // TODO: make this private?
-	InputId string
-	Value   string
+func (f *Forms) getFormById(id string) (*yaml.Form, error) {
+	form, ok := f.cfg[id]
+	if !ok {
+		return nil, fmt.Errorf("form '%s' not found", id)
+	}
+
+	return &form, nil
 }

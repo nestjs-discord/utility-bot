@@ -15,9 +15,9 @@ import (
 func (f *Forms) OpenModalButtonClicked(s *dgo.Session, i *dgo.InteractionCreate, customId *components.CustomID) error {
 	formId := customId.FormId
 
-	form, ok := f.cfg[formId]
-	if !ok {
-		return fmt.Errorf("form not found")
+	form, err := f.getFormById(formId)
+	if err != nil {
+		return err
 	}
 
 	var msgComponents []dgo.MessageComponent
@@ -71,17 +71,15 @@ func (f *Forms) OpenModalButtonClicked(s *dgo.Session, i *dgo.InteractionCreate,
 }
 
 func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customId *components.CustomID) error {
-	formId := customId.FormId
-
-	form, ok := f.cfg[formId]
-	if !ok {
-		return fmt.Errorf("form not found")
+	form, err := f.getFormById(customId.FormId)
+	if err != nil {
+		return err
 	}
 
 	data := i.ModalSubmitData()
 
 	// map of the 'input id' to the 'user given value'
-	var userInput []UserInput
+	var userInputs []userInput
 	for _, parentComp := range data.Components {
 		row, isRow := parentComp.(*dgo.ActionsRow)
 		if !isRow {
@@ -104,7 +102,7 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 				continue
 			}
 
-			userInput = append(userInput, UserInput{
+			userInputs = append(userInputs, userInput{
 				InputId: child.CustomID,
 				Value:   val,
 			})
@@ -112,7 +110,7 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 	}
 
 	// safety check, in case Discord updated its response
-	if len(userInput) == 0 {
+	if len(userInputs) == 0 {
 		return errors.New("failed to extract the modal values! please report this issue")
 	}
 
@@ -159,7 +157,7 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 	}
 
 	// append user inputs
-	for _, inp := range userInput {
+	for _, inp := range userInputs {
 		formDataEmbed.Fields = append(formDataEmbed.Fields, &dgo.MessageEmbedField{
 			Name:   lo.Capitalize(inp.InputId),
 			Value:  inp.Value,
@@ -183,7 +181,7 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 		// the user who fills the modal must know their request is going to be in a pending state.
 		respContent += "\n\nModerators will review your request shortly. 🔎"
 
-		message.Components = append(message.Components, GenerateModComponents(formId, i.Member.User.ID))
+		message.Components = append(message.Components, f.generateModComponents(customId.FormId, i.Member.User.ID))
 	}
 
 	sentMessage, err := s.ChannelMessageSendComplex(channelId, message)

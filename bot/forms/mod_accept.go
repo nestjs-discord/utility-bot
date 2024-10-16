@@ -14,9 +14,9 @@ func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	formId := customId.FormId
-	form, ok := f.cfg[formId]
-	if !ok {
-		return fmt.Errorf("form %s not found", formId)
+	form, err := f.getFormById(formId)
+	if err != nil {
+		return err
 	}
 
 	// receive the last message in the public channel
