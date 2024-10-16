@@ -185,7 +185,9 @@ solvedCommand:
   description: "Close and mark a forum post as solved."
   response: > # TODO: can the unnecessary next line characters be removed from here somehow?
     This post has been marked as resolved. ✅
+    
     Please read through the conversation and resolution, if you are having the same issue.
+    
     If you were the original author of the post and the issue is still fresh (within a few days)
     and you are still have having trouble, continue to reply here. If you are not the original
     author of the post or the post has aged, start a new thread linking this one as relevant to
@@ -313,7 +315,10 @@ commands:
 
   docs nest-debug:
     description: "Debug NestJS dependencies with environment variable"
-    content: "./content/docs/nest-debug.md"
+    content: >
+      Along with just manually verifying your dependencies are correct, as of Nest 8.1.0 you can set the `NEST_DEBUG` environment variable to a string that resolves as truthy, and get extra logging information while Nest is resolving all the dependencies for the application[.](https://docs.nestjs.com/assets/injector_logs.png)
+
+      The string in yellow is the host class of the dependency being injected, the string in blue is the name of the injected dependency, or its injection token, and the string in purple is the module in which the dependency is being searched for. Using this, you can usually trace back the dependency resolution for what's happening and why you're getting dependency injection problems.
 
   docs process-env-population:
     description: "What to do when process.env is not populated"
@@ -358,23 +363,66 @@ commands:
 
   rules codeblocks:
     description: "Letting people know how to share their code in a Markdown code block"
-    content: "./content/rules/codeblocks.md"
+    content: >
+      Please format your question or answer with Markdown formatting[.](https://i.sstatic.net/ETTnT.jpg)
+
+      It leads to better readability and an easier time to spot problems.
+
+      For code blocks, you can wrap your block with three back ticks before and after the block, and after the first three back ticks you can add a language (like `ts`) to add syntax highlighting.
+
+
+      \`\`\`ts
+
+      @Injectable()
+
+      export class MySuperAwesomeService {
+
+        constructor(@Inject('InjectionToken') private readonly dep: SomeDependency) {}
+
+        getRandomNumber(): number {
+          return Math.round(Math.random() * 1000);
+        }
+      }
+
+      \`\`\`
+
+
+      That ☝️, becomes this 👇
+
+
+      ```ts
+
+      @Injectable()
+
+      export class MySuperAwesomeService {
+
+        constructor(@Inject('InjectionToken') private readonly dep: SomeDependency) {}
+
+        getRandomNumber(): number {
+          return Math.round(Math.random() * 1000);
+        }
+      }
+
+      ```
 
   rules dm:
     description: "Use server to get help on NestJS; don't DM other members."
-    content: "./content/rules/dm.md"
+    content: >
+      Do not DM any other members of NestJS server when it comes to helping you with your question.
+
+      By sending your questions in the server, you maximize the number of people that see them and therefore maximize your chances of getting an answer.
 
   rules dont-ask-to-ask:
     description: "Telling people to just ask their question with a link explaining why"
-    content: "./content/rules/dont-ask-to-ask.md"
+    content: "Please don't ask to ask. Just ask your question."
     buttons:
       - - label: "Learn more about asking to ask"
           url: "https://dontasktoask.com"
           emoji: "❓"
 
   rules no-hello:
-    description: "Telling people not to say just 'hello' in the chat"
-    content: "./content/rules/no-hello.md"
+    description: "Telling someone not to say just 'hello' in the chat"
+    content: "Please don't say just hello in chat."
     buttons:
       - - label: "Why is this a thing"
           url: "https://nohello.net/en/"
@@ -382,7 +430,13 @@ commands:
 
   rules reproduction:
     description: "Request for a minimum reproduction of the issue"
-    content: "./content/rules/reproduction.md"
+    content: >
+      From conversation only, it seems that we won't be able to determine the root cause of the issue.
+      
+      Please provide a minimum reproduction repository that reduces the issue to only the most basic components
+      while still producing the same error that you're facing.
+      
+      By doing this, we will be better able to help you resolve your issue.
     buttons:
       - - label: "Learn more about minimum reproductions"
           url: "https://minimum-reproduction.wtf"
@@ -391,11 +445,24 @@ commands:
           url: "https://stackoverflow.com/help/minimal-reproducible-example"
           emoji: "🔗"
 
-  rules screenshot:
+  rules no-screenshot:
     description: "When someone posts a screenshot instead of sharing their code"
-    content: "./content/rules/screenshot.md"
+    content: >
+      Please **do not screenshot code** as it causes a number of issues: ⚠️
+
+      - Ease of assistance: if someone wants to copy your code and correct it, they cannot. Making it easy for people to help you is in your best interests.
+      
+      - Editorializing: it's common to try to make images small, which means you're likely to crop out code relevant to your issue
+      
+      - Accessibility: wide images can be hard to read on mobile devices, and are impossible for screen readers.
+      
+      - Legibility: you cannot read screenshots of code directly, instead you have to open them in an enlarged context.
+      
+      - Bandwidth usage/clutter: some of our members use metered connections, and it is wasteful for them to download images of a text.
+
+      For a small amount of code, please use Markdown code blocks.
     buttons:
-      - - label: "Learn more about code-blocks"
+      - - label: "Learn more about code blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"
 
