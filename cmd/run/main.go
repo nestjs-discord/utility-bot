@@ -2,8 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/nestjs-discord/utility-bot/bot/commands"
-	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"log"
 	"log/slog"
 	"os"
@@ -12,6 +10,8 @@ import (
 
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
+	"github.com/nestjs-discord/utility-bot/bot/commands"
+	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
@@ -77,7 +77,14 @@ func initDependencies() *bot.Bot {
 		log.Fatal(err)
 	}
 
-	interactionHandler := interaction.NewHandler(iForms, iModerators, iRateLimit, iMarkdown)
+	iSolved := solved.New(iModerators)
+	interactionHandler := interaction.NewHandler(
+		iForms,
+		iModerators,
+		iRateLimit,
+		iMarkdown,
+		iSolved,
+	)
 
 	b.ApplyHandler(
 		handler.NewHandler(
@@ -88,8 +95,6 @@ func initDependencies() *bot.Bot {
 			iModerators,
 		),
 	)
-
-	iSolved := solved.New(iModerators)
 
 	_, err = commands.NewCommands(
 		session,

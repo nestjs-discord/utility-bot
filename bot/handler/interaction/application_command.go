@@ -30,7 +30,7 @@ func (h *Handler) ApplicationCommand(s *discordgo.Session, i *discordgo.Interact
 
 	switch data.Name {
 	case solved.Name:
-		interaction.SolvedHandler(s, i) // TODO: replace this with the instantiated one!
+		h.solved.Handler(s, i)
 		return
 	case archive.Name:
 		interaction.ArchiveHandler(s, i)
