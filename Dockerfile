@@ -10,4 +10,4 @@ FROM scratch AS prod
 WORKDIR /usr/app
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build /app/bin/bot /usr/bin/bot
-ENTRYPOINT ["bot", "--stage", "prod"]
+ENTRYPOINT ["bot"]

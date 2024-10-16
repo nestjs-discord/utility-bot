@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log"
 	"log/slog"
 	"os"
@@ -21,24 +22,28 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
-	"github.com/nestjs-discord/utility-bot/infra/logger"
 )
 
 var (
-	stage          = flag.String("stage", "dev", "prod,dev")
 	yamlConfigPath = flag.String("yaml-config-path", "./config.yml", "")
 )
 
 func init() {
 	flag.Parse()
 
-	err := logger.Initialize(*stage)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 func initDependencies() *bot.Bot {
+	stageCfg, err := env.NewStageConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = logger.Initialize(stageCfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Environment variables
 	discordCfg, err := env.NewDiscordConfig()
 	if err != nil {

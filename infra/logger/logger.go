@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"log/slog"
 	"os"
 	"strings"
@@ -18,17 +19,17 @@ func NewWithSubsystem(s ...string) *slog.Logger {
 	)
 }
 
-func Initialize(stage string) error {
-	switch stage {
-	case "prod":
+func Initialize(stageCfg env.Stage) error {
+	switch stageCfg {
+	case env.StageProd:
 		slog.SetDefault(newProductionLogger())
 		return nil
-	case "dev":
+	case env.StageDev:
 		slog.SetDefault(newDevelopmentLogger())
 		return nil
 	}
 
-	return fmt.Errorf("invalid stage: '%s'", stage)
+	return fmt.Errorf("invalid stage: '%s'", stageCfg)
 }
 
 func newProductionLogger() *slog.Logger {

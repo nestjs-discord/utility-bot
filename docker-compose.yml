@@ -18,6 +18,7 @@ services:
     volumes:
       - ./config.yml:/usr/app/config.yml:ro
     environment:
+      STAGE: "prod"
       DISCORD_APP_ID: "${DISCORD_APP_ID}"
       DISCORD_BOT_TOKEN: "${DISCORD_BOT_TOKEN}"
       DISCORD_GUILD_ID: "${DISCORD_GUILD_ID}"
