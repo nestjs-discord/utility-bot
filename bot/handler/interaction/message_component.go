@@ -42,6 +42,6 @@ func (h *Handler) MessageComponent(s *dgo.Session, i *dgo.InteractionCreate) {
 
 	err = handler(s, i, customId)
 	if err != nil {
-		h.RespondError(err, s, i)
+		h.respondError(err, s, i)
 	}
 }
