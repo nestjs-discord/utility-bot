@@ -42,7 +42,7 @@ func NewForms(cfg yaml.Forms, session *dgo.Session) (*Forms, error) {
 	for formId, form := range cfg {
 		messages, err := session.ChannelMessages(form.ChannelId, limit, beforeId, afterId, aroundId)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("unable to get channel messages: %s", err)
 		}
 
 		if len(messages) != 0 && f.doesHaveButtonComponentWithLabel(messages[0], form.ButtonLabel) {
@@ -51,7 +51,7 @@ func NewForms(cfg yaml.Forms, session *dgo.Session) (*Forms, error) {
 
 		label := form.ButtonLabel
 		if err = f.sendFormButton(session, form.ChannelId, formId, label); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("unable to send form button: %s", err)
 		}
 	}
 

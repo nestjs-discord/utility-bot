@@ -338,23 +338,50 @@ commands:
           emoji: "📖"
   docs circular-dependency:
     description: "Circular dependencies in NestJS and how to avoid them"
-    content: "./content/docs/circular-dependency.md"
+    content: >
+      Occasionally you'll find it difficult to avoid circular dependencies in your application.
+      
+      You'll need to take some steps to help Nest resolve these.
+      Errors that arise from circular dependencies look like this:
+      
+      ```text
+      
+      Nest cannot create the <module> instance.
+      
+      The module at index [<index>] of the <module> "imports" array is undefined.
+
+
+      Potential causes:
+      
+      - A circular dependency between modules. Use forwardRef() to avoid it.
+      
+      - The module at index [<index>] is of type "undefined". Check your import statements and the type of the module.
+
+
+      Scope [<module_import_chain>]
+      
+      # example chain AppModule -> FooModule
+      
+      ```
+      
+      A circular dependency occurs when two classes depend on each other.
+      
+      For example, class A needs class B, and class B also needs class A.
+      
+      Circular dependencies can arise in Nest between modules and between providers.
+
+
+      While circular dependencies should be avoided where possible, you can't always do so.
+      
+      In such cases, Nest enables resolving circular dependencies between providers in two ways.
+      
+      In this chapter, we describe using **forward referencing** as one technique, and using the **ModuleRef** class to retrieve a provider instance from the DI container as another.
     buttons:
       - - label: "Read rest of the documentation"
           url: "https://docs.nestjs.com/fundamentals/circular-dependency"
           emoji: "📖"
       - - label: "How to avoid circular dependencies"
           url: "https://trilon.io/blog/avoiding-circular-dependencies-in-nestjs"
-          emoji: "📝"
-  docs file-change-detected:
-    description: "How to fix when TypeScript 4.9+ on Windows causes infinite loop in watch mode"
-    content: "./content/docs/file-change-detected.md"
-    buttons:
-      - - label: "TypeScript documentation"
-          url: "https://www.typescriptlang.org/tsconfig#watch-watchDirectory"
-          emoji: "🔗"
-      - - label: "New strategy for detecting file changes"
-          url: "https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#file-watching-now-uses-file-system-events"
           emoji: "📝"
   docs hybrid-app:
     description: "Create hybrid apps with NestJS and microservices"
@@ -489,7 +516,44 @@ commands:
           emoji: "📖"
   docs request-lifecycle:
     description: "Get a grip on NestJS' request lifecycle for smooth coding"
-    content: "./content/docs/request-lifecycle.md"
+    content: >
+      Nest applications handle requests and produce responses in a sequence we refer to as the **request lifecycle**.
+      
+      With the use of middleware, pipes, guards, and interceptors, it can be challenging to track down where a particular piece of code executes during the request lifecycle, especially as global, controller level, and route level components come into play.
+      
+      ### In general, the request lifecycle looks like the following:
+
+      1. Incoming request
+      
+      2. [Middleware](<https://docs.nestjs.com/middleware>)
+         - Globally bound middleware
+         - Module bound middleware
+      3. [Guards](<https://docs.nestjs.com/guards>)
+         - Global guards
+         - Controller guards
+         - Route guards
+      4. [Interceptors](<https://docs.nestjs.com/interceptors>) _(pre-controller)_
+         - Global interceptors
+         - Controller interceptors
+         - Route interceptors
+      5. [Pipes](<https://docs.nestjs.com/pipes>)
+         - Global pipes
+         - Controller pipes
+         - Route pipes
+         - Route parameter pipes
+      6. [Controller](<https://docs.nestjs.com/controllers>) _(method handler)_
+      
+      7. [Service](<https://docs.nestjs.com/providers>) _(if exists)_
+      
+      8. [Interceptors](<https://docs.nestjs.com/interceptors>) _(post-request)_
+         - Route interceptor
+         - Controller interceptor
+         - Global interceptor
+      9. [Exception filters](<https://docs.nestjs.com/exception-filters>)
+         - Route
+         - Controller
+         - Global
+      10. Server response
     buttons:
       - - label: "Documentation reference"
           url: "https://docs.nestjs.com/faq/request-lifecycle"
