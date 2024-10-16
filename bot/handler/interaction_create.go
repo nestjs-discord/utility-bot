@@ -10,10 +10,10 @@ func (h *Handler) InteractionCreate(s *discordgo.Session, i *discordgo.Interacti
 	case discordgo.InteractionApplicationCommandAutocomplete:
 		h.interactionHandler.ApplicationCommandAutocomplete(s, i)
 		return
-	case discordgo.InteractionMessageComponent: // interactive button (form)
+	case discordgo.InteractionMessageComponent:
 		h.interactionHandler.MessageComponent(s, i)
 		return
-	case discordgo.InteractionModalSubmit: // modal submit (form)
+	case discordgo.InteractionModalSubmit:
 		h.interactionHandler.ModalSubmit(s, i)
 		return
 	}

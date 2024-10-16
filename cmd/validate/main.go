@@ -16,7 +16,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = yaml.NewConfig(*yamlConfigPath)
+	_, err = yaml.NewConfig(yaml.Path(*yamlConfigPath))
 	if err != nil {
 		log.Fatal(err)
 	}
