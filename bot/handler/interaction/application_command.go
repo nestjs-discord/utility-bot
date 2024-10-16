@@ -42,7 +42,7 @@ func (h *Handler) ApplicationCommand(s *discordgo.Session, i *discordgo.Interact
 		google_it.Handler(s, i)
 		return
 	case dont_ping_mods.Name:
-		dont_ping_mods.Handler(s, i)
+		h.dontPingMods.Handler(s, i)
 		return
 	}
 

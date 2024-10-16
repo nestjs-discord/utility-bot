@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"log"
 	"log/slog"
 	"os"
@@ -50,6 +51,10 @@ func initDependencies() *bot.Bot {
 		log.Fatal(err)
 	}
 	yamlCommands := yaml.NewCommands(yamlCfg)
+	yamlModerators := yaml.NewModerators(yamlCfg)
+	yamlRateLimit := yaml.NewRateLimit(yamlCfg)
+	yamlForms := yaml.NewForms(yamlCfg)
+	yamlAntiSpam := yaml.NewAntispam(yamlCfg)
 
 	// Initialize the Discord bot
 	b, err := bot.NewBot(discordCfg)
@@ -59,31 +64,33 @@ func initDependencies() *bot.Bot {
 
 	iMarkdown := markdown.NewMarkdown(yamlCommands)
 
-	iModerators, err := moderators.NewModerators(yamlCfg.Moderators)
+	iModerators, err := moderators.NewModerators(yamlModerators)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	iRateLimit := rate_limit.NewRateLimit(yamlCfg.RateLimit, iModerators)
+	iRateLimit := rate_limit.NewRateLimit(yamlRateLimit, iModerators)
 
-	iAntispam, err := antispam.NewAntispam(yamlCfg.Antispam, iModerators)
+	iAntispam, err := antispam.NewAntispam(yamlAntiSpam, iModerators)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	session := bot.ProvideSession(b)
-	iForms, err := forms.NewForms(yamlCfg.Forms, session)
+	iForms, err := forms.NewForms(yamlForms, session)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	iSolved := solved.New(iModerators)
+	iDontPingMods := dont_ping_mods.NewDontPingMods(iModerators)
 	interactionHandler := interaction.NewHandler(
 		iForms,
 		iModerators,
 		iRateLimit,
 		iMarkdown,
 		iSolved,
+		iDontPingMods,
 	)
 
 	b.ApplyHandler(

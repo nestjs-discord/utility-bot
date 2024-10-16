@@ -36,3 +36,7 @@ func (mod *Moderators) IsUserModerator(userId string) bool {
 	}
 	return false
 }
+
+func (mod *Moderators) UserIds() []string {
+	return mod.userIds
+}

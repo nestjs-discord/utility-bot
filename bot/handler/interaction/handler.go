@@ -1,6 +1,7 @@
 package interaction
 
 import (
+	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
@@ -12,12 +13,13 @@ import (
 )
 
 type Handler struct {
-	logger     *slog.Logger
-	forms      *forms.Forms
-	moderators *moderators.Moderators
-	rateLimit  *rate_limit.RateLimit
-	markdown   *markdown.Markdown
-	solved     *solved.Solved
+	logger       *slog.Logger
+	forms        *forms.Forms
+	moderators   *moderators.Moderators
+	rateLimit    *rate_limit.RateLimit
+	markdown     *markdown.Markdown
+	solved       *solved.Solved
+	dontPingMods *dont_ping_mods.DontPingMods
 }
 
 func NewHandler(
@@ -26,13 +28,15 @@ func NewHandler(
 	rateLimit *rate_limit.RateLimit,
 	markdown *markdown.Markdown,
 	solved *solved.Solved,
+	dontPingMods *dont_ping_mods.DontPingMods,
 ) *Handler {
 	return &Handler{
-		logger:     logger.NewWithSubsystem("bot", "handler", "interaction"),
-		forms:      forms,
-		moderators: moderators,
-		rateLimit:  rateLimit,
-		markdown:   markdown,
-		solved:     solved,
+		logger:       logger.NewWithSubsystem("bot", "handler", "interaction"),
+		forms:        forms,
+		moderators:   moderators,
+		rateLimit:    rateLimit,
+		markdown:     markdown,
+		solved:       solved,
+		dontPingMods: dontPingMods,
 	}
 }

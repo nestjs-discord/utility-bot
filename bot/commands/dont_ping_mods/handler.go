@@ -4,13 +4,25 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
-	"github.com/nestjs-discord/utility-bot/infra/config"
+	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 	"time"
 )
 
-func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+type DontPingMods struct {
+	moderators *moderators.Moderators
+}
+
+func NewDontPingMods(
+	moderators *moderators.Moderators,
+) *DontPingMods {
+	return &DontPingMods{
+		moderators: moderators,
+	}
+}
+
+func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	content := "Please **do not** tag the moderators unless someone is breaking server rules. " +
 		"The mods are here to help enforce the rules of the server, " +
 		"and while most of them are knowledgeable about Nest, " +
@@ -62,9 +74,7 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	// Loop over moderators defined in the configuration file
-	moderators := config.Yaml().Moderators // TODO: use the moderators instance
-	for _, modId := range moderators {
-
+	for _, modId := range d.moderators.UserIds() {
 		// Skip removing the person who have executed the command
 		if modId == i.Member.User.ID {
 			continue
