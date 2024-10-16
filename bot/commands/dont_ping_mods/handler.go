@@ -62,7 +62,7 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 
 	// Loop over moderators defined in the configuration file
-	moderators := config.Yaml().Moderators
+	moderators := config.Yaml().Moderators // TODO: use the moderators instance
 	for _, modId := range moderators {
 
 		// Skip removing the person who have executed the command

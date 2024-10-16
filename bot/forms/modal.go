@@ -3,13 +3,11 @@ package forms
 import (
 	"errors"
 	"fmt"
-	"strings"
-
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
-
-	dgo "github.com/bwmarrin/discordgo"
 	"github.com/samber/lo"
+	"strings"
 )
 
 func (f *Forms) OpenModalButtonClicked(s *dgo.Session, i *dgo.InteractionCreate, customId *components.CustomID) error {
@@ -116,25 +114,22 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 
 	// generate embed
 	discordProfileEmbed := &dgo.MessageEmbed{
-		Title: "Discord profile",
-		Color: i.Member.User.AccentColor,
+		// Title: "Discord profile",
+		Title: i.Member.User.GlobalName,
+		// Color: i.Member.User.AccentColor,
+		Color: form.Color,
 		Thumbnail: &dgo.MessageEmbedThumbnail{
-			URL: i.Member.User.AvatarURL("100"),
+			URL: i.Member.User.AvatarURL("4096"),
 		},
 		Fields: []*dgo.MessageEmbedField{
 			{
-				Name:   "Account",
-				Value:  i.Member.User.Mention(),
-				Inline: true,
-			},
-			{
-				Name:   "Name",
-				Value:  i.Member.User.GlobalName,
-				Inline: true,
-			},
-			{
 				Name:   "Username",
 				Value:  "`" + i.Member.User.String() + "`",
+				Inline: true,
+			},
+			{
+				Name:   "Profile",
+				Value:  i.Member.User.Mention(),
 				Inline: false,
 			},
 		},
@@ -142,8 +137,16 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 
 	if authorAccCreatedAt, err := dgo.SnowflakeTimestamp(i.Member.User.ID); err == nil {
 		discordProfileEmbed.Fields = append(discordProfileEmbed.Fields, &dgo.MessageEmbedField{
-			Name:   "Created",
+			Name:   "Account created",
 			Value:  fmt.Sprintf("<t:%d:R>", authorAccCreatedAt.UTC().Unix()),
+			Inline: true,
+		})
+	}
+
+	if !i.Member.JoinedAt.IsZero() {
+		discordProfileEmbed.Fields = append(discordProfileEmbed.Fields, &dgo.MessageEmbedField{
+			Name:   "Joined the server",
+			Value:  fmt.Sprintf("<t:%d:R>", i.Member.JoinedAt.UTC().Unix()),
 			Inline: true,
 		})
 	}
@@ -181,7 +184,12 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 		// the user who fills the modal must know their request is going to be in a pending state.
 		respContent += "\n\nModerators will review your request shortly. 🔎"
 
-		message.Components = append(message.Components, f.generateModComponents(customId.FormId, i.Member.User.ID))
+		modComps, err := f.generateModComponents(customId.FormId, i.Member.User.ID)
+		if err != nil {
+			return fmt.Errorf("failed to generate mod components: %s", err)
+		}
+
+		message.Components = append(message.Components, modComps)
 	}
 
 	sentMessage, err := s.ChannelMessageSendComplex(channelId, message)

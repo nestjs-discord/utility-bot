@@ -122,7 +122,7 @@ forms:
         min: 2
         max: 600
       - id: "location"
-        placeholder: "Germany, Berlin - Remote, On-site in Mitte, willing to relocate within Europe"
+        placeholder: "Germany, Berlin - Remote, willing to relocate within EU"
         min: 2
         max: 150
         required: true
@@ -133,6 +133,12 @@ forms:
         max: 200
         required: false
         multiline: true
+#      - id: "email"
+#        placeholder: "your.email.address@example.com"
+#        min: 5
+#        max: 60
+#        required: false
+#        multiline: false
 
   jo: # job-opportunities announcement channel (for job listing)
     buttonLabel: "Post a new opportunity"
@@ -152,11 +158,11 @@ forms:
       - id: "compensation"
         placeholder: "$50 per hour"
         min: 5
-        max: 100
+        max: 150
         required: true
         multiline: false
       - id: "location"
-        placeholder: "Germany, Berlin - Remote, On-site in Mitte, willing to relocate within Europe"
+        placeholder: "Germany, Berlin - Remote, willing to relocate within EU"
         min: 5
         max: 150
         required: true
@@ -173,7 +179,12 @@ forms:
         max: 200
         required: true
         multiline: true
-
+#      - id: "email"
+#        placeholder: "address@company.com"
+#        min: 5
+#        max: 70
+#        required: true
+#        multiline: false
 
 archiveCommand:
   response: > # TODO: make sure to use this key
