@@ -16,8 +16,10 @@ type Config struct {
 	Commands   Commands   `yaml:"commands" validate:"required,max-one-space-allowed,min=1,max=85,dive"`
 }
 
-func NewConfig(path string) (*Config, error) {
-	yamlFile, err := os.ReadFile(path)
+type Path string
+
+func NewConfig(path Path) (*Config, error) {
+	yamlFile, err := os.ReadFile(string(path))
 	if err != nil {
 		return nil, fmt.Errorf("unable to read the yaml config: %s", err)
 	}

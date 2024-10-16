@@ -2,14 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/nestjs-discord/utility-bot/bot/forms"
-	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
-	"github.com/nestjs-discord/utility-bot/bot/markdown"
-	"github.com/nestjs-discord/utility-bot/bot/moderators"
-	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
-	"github.com/nestjs-discord/utility-bot/infra/config/env"
-	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
-	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log"
 	"log/slog"
 	"os"
@@ -18,7 +10,15 @@ import (
 
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
+	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
+	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
+	"github.com/nestjs-discord/utility-bot/bot/markdown"
+	"github.com/nestjs-discord/utility-bot/bot/moderators"
+	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
+	"github.com/nestjs-discord/utility-bot/infra/config/env"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 )
 
 var (
@@ -43,7 +43,7 @@ func initDependencies() *bot.Bot {
 	}
 
 	// YAML configuration
-	yamlCfg, err := yaml.NewConfig(*yamlConfigPath)
+	yamlCfg, err := yaml.NewConfig(yaml.Path(*yamlConfigPath))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -68,7 +68,8 @@ func initDependencies() *bot.Bot {
 		log.Fatal(err)
 	}
 
-	iForms, err := forms.NewForms(yamlCfg.Forms, b.Session()) // TODO: find a way not to pass the session
+	session := bot.ProvideSession(b)
+	iForms, err := forms.NewForms(yamlCfg.Forms, session)
 	if err != nil {
 		log.Fatal(err)
 	}

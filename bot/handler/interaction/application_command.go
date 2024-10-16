@@ -1,14 +1,16 @@
 package interaction
 
 import (
+	"log/slog"
+
 	"github.com/bwmarrin/discordgo"
+
 	"github.com/nestjs-discord/utility-bot/bot/command/archive"
 	"github.com/nestjs-discord/utility-bot/bot/command/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/command/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/command/reference"
 	"github.com/nestjs-discord/utility-bot/bot/command/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
-	"log/slog"
 )
 
 func (h *Handler) ApplicationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {

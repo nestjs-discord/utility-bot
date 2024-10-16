@@ -84,19 +84,18 @@ antispam: # flags the users who spam messages on multiple channels in a short ti
     # - "926544704034734111" # bots-info (read-only)
     - "926544725606035527" # bot-commands
 
-# Text input documentation:
-# https://discord.com/developers/docs/interactions/message-components#text-inputs
-#
-# If the destination of the form submission (form.foo.channelId) is an announcement channel,
+# When the destination of the form submission (form.foo.channelId) is an announcement channel,
 # ensure the bot *explicitly* has the following permissions:
 #   - Send Messages
 #   - Manage Messages
 #   - Read Message History
 # Otherwise, the bot will panic and the container will enter a restart loop.
-# More details on announcement channels:
+#
+# See:
 # https://support.discord.com/hc/en-us/articles/360032008192-Announcement-Channels
+# https://discord.com/developers/docs/interactions/message-components#text-inputs
 forms:
-  job-profiles: # Self-promotion
+  jp: # job-profiles announcement channel (for self-promotion)
     buttonLabel: "Post a new profile"
     modalTitle: "Post a new profile"
     channelId: 1294483543623335986 # prod: 1294483543623335986 | dev: 1294446757370925147
@@ -135,7 +134,7 @@ forms:
         required: false
         multiline: true
 
-  job-opportunities: # Job listing
+  jo: # job-opportunities announcement channel (for job listing)
     buttonLabel: "Post a new opportunity"
     modalTitle: "Post a new opportunity"
     channelId: 1294483759189725265 # prod: 1294483759189725265 | dev: 1294446864036528231

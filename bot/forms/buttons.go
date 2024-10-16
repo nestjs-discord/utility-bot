@@ -2,6 +2,7 @@ package forms
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/components"
 )
 
 func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, buttonLabel string) bool {
@@ -31,22 +32,32 @@ func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, buttonL
 }
 
 func (f *Forms) sendFormButton(session *discordgo.Session, channelId string, formId string, btnLabel string) error {
+	customId, err := components.EncodeCustomId(&components.CustomID{
+		Action: OpenModalButton,
+		FormId: formId,
+	})
+	if err != nil {
+		return err
+	}
+
+	button := discordgo.Button{
+		Label:    btnLabel,
+		Style:    discordgo.SuccessButton,
+		Disabled: false,
+		CustomID: customId,
+	}
+
 	messageData := &discordgo.MessageSend{
-		Content: "",
+		Content: "", // TODO: add some set of rules (can used embed too)
 		Components: []discordgo.MessageComponent{
 			discordgo.ActionsRow{
 				Components: []discordgo.MessageComponent{
-					discordgo.Button{
-						Label:    btnLabel,
-						Style:    discordgo.SuccessButton,
-						Disabled: false,
-						CustomID: FormButtonIdPrefix + formId,
-					},
+					button,
 				},
 			},
 		},
 	}
 
-	_, err := session.ChannelMessageSendComplex(channelId, messageData)
+	_, err = session.ChannelMessageSendComplex(channelId, messageData)
 	return err
 }

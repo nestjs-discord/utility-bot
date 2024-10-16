@@ -16,11 +16,11 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 	data := i.ModalSubmitData()
 
 	modalCustomId := data.CustomID
-	if !strings.HasPrefix(modalCustomId, forms.FormModalIdPrefix) {
+	if !strings.HasPrefix(modalCustomId, forms.Modal) {
 		return // skip it
 	}
 
-	formId := strings.TrimPrefix(modalCustomId, forms.FormModalIdPrefix)
+	formId := strings.TrimPrefix(modalCustomId, forms.Modal)
 	form, ok := config.Yaml().Forms[formId]
 	if !ok {
 		return // skip invalid forms
