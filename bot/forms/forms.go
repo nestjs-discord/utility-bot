@@ -7,14 +7,6 @@ import (
 	"sync"
 )
 
-const (
-	OpenModalButton       = "fmb"
-	Modal                 = "fm"
-	ModeratorAcceptButton = "fma"
-	ModeratorRejectButton = "fmr"
-	ModeratorBanButton    = "fmb"
-)
-
 type Forms struct {
 	cfg             yaml.Forms
 	modActionsCache *ristretto.Cache[string, bool]

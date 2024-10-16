@@ -4,7 +4,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/nestjs-discord/utility-bot/badge/main)](https://www.codefactor.io/repository/github/nestjs-discord/utility-bot/overview/main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nestjs-discord/utility-bot)](https://goreportcard.com/report/github.com/nestjs-discord/utility-bot)
 
-Carefully designed to streamline the support process for [the official NestJS Discord server](https://discord.gg/nestjs).
+Carefully designed with love for the official [NestJS Discord server](<https://discord.gg/nestjs>).
 
 ## Configuration
 
@@ -15,13 +15,13 @@ cp .env.example .env
 ## Running
 
 ```sh
-# validates the YAML config (to be used by the contributors or in a CI/CD pipeline)
+# validates the configuration files (can be used by the contributors or in a CI/CD pipeline)
 go run cmd/validate/main.go
 
-# launches the discord bot
+# launches the Discord bot
 go run cmd/run/main.go
 
-# cleans the registered application commands on the server
+# cleans the registered application commands
 go run cmd/clean/main.go
 ```
 

@@ -39,10 +39,10 @@ type queryResponse struct {
 
 // Search performs a search query on the Algolia search service for the specified app and query.
 // It returns a list of search result hits and any error encountered.
-func Search(app App, query string) (hits []Hit, error error) {
+func Search(app App, query string) ([]Hit, error) {
 	query = strings.TrimSpace(query)
 	if len(query) > 500 {
-		return nil, errors.New("There's a hard limit of 500 characters per query")
+		return nil, errors.New("there's a hard limit of 500 characters per query")
 	}
 
 	credential := credentials[app]
