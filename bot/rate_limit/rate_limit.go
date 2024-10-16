@@ -2,7 +2,7 @@ package rate_limit
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/bot/moderator"
+	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"sync"
 	"time"
@@ -20,10 +20,10 @@ import (
 // The RateLimit instance created with New() will automatically evict entries that have not been accessed for more than
 // the specified TTL. This eviction process is done asynchronously by a goroutine.
 type RateLimit struct {
-	cfg       yaml.RateLimit
-	moderator *moderator.Moderator
-	m         map[string]*item // The underlying map that holds the key-value pairs
-	l         sync.Mutex       // The mutex used to synchronize access to the map
+	cfg        yaml.RateLimit
+	moderators *moderators.Moderators
+	m          map[string]*item // The underlying map that holds the key-value pairs
+	l          sync.Mutex       // The mutex used to synchronize access to the map
 }
 
 // item is a struct that represents a value in the map along with its creation timestamp
@@ -34,11 +34,11 @@ type item struct {
 
 // NewRateLimit returns a new RateLimit instance with a maximum TTL of maxTTL seconds.
 // The returned instance automatically evicts stale entries every second.
-func NewRateLimit(cfg yaml.RateLimit, moderator *moderator.Moderator) *RateLimit {
+func NewRateLimit(cfg yaml.RateLimit, moderators *moderators.Moderators) *RateLimit {
 	r := &RateLimit{
-		cfg:       cfg,
-		moderator: moderator,
-		m:         make(map[string]*item),
+		cfg:        cfg,
+		moderators: moderators,
+		m:          make(map[string]*item),
 	}
 
 	go func() {
@@ -87,7 +87,7 @@ func (r *RateLimit) GetUsageCount(k string) (v int) {
 }
 
 func (r *RateLimit) CheckRateLimit(userID string) bool {
-	if r.moderator.IsUserModerator(userID) {
+	if r.moderators.IsUserModerator(userID) {
 		return false
 	}
 

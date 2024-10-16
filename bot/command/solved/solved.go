@@ -3,7 +3,7 @@ package solved
 import (
 	"errors"
 	"fmt"
-	"github.com/nestjs-discord/utility-bot/bot/moderator"
+	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
@@ -19,15 +19,15 @@ const (
 )
 
 type Solved struct {
-	logger *slog.Logger
+	logger     *slog.Logger
+	moderators *moderators.Moderators
 	// TODO: yaml config
-	moderator *moderator.Moderator
 }
 
-func New(moderator *moderator.Moderator) *Solved {
+func New(moderators *moderators.Moderators) *Solved {
 	return &Solved{
-		logger:    logger.NewWithSubsystem("bot", "command", "solved"),
-		moderator: moderator,
+		logger:     logger.NewWithSubsystem("bot", "command", "solved"),
+		moderators: moderators,
 	}
 }
 

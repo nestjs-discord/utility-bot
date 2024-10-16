@@ -2,28 +2,29 @@ package bot
 
 import (
 	"fmt"
-	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"log/slog"
 	"strings"
 
-	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/command/archive"
 	"github.com/nestjs-discord/utility-bot/bot/command/common"
 	"github.com/nestjs-discord/utility-bot/bot/command/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/command/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/command/reference"
 	"github.com/nestjs-discord/utility-bot/bot/command/solved"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 var (
-	commands = []*discordgo.ApplicationCommand{
+	commands = []*discordgo.ApplicationCommand{ // TODO: remove this (make it a one-time private method instead)
 		archive.Command,
 		reference.Subcommand,
 		solved.Command,
 		google_it.Command,
 		dont_ping_mods.Command,
 	}
-	defaultOptions = []*discordgo.ApplicationCommandOption{
+	defaultOptions = []*discordgo.ApplicationCommandOption{ // TODO: can this be removed?
 		common.TargetOption,
 		common.HideOption,
 	}
@@ -33,7 +34,7 @@ var (
 
 type subCommandsType = map[string]yaml.Commands
 
-func (b *Bot) RegisterApplicationCommands(cfgCommands yaml.Commands) error {
+func (b *Bot) RegisterApplicationCommands(cfgCommands yaml.Commands) error { // TODO: make this a private method
 	normalCmd, subCmd := b.generateCommandsToRegister(cfgCommands)
 
 	commands = append(commands, b.generateDynamicCommands(normalCmd)...)

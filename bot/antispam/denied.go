@@ -1,4 +1,4 @@
-package automod
+package antispam
 
 func (a *Antispam) AddUserToDeniedList(userId UserId) {
 	a.sync.Lock()

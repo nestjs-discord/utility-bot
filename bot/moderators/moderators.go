@@ -1,13 +1,13 @@
-package moderator
+package moderators
 
 import "encoding/base64"
 
-type Moderator struct {
+type Moderators struct {
 	userIds []string
 }
 
-func NewModerator(encUserIds []string) (*Moderator, error) {
-	m := &Moderator{}
+func NewModerators(encUserIds []string) (*Moderators, error) {
+	m := &Moderators{}
 	for index := range encUserIds {
 		decStr, err := m.decodeUserId(encUserIds[index])
 		if err != nil {
@@ -20,7 +20,7 @@ func NewModerator(encUserIds []string) (*Moderator, error) {
 	return m, nil
 }
 
-func (mod *Moderator) decodeUserId(encStr string) (string, error) {
+func (mod *Moderators) decodeUserId(encStr string) (string, error) {
 	data, err := base64.StdEncoding.DecodeString(encStr)
 	if err != nil {
 		return "", err
@@ -28,7 +28,7 @@ func (mod *Moderator) decodeUserId(encStr string) (string, error) {
 	return string(data), nil
 }
 
-func (mod *Moderator) IsUserModerator(userId string) bool {
+func (mod *Moderators) IsUserModerator(userId string) bool {
 	for _, uid := range mod.userIds {
 		if uid == userId {
 			return true

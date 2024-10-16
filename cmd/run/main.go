@@ -5,7 +5,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
-	"github.com/nestjs-discord/utility-bot/bot/moderator"
+	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
@@ -17,7 +17,7 @@ import (
 	"syscall"
 
 	"github.com/nestjs-discord/utility-bot/bot"
-	"github.com/nestjs-discord/utility-bot/bot/automod"
+	"github.com/nestjs-discord/utility-bot/bot/antispam"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
 )
 
@@ -57,14 +57,14 @@ func main() {
 	iMarkdown := markdown.NewMarkdown()
 	iMarkdown.CacheCommands(yamlCfg.Commands)
 
-	iModerator, err := moderator.NewModerator(yamlCfg.Moderators)
+	iModerators, err := moderators.NewModerators(yamlCfg.Moderators)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	iRateLimit := rate_limit.NewRateLimit(yamlCfg.RateLimit, iModerator)
+	iRateLimit := rate_limit.NewRateLimit(yamlCfg.RateLimit, iModerators)
 
-	iAntispam, err := automod.NewAntispam(yamlCfg.Antispam, iModerator)
+	iAntispam, err := antispam.NewAntispam(yamlCfg.Antispam, iModerators)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	interactionHandler := interaction.NewHandler(iForms, iModerator, iRateLimit, iMarkdown)
+	interactionHandler := interaction.NewHandler(iForms, iModerators, iRateLimit, iMarkdown)
 
 	b.ApplyHandler(
 		handler.NewHandler(
@@ -82,7 +82,7 @@ func main() {
 			iAntispam,
 			iForms,
 			iMarkdown,
-			iModerator,
+			iModerators,
 		),
 	)
 

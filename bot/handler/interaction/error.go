@@ -13,7 +13,7 @@ func (h *Handler) RespondError(err error, s *discordgo.Session, i *discordgo.Int
 	)
 
 	content := "Something went wrong."
-	if h.moderator.IsUserModerator(i.Member.User.ID) {
+	if h.moderators.IsUserModerator(i.Member.User.ID) {
 		content += fmt.Sprintf("\nHere's the internal error message: 🪲\n```\n%s\n```", err.Error())
 	}
 

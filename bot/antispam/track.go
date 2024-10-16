@@ -1,4 +1,4 @@
-package automod
+package antispam
 
 func (a *Antispam) IsChannelIdTrackable(channelId string) bool {
 	for _, cid := range a.cfg.TrackedChannelIds {

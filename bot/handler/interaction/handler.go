@@ -7,28 +7,28 @@ import (
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log/slog"
 
-	"github.com/nestjs-discord/utility-bot/bot/moderator"
+	"github.com/nestjs-discord/utility-bot/bot/moderators"
 )
 
 type Handler struct {
-	logger    *slog.Logger
-	forms     *forms.Forms
-	moderator *moderator.Moderator
-	rateLimit *rate_limit.RateLimit
-	markdown  *markdown.Markdown
+	logger     *slog.Logger
+	forms      *forms.Forms
+	moderators *moderators.Moderators
+	rateLimit  *rate_limit.RateLimit
+	markdown   *markdown.Markdown
 }
 
 func NewHandler(
 	forms *forms.Forms,
-	moderator *moderator.Moderator,
+	moderators *moderators.Moderators,
 	rateLimit *rate_limit.RateLimit,
 	markdown *markdown.Markdown,
 ) *Handler {
 	return &Handler{
-		logger:    logger.NewWithSubsystem("bot", "handler", "interaction"),
-		forms:     forms,
-		moderator: moderator,
-		rateLimit: rateLimit,
-		markdown:  markdown,
+		logger:     logger.NewWithSubsystem("bot", "handler", "interaction"),
+		forms:      forms,
+		moderators: moderators,
+		rateLimit:  rateLimit,
+		markdown:   markdown,
 	}
 }

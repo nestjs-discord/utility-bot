@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+// TODO: remove all the "validate" tags and perform manual validation
+
 type Config struct {
 	Moderators Moderators `yaml:"moderators" validate:"required,min=1,dive,min=1"`
 	RateLimit  RateLimit  `yaml:"rateLimit" validate:"required"`

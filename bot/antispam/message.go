@@ -1,4 +1,4 @@
-package automod
+package antispam
 
 import (
 	"fmt"
@@ -85,7 +85,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	}
 
 	// Check if the author is a moderator; if true, skip further processing.
-	if a.cfg.ModeratorsBypass && a.moderator.IsUserModerator(i.Author.ID) {
+	if a.cfg.ModeratorsBypass && a.moderators.IsUserModerator(i.Author.ID) {
 		return
 	}
 

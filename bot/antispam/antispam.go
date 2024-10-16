@@ -1,9 +1,9 @@
-package automod
+package antispam
 
 import (
 	"fmt"
 	"github.com/dgraph-io/ristretto"
-	"github.com/nestjs-discord/utility-bot/bot/moderator"
+	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log/slog"
@@ -22,17 +22,17 @@ type Antispam struct {
 	userMap    map[UserId]map[string]Message
 	denyTTL    time.Duration
 	deniedList *ristretto.Cache[string, bool]
-	moderator  *moderator.Moderator
+	moderators *moderators.Moderators
 }
 
-func NewAntispam(cfg yaml.Antispam, moderator *moderator.Moderator) (*Antispam, error) {
+func NewAntispam(cfg yaml.Antispam, moderators *moderators.Moderators) (*Antispam, error) {
 	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).
 		BufferItems: 64,      // number of keys per Get buffer.
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to init automod cache: %s", err)
+		return nil, fmt.Errorf("failed to init antispam cache: %s", err)
 	}
 
 	a := &Antispam{
@@ -42,7 +42,7 @@ func NewAntispam(cfg yaml.Antispam, moderator *moderator.Moderator) (*Antispam, 
 		userMap:    make(map[UserId]map[string]Message),
 		denyTTL:    time.Duration(cfg.DenyTTLSec) * time.Second,
 		deniedList: cache,
-		moderator:  moderator,
+		moderators: moderators,
 	}
 
 	go a.backgroundCleaner(cfg.MessageTTLSec)
