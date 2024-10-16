@@ -205,8 +205,30 @@ solvedCommand:
     your problem, providing as much additional information as possible.
   # Map of the forum channel IDs against their "✅ solved" tag ID
   # This should speed up the command's response time by avoid Discord API calls.
-  solvedTags: # TODO: fill the values
-    123: "123"
+  solvedTags:
+    # Support
+    1025199348096700476: "1130941763679432884" # nestjs-help
+    1025200803239166012: "1130941861696127137" # connectivity
+    1216805074504777749: "1216806068579995688" # graphql
+    1025201603843719200: "1130941907644719145" # database
+    1025207636599250954: "1130941954998411395" # utilities
+
+    # Community Modules
+    1058053453433282570: "1130942460017770506" # golevelup-nestjs
+    1197293125434093701: "1197661679530557490" # brocoders-nestjs-boilerplate
+    1085231189541011576: "1130942436617748610" # necord
+    1058054786060124201: "1130942397296169000" # nest-commander
+    1181877086797967420: "1197661857427755128" # nestia
+    1058054362062143648: "1130942375020199996" # nestjs-otel
+    1058055360994353172: "1130942337732857946" # ogma
+
+    # Development
+    1053041658343723099: "1130942302391652473" # architecture-and-design
+    1057417995707748482: "1130942277280333917" # security
+    1053044251052740729: "1130942250080280717" # devops
+    1075555694587162704: "1198098430514446457" # code-review
+    1056608823219081266: "1130942218560081970" # typescript
+
 
   # For each command, use a key to define the command name.
   # If a key contains a single space character, it becomes a sub-command.
