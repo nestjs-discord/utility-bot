@@ -88,5 +88,5 @@ type CommandButtons [][]*CommandButton
 type CommandButton struct {
 	Label string `yaml:"label" validate:"required,min=3,max=40"`
 	URL   string `yaml:"url" validate:"required,url,min=3"`
-	Emoji string `yaml:"emoji" validate:"regexp=^[\p{Emoji}]$"`
+	Emoji string `yaml:"emoji"` // TODO: validate
 }

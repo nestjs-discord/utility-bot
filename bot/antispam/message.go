@@ -128,7 +128,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 				)
 				return
 			}
-			a.logger.Debug(fmt.Sprintf("deleted message"),
+			a.logger.Debug("deleted message",
 				slog.String("channelId", chId),
 				slog.String("messageId", msgId),
 			)

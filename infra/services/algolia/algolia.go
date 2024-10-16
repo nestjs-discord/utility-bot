@@ -54,6 +54,9 @@ func Search(app App, query string) ([]Hit, error) {
 	}
 
 	req, err := http.NewRequest(http.MethodPost, baseURL+"query", bytes.NewBuffer(jsonPayload))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %s", err)
+	}
 
 	setHeaders(req, credential)
 
@@ -103,6 +106,9 @@ func GetObject(app App, objectID string) (*Hit, error) {
 	baseURL := getBaseURL(credential)
 
 	req, err := http.NewRequest(http.MethodGet, baseURL+url.QueryEscape(objectID), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %s", err)
+	}
 
 	setHeaders(req, credential)
 

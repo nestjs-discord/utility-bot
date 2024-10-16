@@ -20,10 +20,7 @@ import (
 type Commands struct {
 	logger     *slog.Logger
 	discordCfg *env.DiscordConfig
-	commands   *yaml.Commands
 	session    *dgo.Session
-
-	solved *solved.Solved
 }
 
 func NewCommands(
