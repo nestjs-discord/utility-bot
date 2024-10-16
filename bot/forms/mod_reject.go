@@ -9,8 +9,8 @@ import (
 
 func (f *Forms) ModRejectButtonClicked(s *discordgo.Session, i *discordgo.InteractionCreate, _ *components.CustomID) error {
 	// formId := customId.FormId
-	if f.RaceConditionCheck(i.Message.ID) {
-		f.RaceConditionRespond(s, i)
+	if f.raceConditionCheck(i.Message.ID) {
+		f.raceConditionRespond(s, i)
 		return nil
 	}
 

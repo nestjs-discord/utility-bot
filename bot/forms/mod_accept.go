@@ -8,8 +8,8 @@ import (
 )
 
 func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.InteractionCreate, customId *components.CustomID) error {
-	if f.RaceConditionCheck(i.Message.ID) {
-		f.RaceConditionRespond(s, i)
+	if f.raceConditionCheck(i.Message.ID) {
+		f.raceConditionRespond(s, i)
 		return nil
 	}
 

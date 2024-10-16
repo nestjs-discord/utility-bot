@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func (f *Forms) RaceConditionCheck(messageId string) bool {
+func (f *Forms) raceConditionCheck(messageId string) bool {
 	f.modActionLock.Lock()
 	defer f.modActionLock.Unlock()
 
@@ -27,7 +27,7 @@ func (f *Forms) raceConditionStoreMessageId(messageId string) {
 	f.modActionsCache.SetWithTTL(cacheKey, true, 1, cacheTtl)
 }
 
-func (f *Forms) RaceConditionRespond(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (f *Forms) raceConditionRespond(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	msg := "Race condition detected! 😅\n"
 	msg += "Another moderator has already handled this message."
 	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
