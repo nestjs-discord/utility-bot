@@ -3,7 +3,7 @@ package antispam
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/internal/discord/util"
+	"github.com/nestjs-discord/utility-bot/bot/user"
 	"strings"
 )
 
@@ -56,7 +56,7 @@ func (a *Antispam) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.Mes
 
 	embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 		Name:   "Username",
-		Value:  "`" + util.FormatUsername(i.Author) + "`",
+		Value:  "`" + user.FormatUsername(i.Author) + "`",
 		Inline: true,
 	})
 

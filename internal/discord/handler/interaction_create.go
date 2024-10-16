@@ -6,6 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
+	"github.com/nestjs-discord/utility-bot/bot/user"
 	"github.com/nestjs-discord/utility-bot/infra/config"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/samber/lo"
@@ -77,7 +78,7 @@ func handleInteractionModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 			},
 			{
 				Name:   "Username",
-				Value:  "`" + util.FormatUsername(i.Member.User) + "`",
+				Value:  "`" + user.FormatUsername(i.Member.User) + "`",
 				Inline: true,
 			},
 		},

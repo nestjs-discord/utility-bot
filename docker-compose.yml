@@ -1,5 +1,3 @@
-# version: "3.9"
-
 services:
 #  redis:
 #    image: redis:7.4.1-alpine
@@ -16,7 +14,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      target: production-stage
+      target: prod
     volumes:
       - ./content:/usr/app/content:ro # TODO: remove (after removing the *.md files)
       - ./config.yml:/usr/app/config.yml:ro

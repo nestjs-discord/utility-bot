@@ -19,7 +19,7 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	for _, opt := range i.ApplicationCommandData().Options {
 		// Mention the "target" user
 		if opt.Name == common.OptionTarget && opt.Value != "" {
-			content = fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value) + content
+			content = fmt.Sprintf("*Suggestion for* <@%v>:\n", opt.Value) + content
 		}
 	}
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
+	"github.com/nestjs-discord/utility-bot/bot/user"
 	"time"
 )
 
@@ -15,8 +16,10 @@ func (f *Forms) ModRejectButtonClicked(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	msgEdit := discordgo.NewMessageEdit(i.ChannelID, i.Message.ID)
-	userId := i.Member.User.ID
-	content := fmt.Sprintf("Rejected by <@%s>, <t:%d:R>\n", userId, time.Now().UTC().Unix())
+	content := fmt.Sprintf("Rejected by %s, <t:%d:R>\n",
+		user.Mention(i.Member.User),
+		time.Now().UTC().Unix(),
+	)
 	msgEdit.SetContent(content)
 
 	// remove the message components

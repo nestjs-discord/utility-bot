@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
+	"github.com/nestjs-discord/utility-bot/bot/user"
 	"time"
 )
 
@@ -45,8 +46,10 @@ func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.Intera
 		_ = s.ChannelMessageDelete(form.ChannelId, messages[0].ID)
 	}
 
-	userId := i.Member.User.ID
-	content := fmt.Sprintf("Accepted by <@%s>, <t:%d:R>", userId, time.Now().UTC().Unix())
+	content := fmt.Sprintf("Accepted by %s, <t:%d:R>",
+		user.Mention(i.Member.User),
+		time.Now().UTC().Unix(),
+	)
 
 	_, err = s.ChannelMessageCrosspost(sentMessage.ChannelID, sentMessage.ID)
 	if err != nil {
