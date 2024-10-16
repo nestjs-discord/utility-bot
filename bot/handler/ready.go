@@ -3,14 +3,13 @@ package handler
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/status"
-	"github.com/nestjs-discord/utility-bot/bot/user"
 	"log/slog"
 )
 
 func (h *Handler) Ready(s *discordgo.Session, r *discordgo.Ready) {
 	h.logger.Info("ready",
 		slog.String("id", r.User.ID),
-		slog.String("username", user.FormatUsername(r.User)),
+		slog.String("user", r.User.String()),
 	)
 
 	err := status.Update(s)

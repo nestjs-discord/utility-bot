@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
-	"github.com/nestjs-discord/utility-bot/bot/user"
 	"time"
 )
 
@@ -23,7 +22,7 @@ func (f *Forms) ModBanButtonClicked(s *discordgo.Session, i *discordgo.Interacti
 
 	msgEdit := discordgo.NewMessageEdit(i.ChannelID, i.Message.ID)
 	content := fmt.Sprintf("Banned by %s, <t:%d:R>\n",
-		user.Mention(i.Member.User),
+		i.Member.User.Mention(),
 		time.Now().UTC().Unix(),
 	)
 	msgEdit.SetContent(content)

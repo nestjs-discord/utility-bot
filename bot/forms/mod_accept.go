@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
-	"github.com/nestjs-discord/utility-bot/bot/user"
 	"time"
 )
 
@@ -47,7 +46,7 @@ func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	content := fmt.Sprintf("Accepted by %s, <t:%d:R>",
-		user.Mention(i.Member.User),
+		i.Member.User.Mention(),
 		time.Now().UTC().Unix(),
 	)
 

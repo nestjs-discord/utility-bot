@@ -3,7 +3,6 @@ package antispam
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/infra/config"
 	"log/slog"
 )
 
@@ -139,7 +138,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Add user to the denied list
 	a.AddUserToDeniedList(userId)
 
-	logChannelId := config.Yaml().Antispam.LogChannelId
+	logChannelId := a.cfg.LogChannelId
 	_, err = s.ChannelMessageSendComplex(logChannelId, a.GenerateAlertMessage(i))
 	if err != nil {
 		a.logger.Error("failed to alert moderators about the ongoing spam",
