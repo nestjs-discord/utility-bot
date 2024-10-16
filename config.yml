@@ -325,7 +325,71 @@ commands:
           emoji: "🔗"
   docs behind-proxy:
     description: "How to enable the trust proxy option when NestJS app is behind a reverse proxy"
-    content: "./content/docs/behind-proxy.md"
+    content: >
+      When your NestJS application is behind a reverse proxy, you may need to enable the `trust proxy` option in Express or Fastify, depending on your server.
+      
+      
+      In Express, you can enable the `trust proxy` option using the `app.set()` method.
+      
+      ```typescript
+      
+      async function bootstrap() {
+        const app = await NestFactory.create(AppModule);
+
+        app.set('trust proxy', true); // <----
+
+        await app.listen(3000);
+      }
+      ```
+      
+      If you're using Fastify, you can enable the `trustProxy` option in `FastifyAdapter`.
+      
+      ```typescript
+      
+      import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+      
+      
+      async function bootstrap() {
+        const app = await NestFactory.create<NestFastifyApplication>(
+          AppModule,
+
+          new FastifyAdapter({
+            trustProxy: true, // <----
+          }),
+        );
+      }
+      ```
+      
+      > By enabling the `trust proxy` option, Express/Fastify will trust the `X-Forwarded-For` header and consider it the client's IP address.
+      
+      
+      Suppose you use the `@nestjs/throttler` module to rate-limit users and protect applications from brute-force attacks.
+      
+      In that case, besides enabling the `trust proxy` option, you should override the `getTracker()` method to pull the value from the header rather than from `req.ip`.
+      
+      ```ts
+      
+      // throttler-behind-proxy.guard.ts
+      
+      import { ThrottlerGuard } from '@nestjs/throttler';
+      
+      import { Injectable } from '@nestjs/common';
+      
+      
+      @Injectable()
+      export class ThrottlerBehindProxyGuard extends ThrottlerGuard {
+        protected getTracker(req: Record<string, any>): string {
+          return req.ips.length ? req.ips[0] : req.ip; // individualize IP extraction to meet your own needs
+        }
+      }
+      
+      
+      // app.controller.ts
+      
+      import { ThrottlerBehindProxyGuard } from './throttler-behind-proxy.guard';
+
+      @UseGuards(ThrottlerBehindProxyGuard)
+      ```
     buttons:
       - - label: "Express trust proxy docs"
           url: "https://expressjs.com/en/guide/behind-proxies.html"
@@ -509,7 +573,51 @@ commands:
           emoji: "📖"
   docs providers-vs-imports:
     description: "Ensure accurate service/module listings"
-    content: "./content/docs/providers-vs-imports.md"
+    content: >
+      Don't list a service in `providers` array of a module unless the module really *provides* the service.
+      
+      If your `ServiceA` depends on a `ServiceB` from different module `ModuleB`, add `ServiceB` to `ModuleB`'s `exports` array, 
+      then add `ModuleB` to `imports` array in your module.
+      
+      ```ts
+      
+      @Module({
+        providers: [ServiceB],
+        exports: [
+          ServiceB // <-- export the "ServiceB" provider by adding it to the module's exports array
+        ], 
+      })
+      
+      export class ModuleB {}
+      
+      ```
+      
+      ```ts
+      
+      @Module({
+        imports: [
+          ModuleB // <-- modules that wish to inject the "ServiceB" will need to import the "ModuleB" in their imports array
+        ],  
+        providers: [ServiceA],
+      })
+      
+      export class ModuleA {}
+      ```
+      
+      ```ts
+      
+      import { ServiceB } from '../module-b/service-b.service'
+      
+      
+      @Injectable()
+      export class ServiceA {
+        constructor(private readonly serviceB: ServiceB) {}
+
+        // async foo() {
+        //   this.serviceB.bar();
+        // }
+      }
+      ```
     buttons:
       - - label: "Read more"
           url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
@@ -560,7 +668,36 @@ commands:
           emoji: "🔗"
   docs resolve-dependencies:
     description: "Nest not being able to resolve dependencies of something"
-    content: "./content/docs/resolve-dependencies.md"
+    content: >
+      The most common error in Nest is failing to resolve provider dependencies.
+      
+      The error message usually looks something like this:
+      
+      ```text
+      
+      Nest can't resolve dependencies of the <provider> (?). Please make sure that the argument <unknown_token> at index [<index>] is available in the <module> context.
+
+
+      Potential solutions:
+      
+      - Is <module> a valid NestJS module?
+      
+      - If <unknown_token> is a provider, is it part of the current <module>?
+      
+      - If <unknown_token> is exported from a separate @Module, is that module imported within <module>?
+        @Module({
+          imports: [ /* the Module containing <unknown_token> */ ]
+        })
+      ```
+      
+      The most common culprit of the error, is not having the `<provider>` in the module's `providers` array.
+      
+      Please make sure that the provider is indeed in the `providers` array and following standard NestJS provider practices.
+
+
+      There are a few gotchas, that are common. One is putting a provider in an `imports` array.
+      
+      If this is the case, the error will have the provider's name where `<module>` should be.
     buttons:
       - - label: "Read more about this error"
           url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
