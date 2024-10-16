@@ -171,7 +171,7 @@ func (a *AutoMod) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 
 func (a *AutoMod) TrackHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	content := "### Antispam feature is tracking the following channels: 👇\n"
-	for _, channelId := range a.cfg.ChannelIds {
+	for _, channelId := range a.cfg.TrackedChannelIds {
 		content += fmt.Sprintf("- <#%s>\n", channelId)
 	}
 

@@ -1,7 +1,7 @@
 package automod
 
 func (a *AutoMod) IsChannelIdTrackable(channelId string) bool {
-	for _, cid := range a.cfg.ChannelIds {
+	for _, cid := range a.cfg.TrackedChannelIds {
 		if cid == channelId {
 			return true
 		}
@@ -10,5 +10,5 @@ func (a *AutoMod) IsChannelIdTrackable(channelId string) bool {
 }
 
 func (a *AutoMod) GetTrackedChannelIds() []string {
-	return a.cfg.ChannelIds
+	return a.cfg.TrackedChannelIds
 }

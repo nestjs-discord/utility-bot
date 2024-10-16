@@ -45,7 +45,7 @@ func NewRateLimit(cfg yaml.RateLimit, moderator *moderator.Moderator) *RateLimit
 		for now := range time.Tick(time.Second) {
 			r.l.Lock()
 			for k, v := range r.m {
-				if now.Unix()-v.createdTs > int64(cfg.TTL) {
+				if now.Unix()-v.createdTs > int64(cfg.TTLSec) {
 					delete(r.m, k)
 				}
 			}
@@ -93,7 +93,7 @@ func (r *RateLimit) CheckRateLimit(userID string) bool {
 
 	r.IncrementUsage(userID)
 
-	return r.GetUsageCount(userID) > r.cfg.Usage
+	return r.GetUsageCount(userID) > r.cfg.MaxUsage
 }
 
 func (r *RateLimit) ForbidInteraction(s *discordgo.Session, i *discordgo.InteractionCreate) {

@@ -12,7 +12,7 @@ func TestTTLMap(t *testing.T) {
 	// Create a new TTLMap with maxTTL 1 second
 	m := rl.NewRateLimit(
 		yaml.RateLimit{
-			TTL: 1,
+			TTLSec: 1,
 		},
 		nil,
 	)
