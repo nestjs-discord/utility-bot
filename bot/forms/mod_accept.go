@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
-	"github.com/nestjs-discord/utility-bot/infra/config"
 	"time"
 )
 
 func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.InteractionCreate, customId *components.CustomID) error {
 	formId := customId.FormId
-	form, ok := config.Yaml().Forms[formId]
+	form, ok := f.cfg[formId]
 	if !ok {
 		return fmt.Errorf("form %s not found", formId)
 	}

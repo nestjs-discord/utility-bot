@@ -1,8 +1,8 @@
 package forms
 
 const (
-	OpenModalButton       = "fmb"
-	Modal                 = "fmd"
+	OpenModalButton       = "f-modal-button"
+	Modal                 = "f-modal"
 	ModeratorAcceptButton = "fma"
 	ModeratorRejectButton = "fmr"
 	ModeratorBanButton    = "fmb"
