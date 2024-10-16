@@ -70,7 +70,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	interactionHandler := interaction.NewHandler(iModerator, iRateLimit, iMarkdown)
+	interactionHandler := interaction.NewHandler(iForms, iModerator, iRateLimit, iMarkdown)
 
 	b.ApplyHandler(
 		handler.NewHandler(

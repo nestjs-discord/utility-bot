@@ -2,10 +2,7 @@ package forms
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/dgraph-io/ristretto"
 )
-
-var ModActionsCache *ristretto.Cache[string, bool]
 
 func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, buttonLabel string) bool {
 	// if the message does not have any component

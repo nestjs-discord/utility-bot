@@ -10,43 +10,6 @@ import (
 	"strings"
 )
 
-func validateInteractionForThreadPost(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.Channel, bool) {
-	currentChannelInfo, err := s.Channel(i.ChannelID)
-	if err != nil {
-		util.InteractionRespondError(
-			fmt.Errorf("failed to get current channel info: %s", err),
-			s, i)
-
-		return nil, false
-	}
-
-	if currentChannelInfo.Type != discordgo.ChannelTypeGuildPublicThread &&
-		currentChannelInfo.Type != discordgo.ChannelTypeGuildPrivateThread {
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: ":warning: You can only use this command in forum posts.",
-				Flags:   discordgo.MessageFlagsEphemeral,
-			},
-		})
-
-		return nil, false
-	}
-
-	if currentChannelInfo.ThreadMetadata.Locked {
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: ":warning: Cannot perform this action on a locked thread post",
-				Flags:   discordgo.MessageFlagsEphemeral,
-			},
-		})
-		return nil, false
-	}
-
-	return currentChannelInfo, true
-}
-
 func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	currentChannelInfo, isValid := validateInteractionForThreadPost(s, i)
 	if !isValid {
@@ -67,6 +30,7 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
+	// TODO: can this be loaded form the config file?
 	parentChannelInfo, err := s.Channel(currentChannelInfo.ParentID)
 	if err != nil {
 		util.InteractionRespondError(
@@ -136,7 +100,7 @@ func SolvedHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Data: &discordgo.InteractionResponseData{Content: content},
 	})
 	if err != nil {
-		util.InteractionRespondError(fmt.Errorf("failed to respond to interaction: %s", err), s, i)
+		util.InteractionRespondError(err, s, i)
 		return
 	}
 

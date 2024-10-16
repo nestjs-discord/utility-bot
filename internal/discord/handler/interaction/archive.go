@@ -7,7 +7,7 @@ import (
 )
 
 func ArchiveHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	currentChannelInfo, isValid := validateInteractionForThreadPost(s, i)
+	_, isValid := validateInteractionForThreadPost(s, i)
 	if !isValid {
 		return
 	}
@@ -25,11 +25,10 @@ func ArchiveHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
-	// Default options
 	archived := true
 	locked := true
 
-	_, _ = s.ChannelEdit(currentChannelInfo.ID, &discordgo.ChannelEdit{
+	_, _ = s.ChannelEdit(i.ChannelID, &discordgo.ChannelEdit{
 		Archived: &archived,
 		Locked:   &locked,
 	})

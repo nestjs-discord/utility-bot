@@ -22,6 +22,8 @@ type Forms struct {
 	modActionLock   sync.RWMutex
 }
 
+var ModActionsCache *ristretto.Cache[string, bool] // TODO: remove
+
 func NewForms(cfg yaml.Forms, session *discordgo.Session) (*Forms, error) {
 	forms := &Forms{
 		cfg:           cfg,

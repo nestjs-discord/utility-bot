@@ -204,6 +204,28 @@ forms:
         required: true
         multiline: true
 
+
+archiveCommand:
+  response: > # TODO: make sure to use this key
+    This post has been marked as archived.
+    Please use it as a reference, but do not re-open it.
+    If you have a similar issue and cannot resolve it after reading this thread, please open a new post.
+
+solvedCommand:
+  response: > # TODO: can the unnecessary next line characters be removed from here somehow?
+    This post has been marked as resolved. ✅
+    Please read through the conversation and resolution, if you are having the same issue.
+    If you were the original author of the post and the issue is still fresh (within a few days)
+    and you are still have having trouble, continue to reply here. If you are not the original
+    author of the post or the post has aged, start a new thread linking this one as relevant to
+    your problem, providing as much additional information as possible.
+  # Map of the forum channel IDs against their "✅ solved" tag ID
+  # This should speed up the command's response time by avoid Discord API calls.
+  solvedTags: # TODO: fill the values
+    123: "123"
+
+
+
 #
 # This configuration block defines dynamic slash commands to be displayed to Discord users.
 #
@@ -214,7 +236,7 @@ commands:
   #
   #   example sub-command:
   #     description: "This is my command"
-  #     content: "./content/my-command.md"
+  #     content: "And this is my awesome respond! 😎"
   #     protected: false
   #     buttons:
   #       -
@@ -230,20 +252,19 @@ commands:
   #   description (required, max 100 characters):
   #     A short description of the command.
   #
-  #   content (required):
-  #     The path to the markdown file containing detailed information about the command.
-  #     The file should be located in the "content" folder, as the Docker volume relies on this.
+  #   content (required, max 3000 characters):
+  #     What will be the response of this command when executed.
   #
   #   protected (optional, default is false):
   #     If set to true, only moderators will be able to "see" and "use" this command.
   #
   #   buttons (optional, max eight rows and four columns):
   #     An array of arrays representing rows and columns of Discord message components, specifically link buttons.
-  #     Each link button has a "label", "url", and optional "emoji" field which are string.
+  #     Each link button has the "label", "url", and optional "emoji" string fields.
   #     See https://discord.com/developers/docs/interactions/message-components for more information on message components.
 
   #
-  # Mods commands
+  # Moderator commands (hidden from the public users)
   #
   mods cross-post:
     description: "Warn users not to cross-post, ask in relevant channels, and be patient."
@@ -265,8 +286,7 @@ commands:
           emoji: "🔗"
 
   #
-  # Public commands
-  # Only users with "Use Application Commands" permission can "see" and "use" these commands.
+  # Public commands (visible to all users)
   #
   community awesome:
     description: "A curated list of awesome things related to NestJS"
