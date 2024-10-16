@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/permissions"
 )
 
 // newSession creates a new Discord session with the provided token.
@@ -13,7 +14,7 @@ func (b *Bot) newSession() error {
 	}
 
 	// set intents
-	session.Identify.Intents = intents
+	session.Identify.Intents = permissions.BotIntents
 
 	b.session = session
 

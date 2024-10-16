@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"github.com/google/go-querystring/query"
+	"github.com/nestjs-discord/utility-bot/bot/permissions"
 )
 
 type inviteLinkQuery struct {
@@ -14,7 +15,7 @@ type inviteLinkQuery struct {
 func (b *Bot) logServerInviteLink() error {
 	qs := inviteLinkQuery{
 		ClientID:    b.discordCfg.AppId,
-		Permissions: permission,
+		Permissions: permissions.InviteLink,
 		Scope:       "bot applications.commands",
 	}
 

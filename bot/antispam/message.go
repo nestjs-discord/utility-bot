@@ -77,7 +77,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Skip executing auto-mod logic if the provided channel ID is not in the list of channels being tracked.
 	// This check ensures that auto-mod actions are only applied to channels marked for moderation.
 	if !a.IsChannelIdTrackable(channelId) {
-		a.logger.Debug("auto mod: channel id is not trackable, skipping...",
+		a.logger.Debug("channel id is not trackable",
 			slog.String("channelId", channelId),
 		)
 		return
@@ -153,7 +153,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 			slog.String("userId", i.Author.ID),
 			slog.Any("err", err),
 		)
-		_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf(":hammer: Failed to ban the spammer: `%s`", err.Error()))
+		_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("🔨 Failed to ban the spammer: `%s`", err.Error()))
 		return
 	}
 
@@ -161,7 +161,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		slog.String("userId", i.Author.ID),
 	)
 
-	_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf(":hammer: Member banned: `%s`", i.Author.ID))
+	_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("🔨 Member banned: `%s`", i.Author.ID))
 
 	// for debugging purposes only
 	// jsonStr, _ := json.MarshalIndent(cache.Antispam, "", "  ")

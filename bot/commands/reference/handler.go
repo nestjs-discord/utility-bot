@@ -3,7 +3,7 @@ package reference
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/bot/command/common"
+	"github.com/nestjs-discord/utility-bot/bot/commands/common"
 	algolia2 "github.com/nestjs-discord/utility-bot/infra/services/algolia"
 	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"strings"

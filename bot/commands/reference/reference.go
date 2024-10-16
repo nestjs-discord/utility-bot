@@ -2,7 +2,7 @@ package reference
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/nestjs-discord/utility-bot/bot/command/common"
+	"github.com/nestjs-discord/utility-bot/bot/commands/common"
 	"github.com/nestjs-discord/utility-bot/infra/services/algolia"
 )
 

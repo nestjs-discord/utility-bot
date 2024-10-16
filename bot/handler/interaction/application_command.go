@@ -5,11 +5,11 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 
-	"github.com/nestjs-discord/utility-bot/bot/command/archive"
-	"github.com/nestjs-discord/utility-bot/bot/command/dont_ping_mods"
-	"github.com/nestjs-discord/utility-bot/bot/command/google_it"
-	"github.com/nestjs-discord/utility-bot/bot/command/reference"
-	"github.com/nestjs-discord/utility-bot/bot/command/solved"
+	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
+	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
+	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
+	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
+	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 )
 
@@ -21,7 +21,6 @@ func (h *Handler) ApplicationCommand(s *discordgo.Session, i *discordgo.Interact
 		slog.String("userId", userID),
 		slog.String("channelId", i.ChannelID),
 		slog.String("name", data.Name),
-		slog.Any("options", i.ApplicationCommandData().Options),
 	)
 
 	if h.rateLimit.CheckRateLimit(userID) {

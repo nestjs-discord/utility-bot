@@ -26,7 +26,7 @@ type Solved struct {
 
 func New(moderators *moderators.Moderators) *Solved {
 	return &Solved{
-		logger:     logger.NewWithSubsystem("bot", "command", "solved"),
+		logger:     logger.NewWithSubsystem("bot", "commands", "solved"),
 		moderators: moderators,
 	}
 }

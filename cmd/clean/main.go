@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/nestjs-discord/utility-bot/bot"
+	"github.com/nestjs-discord/utility-bot/bot/commands"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"log"
 )
@@ -18,8 +20,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = b.CleanApplicationCommands()
+	err = commands.CleanApplicationCommands(
+		bot.ProvideSession(b),
+		discordCfg.AppId,
+		discordCfg.GuildId,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println("cleaned application commands")
 }

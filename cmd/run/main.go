@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/nestjs-discord/utility-bot/bot/commands"
+	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"log"
 	"log/slog"
 	"os"
@@ -47,6 +49,7 @@ func initDependencies() *bot.Bot {
 	if err != nil {
 		log.Fatal(err)
 	}
+	yamlCommands := yaml.NewCommands(yamlCfg)
 
 	// Initialize the Discord bot
 	b, err := bot.NewBot(discordCfg)
@@ -54,7 +57,7 @@ func initDependencies() *bot.Bot {
 		log.Fatal(err)
 	}
 
-	iMarkdown := markdown.NewMarkdown(yamlCfg.Commands)
+	iMarkdown := markdown.NewMarkdown(yamlCommands)
 
 	iModerators, err := moderators.NewModerators(yamlCfg.Moderators)
 	if err != nil {
@@ -86,10 +89,22 @@ func initDependencies() *bot.Bot {
 		),
 	)
 
-	err = b.RegisterApplicationCommands(yamlCfg.Commands)
+	iSolved := solved.New(iModerators)
+
+	_, err = commands.NewCommands(
+		session,
+		discordCfg,
+		yamlCommands,
+		iSolved,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	//err = iCommands.registerApplicationCommands(yamlCfg.Commands)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	return b
 }
