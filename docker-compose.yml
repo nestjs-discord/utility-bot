@@ -16,7 +16,6 @@ services:
       dockerfile: Dockerfile
       target: prod
     volumes:
-      - ./content:/usr/app/content:ro # TODO: remove (after removing the *.md files)
       - ./config.yml:/usr/app/config.yml:ro
     environment:
       DISCORD_APP_ID: "${DISCORD_APP_ID}"

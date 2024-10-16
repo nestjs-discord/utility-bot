@@ -106,11 +106,6 @@ func initDependencies() *bot.Bot {
 		log.Fatal(err)
 	}
 
-	//err = iCommands.registerApplicationCommands(yamlCfg.Commands)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-
 	return b
 }
 
