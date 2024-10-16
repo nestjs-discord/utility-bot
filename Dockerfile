@@ -8,6 +8,6 @@ RUN CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags="-s -w -buildid=" 
 
 FROM scratch AS prod
 WORKDIR /usr/app
-COPY --from=build-stage /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=build-stage /app/bin/bot /usr/bin/bot
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=build /app/bin/bot /usr/bin/bot
 ENTRYPOINT ["bot", "--stage", "prod"]

@@ -3,11 +3,13 @@ package forms
 import (
 	"errors"
 	"fmt"
-	dgo "github.com/bwmarrin/discordgo"
+	"strings"
+
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
+
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/samber/lo"
-	"strings"
 )
 
 func (f *Forms) OpenModalButtonClicked(s *dgo.Session, i *dgo.InteractionCreate, customId *components.CustomID) error {
@@ -81,27 +83,31 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 	// map of the 'input id' to the 'user given value'
 	var userInput []UserInput
 	for _, parentComp := range data.Components {
-		switch row := parentComp.(type) {
-		case *dgo.ActionsRow:
-			for _, childComp := range row.Components {
-				switch child := childComp.(type) {
-				case *dgo.TextInput:
-					val := strings.TrimSpace(child.Value)       // basic space trim
-					val = strings.ReplaceAll(val, "\n\n", "\n") // remove double next lines
-					val = strings.ReplaceAll(val, "\t", " ")    // replace the tab character
-					val = strings.ReplaceAll(val, "  ", " ")    // remove double spaces
-					val = markdown.ConvertLinksToHyperlinks(val)
+		row, isRow := parentComp.(*dgo.ActionsRow)
+		if !isRow {
+			break
+		}
 
-					if val == "" {
-						continue
-					}
-
-					userInput = append(userInput, UserInput{
-						InputId: child.CustomID,
-						Value:   val,
-					})
-				}
+		for _, childComp := range row.Components {
+			child, isText := childComp.(*dgo.TextInput)
+			if !isText {
+				break
 			}
+
+			val := strings.TrimSpace(child.Value)       // basic space trim
+			val = strings.ReplaceAll(val, "\n\n", "\n") // remove double next lines
+			val = strings.ReplaceAll(val, "\t", " ")    // replace the tab character
+			val = strings.ReplaceAll(val, "  ", " ")    // remove double spaces
+			val = markdown.ConvertLinksToHyperlinks(val)
+
+			if val == "" {
+				continue
+			}
+
+			userInput = append(userInput, UserInput{
+				InputId: child.CustomID,
+				Value:   val,
+			})
 		}
 	}
 
