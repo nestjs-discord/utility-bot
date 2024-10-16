@@ -133,12 +133,12 @@ forms:
         max: 200
         required: false
         multiline: true
-#      - id: "email"
-#        placeholder: "your.email.address@example.com"
-#        min: 5
-#        max: 60
-#        required: false
-#        multiline: false
+  #      - id: "email"
+  #        placeholder: "your.email.address@example.com"
+  #        min: 5
+  #        max: 60
+  #        required: false
+  #        multiline: false
 
   jo: # job-opportunities announcement channel (for job listing)
     buttonLabel: "Post a new opportunity"
@@ -262,46 +262,67 @@ solvedCommand:
   #     Each link button has label, url, and an optional emoji string field.
   #     See https://discord.com/developers/docs/interactions/message-components for more information on message components.
 commands:
-  #
-  # Moderator commands (hidden from the public users)
-  #
   mods cross-post:
     description: "Warn users not to cross-post, ask in relevant channels, and be patient."
     protected: true
-    content: "./content/mods/cross-post.md"
-
-  mods spam:
-    description: "A friendly warning to prevent spamming in the chat"
-    protected: true
-    content: "./content/mods/spam.md"
-
+    content: >
+      **Please do not cross post.**
+      
+      Please refrain from posting your question in multiple channels, or linking the channel elsewhere.
+      
+      If someone knew topic A, they would be in the topic A channel. Asking in irrelevant channels is just spam.
+      
+      Please be patient waiting for an answer,
+      it may take time for someone with adequate knowledge to answer your question,
+      furthermore, make sure that your question is well-structured.
   mods elaborate:
     description: "Please provide more context so we can better assist you with your inquiry."
-    content: "./content/mods/elaborate.md"
+    content: >
+      Hey there! 👋
+
+
+      Thanks for reaching out. Please elaborate further on your problem.
+      The more details you can provide, the better we'll be able to help you.
+      
+      
+      If applicable, please share any relevant code snippets or error messages you've encountered.
+      Please provide a minimal reproduction repository or steps to reproduce the issue.
+      It would greatly assist us in understanding and resolving the problem.
+
+
+      We're here to help, so feel free to provide more context, and we'll do our best to assist you further!
     buttons:
       - - label: "What is a reproduction repository?"
           url: "https://minimum-reproduction.wtf/"
           emoji: "🔗"
-
-  #
-  # Public commands (visible to all users)
-  #
   community awesome:
     description: "A curated list of awesome things related to NestJS"
-    content: "./content/community/awesome.md"
+    content: >
+      Hey there!
+      
+      Check out this awesome repository that has a fantastic collection of resources for NestJS.
+      You'll find all sorts of goodies like modules, examples, articles,
+      and tools that can really come in handy for developers using NestJS.
+      
+      
+      This repository is designed to be a one-stop shop for developers
+      who want to dive into the NestJS ecosystem and make the most of its features
+      to build strong and scalable applications.
     buttons:
       - - label: "View repository on GitHub"
           url: "https://github.com/nestjs/awesome-nestjs"
           emoji: "🔗"
-
+        - label: "Popular GitHub projects"
+          url: "https://github.com/topics/nestjs?o=desc&s=stars"
+          emoji: "🔗"
   community testing:
     description: "A GitHub repository to show off to the community methods of testing NestJS"
-    content: "./content/community/testing.md"
+    content: >
+      There's a large repository of samples managed by the community.
     buttons:
       - - label: "View repository on GitHub"
           url: "https://github.com/jmcdo29/testing-nestjs"
           emoji: "🔗"
-
   docs behind-proxy:
     description: "How to enable the trust proxy option when NestJS app is behind a reverse proxy"
     content: "./content/docs/behind-proxy.md"
@@ -315,7 +336,6 @@ commands:
       - - label: "@nestjs/throttler docs"
           url: "https://docs.nestjs.com/security/rate-limiting#proxies"
           emoji: "📖"
-
   docs circular-dependency:
     description: "Circular dependencies in NestJS and how to avoid them"
     content: "./content/docs/circular-dependency.md"
@@ -326,7 +346,6 @@ commands:
       - - label: "How to avoid circular dependencies"
           url: "https://trilon.io/blog/avoiding-circular-dependencies-in-nestjs"
           emoji: "📝"
-
   docs file-change-detected:
     description: "How to fix when TypeScript 4.9+ on Windows causes infinite loop in watch mode"
     content: "./content/docs/file-change-detected.md"
@@ -337,7 +356,6 @@ commands:
       - - label: "New strategy for detecting file changes"
           url: "https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#file-watching-now-uses-file-system-events"
           emoji: "📝"
-
   docs hybrid-app:
     description: "Create hybrid apps with NestJS and microservices"
     content: "./content/docs/hybrid-app.md"
@@ -345,7 +363,6 @@ commands:
       - - label: "Read more"
           url: "https://docs.nestjs.com/faq/hybrid-application"
           emoji: "📖"
-
   docs nest-debug:
     description: "Debug NestJS dependencies with environment variable"
     content: >
@@ -360,7 +377,6 @@ commands:
       - - label: "How to use the ConfigService"
           url: "https://docs.nestjs.com/techniques/configuration#using-the-configservice"
           emoji: "📖"
-
   docs providers-vs-imports:
     description: "Ensure accurate service/module listings"
     content: "./content/docs/providers-vs-imports.md"
@@ -368,7 +384,6 @@ commands:
       - - label: "Read more"
           url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
           emoji: "📖"
-
   docs request-lifecycle:
     description: "Get a grip on NestJS' request lifecycle for smooth coding"
     content: "./content/docs/request-lifecycle.md"
@@ -376,7 +391,6 @@ commands:
       - - label: "Documentation reference"
           url: "https://docs.nestjs.com/faq/request-lifecycle"
           emoji: "🔗"
-
   docs resolve-dependencies:
     description: "Nest not being able to resolve dependencies of something"
     content: "./content/docs/resolve-dependencies.md"
@@ -393,7 +407,6 @@ commands:
         - label: "Custom providers"
           url: "https://docs.nestjs.com/fundamentals/custom-providers"
           emoji: "🔗"
-
   rules codeblocks:
     description: "Letting people know how to share their code in a Markdown code block"
     content: >
@@ -446,21 +459,19 @@ commands:
       By sending your questions in the server, you maximize the number of people that see them and therefore maximize your chances of getting an answer.
 
   rules dont-ask-to-ask:
-    description: "Telling people to just ask their question with a link explaining why"
+    description: "Tell them to just ask their question with a link explaining why"
     content: "Please don't ask to ask. Just ask your question."
     buttons:
       - - label: "Learn more about asking to ask"
           url: "https://dontasktoask.com"
           emoji: "❓"
-
   rules no-hello:
-    description: "Telling someone not to say just 'hello' in the chat"
+    description: "Tell them not to say just 'hello' in the chat"
     content: "Please don't say just hello in chat."
     buttons:
       - - label: "Why is this a thing"
           url: "https://nohello.net/en/"
           emoji: "❓"
-
   rules reproduction:
     description: "Request for a minimum reproduction of the issue"
     content: >
@@ -477,7 +488,6 @@ commands:
       - - label: "SO Minimum Reproduction Description"
           url: "https://stackoverflow.com/help/minimal-reproducible-example"
           emoji: "🔗"
-
   rules no-screenshot:
     description: "When someone posts a screenshot instead of sharing their code"
     content: >
@@ -498,10 +508,63 @@ commands:
       - - label: "Learn more about code blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"
-
-  javascript floating-promise:
+  js floating-promise:
     description: "Introduction to floating Promises in JavaScript"
-    content: "./content/javascript/floating-promise.md"
+    content: >
+      A _floating Promise_ is a type of `Promise` that is created
+      without any code set up to handle any errors it might throw.
+      Floating promises can cause several issues,
+      such as improperly sequenced operations and ignored Promise rejections.
+
+
+      In the example below, a `Promise` is created and executed.
+      However, since there is no `await` keyword to wait for its resolution,
+      the program continues to run without waiting for the Promise to complete.
+      
+      ```ts
+
+      async function someAsyncFunction() {
+        throw new Error('Whoops! 😥');
+      }
+
+
+      try {
+        someAsyncFunction(); // no await
+      } catch (e) {
+        // It won't catch the error
+      }
+
+
+      // Uncaught (in promise) Error: Whoops! 😥
+      // at someAsyncFunction (<anonymous>:2:9)
+      // at <anonymous>:6:3
+      
+      ```
+
+      The `Promise` returned by `someAsyncFunction()` starts executing,
+      but the code execution continues immediately without waiting for the `Promise` to resolve.
+      
+      
+      As a result, any error or thrown exception inside `someAsyncFunction()` will not be caught
+      by the `try/catch` block because the Promise is not being awaited.
+      This can lead to unexpected behavior or unhandled rejections,
+      as the code does not handle the asynchronous operation correctly.
+
+
+      To ensure that the Promise is awaited and its result is properly handled,
+      you should use the `await` keyword when invoking an asynchronous function:
+
+      ```ts
+
+      try {
+        await someAsyncFunction(); // properly awaited
+      } catch (e) {
+        // It will catch the error
+        console.log(e.message); // Whoops! 😥
+      }
+      
+      ```
+
     buttons:
       - - label: "Learn more about Promises, async/await"
           url: "https://javascript.info/async"
@@ -509,18 +572,27 @@ commands:
       - - label: "Eslint rule to prevent async code errors"
           url: "https://typescript-eslint.io/rules/no-floating-promises/"
           emoji: "🔗"
-
   request-info:
     description: "Ask them to run the \"npx @nestjs/cli info\" and paste the output in a code block."
-    content: "./content/request-info.md"
+    content: >
+      Please run the command `npx -y @nestjs/cli info` and paste the output in a code block.
+      This will help us determine if there is a version issue in your packages
+      and which version of nest we are triaging.
     buttons:
       - - label: "Learn more about code-blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"
-
   show-the-error:
     description: "Telling people to be specific when seeking help. Share errors, and provide the code if possible."
-    content: "./content/show-the-error.md"
+    content: >
+      When asking for help with a problem,
+      don't just say, "X doesn't work" or "Y did not fix it" actually describe the error.
+      
+      If there is an error message, share it. If it did not function as expected,
+      describe how it behaved and how you expected it to behave.
+      
+      If you haven't already, or haven't recently,
+      share the code that is not working and any code we may need to help diagnose the error.
     buttons:
       - - label: "Learn more about code-blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
