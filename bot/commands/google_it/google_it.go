@@ -2,7 +2,9 @@ package google_it
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"github.com/nestjs-discord/utility-bot/infra/services/google"
+	"log/slog"
 )
 
 const (
@@ -11,11 +13,13 @@ const (
 )
 
 type GoogleIt struct {
+	logger *slog.Logger
 	client *google.Google
 }
 
 func NewGoogleIt() *GoogleIt {
 	return &GoogleIt{
+		logger: logger.NewWithSubsystem("bot", "commands", "googleIt"),
 		client: google.NewGoogle(),
 	}
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
-	"github.com/rs/zerolog/log"
 	"log/slog"
 	"strings"
 
@@ -134,13 +133,15 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		AutoArchiveDuration: autoArchiveDuration,
 	})
 	if err != nil {
-		log.Err(err).Str("channel-id", channel.ID).Msg("solved command failed to edit the channel")
+		c.logger.Error("unable to edit the channel for a second time",
+			slog.String("channelId", channel.ID),
+		)
 	}
 
-	log.Debug().
-		Int("auto-archive-dur", autoArchiveDuration).
-		Bool("archived", archived).
-		Msg("solved command executed")
+	c.logger.Debug("done",
+		slog.Int("autoArchiveDuration", autoArchiveDuration),
+		slog.Bool("archived", archived),
+	)
 	return nil
 }
 

@@ -6,11 +6,13 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
-	"github.com/rs/zerolog/log"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
+	"log/slog"
 	"time"
 )
 
 type DontPingMods struct {
+	logger     *slog.Logger
 	moderators *moderators.Moderators
 }
 
@@ -18,6 +20,7 @@ func NewDontPingMods(
 	moderators *moderators.Moderators,
 ) *DontPingMods {
 	return &DontPingMods{
+		logger:     logger.NewWithSubsystem("bot", "commands", "dontPingMods"),
 		moderators: moderators,
 	}
 }
@@ -79,11 +82,12 @@ func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCre
 		}
 
 		// Remove the moderator from the forum post
-		if err := s.ThreadMemberRemove(i.ChannelID, modId); err != nil {
-			log.Error().Err(err).
-				Str("mod-user-id", modId).
-				Str("thread-id", i.ChannelID).
-				Msg("failed to remove the mod from the thread")
+		err = s.ThreadMemberRemove(i.ChannelID, modId)
+		if err != nil {
+			d.logger.Error("unable to remove the mod from the thread",
+				slog.String("modUserId", modId),
+				slog.String("threadId", i.ChannelID),
+			)
 		}
 
 		// Sleep for a bit to avoid flooding Discord API

@@ -2,7 +2,7 @@ package google_it
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/rs/zerolog/log"
+	"log/slog"
 )
 
 func (g *GoogleIt) AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -27,11 +27,15 @@ func (g *GoogleIt) AutocompleteHandler(s *discordgo.Session, i *discordgo.Intera
 		return
 	}
 
-	log.Debug().Str("focused-value", focusedValue).Msg("google-it: autocomplete")
+	g.logger.Debug("autocomplete",
+		slog.String("focusedValue", focusedValue),
+	)
 
 	res, err := g.client.Search(focusedValue)
 	if err != nil {
-		log.Err(err).Str("query", focusedValue).Msg("google client failed to query a value")
+		g.logger.Error("google client search failed",
+			slog.String("query", focusedValue),
+		)
 		return
 	}
 
@@ -42,13 +46,17 @@ func (g *GoogleIt) AutocompleteHandler(s *discordgo.Session, i *discordgo.Intera
 		})
 	}
 
-	if err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionApplicationCommandAutocompleteResult,
 		Data: &discordgo.InteractionResponseData{
 			Choices: choices,
 		},
-	}); err != nil {
-		log.Err(err).Str("focused-value", focusedValue).Msg("interaction respond failed on google-it autocomplete handler")
+	})
+	if err != nil {
+		g.logger.Error("auto complete interaction respond failed",
+			slog.Any("err", err),
+			slog.String("focusedValue", focusedValue),
+		)
 	}
 }
 

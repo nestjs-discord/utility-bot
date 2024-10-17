@@ -3,7 +3,7 @@ package google_it
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/rs/zerolog/log"
+	"log/slog"
 	"net/url"
 	"strings"
 )
@@ -24,7 +24,9 @@ func (g *GoogleIt) Handler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		suggestions = append(suggestions, opt.Value.(string))
 	}
 
-	log.Debug().Strs("suggestions", suggestions).Msg("google-it handler")
+	g.logger.Debug("triggered",
+		slog.Any("suggestions", suggestions),
+	)
 
 	content := "Please make an effort to use services like Google or Stack Overflow " +
 		"to search for your question before submitting it here." +
