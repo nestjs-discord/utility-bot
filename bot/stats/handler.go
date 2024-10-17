@@ -1,8 +1,9 @@
 package stats
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/dustin/go-humanize"
+	"math"
 	"runtime"
 	"time"
 )
@@ -18,42 +19,66 @@ func Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		Fields: []*discordgo.MessageEmbedField{
 			{
 				Name:  "Total allocated memory for heap objects",
-				Value: humanize.Bytes(m.TotalAlloc),
+				Value: formatBytes(m.TotalAlloc),
 			},
 			{
 				Name:  "Total memory obtained from the OS",
-				Value: humanize.Bytes(m.Sys),
+				Value: formatBytes(m.Sys),
 			},
 			{
 				Name:  "Allocated heap objects",
-				Value: humanize.Bytes(m.Alloc),
+				Value: formatBytes(m.Alloc),
 			},
 			{
 				Name:  "Heap memory reserved but not allocated",
-				Value: humanize.Bytes(m.HeapIdle),
+				Value: formatBytes(m.HeapIdle),
 			},
 			{
 				Name:  "Heap memory in-use",
-				Value: humanize.Bytes(m.HeapInuse),
+				Value: formatBytes(m.HeapInuse),
 			},
 			{
 				Name:  "Stack memory in-use",
-				Value: humanize.Bytes(m.StackInuse),
+				Value: formatBytes(m.StackInuse),
 			},
 			{
 				Name:  "Memory obtained from system via mmap",
-				Value: humanize.Bytes(m.MSpanSys + m.MCacheSys),
+				Value: formatBytes(m.MSpanSys + m.MCacheSys),
 			},
 			{
 				Name:  "Memory used for GC metadata",
-				Value: humanize.Bytes(m.GCSys),
+				Value: formatBytes(m.GCSys),
 			},
 			{
 				Name:  "Uptime",
-				Value: humanize.Time(uptime), // TODO: replace with unix timestamp
+				Value: fmt.Sprintf("<t:%d:R>", uptime.UTC().Unix()),
 			},
 		},
 	}
 
 	_, _ = s.ChannelMessageSendEmbed(i.ChannelID, embed)
+}
+
+func formatBytes(s uint64) string {
+	sizes := []string{"B", "kB", "MB", "GB", "TB", "PB", "EB"}
+	return humanizeBytes(s, 1000, sizes)
+}
+
+func humanizeBytes(s uint64, base float64, sizes []string) string {
+	if s < 10 {
+		return fmt.Sprintf("%d B", s)
+	}
+	e := math.Floor(logn(float64(s), base))
+	suffix := sizes[int(e)]
+	val := math.Floor(float64(s)/math.Pow(base, e)*10+0.5) / 10
+	f := "%.0f %s"
+	if val < 10 {
+		f = "%.1f %s"
+	}
+
+	return fmt.Sprintf(f, val, suffix)
+}
+
+func logn(n, b float64) float64 {
+	return math.Log(n) / math.Log(b)
 }

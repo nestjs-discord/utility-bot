@@ -12,14 +12,14 @@ import (
 )
 
 type (
-	UserId string // TODO: remove this type
+	userIdType string
 )
 
 type Antispam struct {
 	logger     *slog.Logger
 	cfg        yaml.Antispam
 	sync       sync.RWMutex
-	userMap    map[UserId]map[string]Message
+	userMap    map[userIdType]map[string]Message
 	denyTTL    time.Duration
 	deniedList *ristretto.Cache[string, bool]
 	moderators *moderators.Moderators
@@ -39,7 +39,7 @@ func NewAntispam(cfg yaml.Antispam, moderators *moderators.Moderators) (*Antispa
 		logger:     logger.NewWithSubsystem("bot", "antispam"),
 		cfg:        cfg,
 		sync:       sync.RWMutex{},
-		userMap:    make(map[UserId]map[string]Message),
+		userMap:    make(map[userIdType]map[string]Message),
 		denyTTL:    time.Duration(cfg.DenyTTLSec) * time.Second,
 		deniedList: cache,
 		moderators: moderators,
@@ -77,7 +77,7 @@ func (a *Antispam) backgroundCleaner(ttl int) {
 	}
 }
 
-func (a *Antispam) getChannelsLengthByUserId(id UserId) int {
+func (a *Antispam) getChannelsLengthByUserId(id userIdType) int {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
@@ -88,6 +88,6 @@ func (a *Antispam) getChannelsLengthByUserId(id UserId) int {
 	return 0
 }
 
-func (a *Antispam) IsUserWithinMaxChannelsLimit(userId UserId) bool {
+func (a *Antispam) IsUserWithinMaxChannelsLimit(userId userIdType) bool {
 	return a.getChannelsLengthByUserId(userId) <= a.cfg.MaxChannelsPerUser
 }

@@ -4,7 +4,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/nestjs-discord/utility-bot/badge/main)](https://www.codefactor.io/repository/github/nestjs-discord/utility-bot/overview/main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nestjs-discord/utility-bot)](https://goreportcard.com/report/github.com/nestjs-discord/utility-bot)
 
-Carefully designed with love for the official [NestJS Discord server](<https://discord.gg/nestjs>).
+Carefully designed with love ❤️ for the official [NestJS Discord server](<https://discord.gg/nestjs>).
 
 ## Configuration
 

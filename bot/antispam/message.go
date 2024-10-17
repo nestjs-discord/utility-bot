@@ -25,7 +25,7 @@ func NewMessage(ID string, content string) (Message, error) {
 	}, nil
 }
 
-func (a *Antispam) StoreMessage(userId UserId, channelId string, message Message) {
+func (a *Antispam) StoreMessage(userId userIdType, channelId string, message Message) {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
@@ -36,7 +36,7 @@ func (a *Antispam) StoreMessage(userId UserId, channelId string, message Message
 	a.userMap[userId][channelId] = message
 }
 
-func (a *Antispam) GetUserUniqueMessages(userId UserId) map[string]string {
+func (a *Antispam) GetUserUniqueMessages(userId userIdType) map[string]string {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
@@ -51,14 +51,14 @@ func (a *Antispam) GetUserUniqueMessages(userId UserId) map[string]string {
 // GetUserMessages retrieves the messages associated with a user and organizes them in a map.
 // The keys of the map represent the channel IDs, and the corresponding values are the message IDs.
 //
-// Note: This function is designed to be used with an Antispam instance and requires a valid UserId parameter.
+// Note: This function is designed to be used with an Antispam instance and requires a valid userIdType parameter.
 //
 // Parameters:
 //   - userId: The unique identifier of the user for whom messages are to be retrieved.
 //
 // Returns:
 //   - map[string]string: A map where keys are channel IDs, and values are message IDs.
-func (a *Antispam) GetUserMessages(userId UserId) map[string]string {
+func (a *Antispam) GetUserMessages(userId userIdType) map[string]string {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
@@ -88,7 +88,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		return
 	}
 
-	userId := UserId(i.Author.ID)
+	userId := userIdType(i.Author.ID)
 
 	if a.IsUserInDeniedList(userId) {
 

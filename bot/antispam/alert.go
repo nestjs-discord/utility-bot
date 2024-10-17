@@ -17,7 +17,7 @@ func (a *Antispam) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.M
 
 func (a *Antispam) generateAlertFiles(i *discordgo.MessageCreate) []*discordgo.File {
 	var files []*discordgo.File
-	userUniqueMessages := a.GetUserUniqueMessages(UserId(i.Author.ID))
+	userUniqueMessages := a.GetUserUniqueMessages(userIdType(i.Author.ID))
 	for msg, msgId := range userUniqueMessages {
 		fileName := fmt.Sprintf("msg-%s.txt", msgId)
 		files = append(files, &discordgo.File{
@@ -74,7 +74,7 @@ func (a *Antispam) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.Mes
 		Value: "`from: " + i.Author.ID + "`",
 	})
 
-	userUniqueMessages := a.GetUserUniqueMessages(UserId(i.Author.ID))
+	userUniqueMessages := a.GetUserUniqueMessages(userIdType(i.Author.ID))
 	for msg := range userUniqueMessages {
 		// Sanitize userMsg to avoid breaking the code block
 		msg = strings.ReplaceAll(msg, "```", "")
