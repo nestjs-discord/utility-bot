@@ -14,7 +14,7 @@ type Bot struct {
 	logger     *slog.Logger
 }
 
-func NewBot(discordCfg *env.DiscordConfig) (*Bot, error) {
+func NewBot(discordCfg *env.DiscordConfig, _ *logger.Logger) (*Bot, error) {
 	bot := &Bot{
 		discordCfg: discordCfg,
 		logger:     logger.NewWithSubsystem("bot"),

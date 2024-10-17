@@ -13,23 +13,27 @@ import (
 
 const subsystemKey = "subsystem"
 
+type Logger struct {
+}
+
 func NewWithSubsystem(s ...string) *slog.Logger {
 	return slog.With(
 		slog.String(subsystemKey, strings.Join(s, "/")),
 	)
 }
 
-func Initialize(stageCfg env.Stage) error {
+func Initialize(stageCfg env.Stage) (*Logger, error) {
+	l := &Logger{}
 	switch stageCfg {
 	case env.StageProd:
 		slog.SetDefault(newProductionLogger())
-		return nil
+		return l, nil
 	case env.StageDev:
 		slog.SetDefault(newDevelopmentLogger())
-		return nil
+		return l, nil
 	}
 
-	return fmt.Errorf("invalid stage: '%s'", stageCfg)
+	return nil, fmt.Errorf("invalid stage: '%s'", stageCfg)
 }
 
 func newProductionLogger() *slog.Logger {

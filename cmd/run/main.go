@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/nestjs-discord/utility-bot/app"
 	"log"
 	"log/slog"
 	"os"
@@ -8,12 +9,12 @@ import (
 )
 
 func main() {
-	app, err := initializeApp()
+	application, err := app.InitializeApp()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = app.bot.OpenWebsocketConnection()
+	err = application.Bot.OpenWebsocketConnection()
 	if err != nil {
 		log.Fatalf("bot open failed: %v", err)
 	}
@@ -22,7 +23,7 @@ func main() {
 	signal.Notify(stop, os.Interrupt)
 	<-stop
 	slog.Info("shutting down")
-	err = app.bot.Close()
+	err = application.Bot.Close()
 	if err != nil {
 		log.Fatalf("bot close failed: %v", err)
 	}

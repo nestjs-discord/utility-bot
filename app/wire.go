@@ -1,7 +1,7 @@
 //go:build wireinject
 // +build wireinject
 
-package main
+package app
 
 import (
 	"github.com/google/wire"
@@ -21,31 +21,18 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 )
 
-type App struct {
-	bot *bot.Bot
-}
-
-func newApp(
-	b *bot.Bot,
-	h *handler.Handler,
-	_ *commands.Commands,
-) *App {
-	b.ApplyHandler(h)
-
-	return &App{
-		bot: b,
-	}
-}
-
-func initializeApp() (*App, error) {
+func InitializeApp() (*App, error) {
 	panic(wire.Build(
 		// infra/config/env
 		wire.NewSet(
 			env.NewStageConfig,
 			env.NewDiscordConfig,
 		),
+
+		logger.Initialize,
 
 		// infra/config/yaml
 		wire.NewSet(
@@ -87,6 +74,6 @@ func initializeApp() (*App, error) {
 
 		commands.NewCommands,
 
-		newApp,
+		NewApp,
 	))
 }

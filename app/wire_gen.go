@@ -4,7 +4,7 @@
 //go:build !wireinject
 // +build !wireinject
 
-package main
+package app
 
 import (
 	"github.com/nestjs-discord/utility-bot/bot"
@@ -23,16 +23,25 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
 )
 
 // Injectors from wire.go:
 
-func initializeApp() (*App, error) {
+func InitializeApp() (*App, error) {
 	discordConfig, err := env.NewDiscordConfig()
 	if err != nil {
 		return nil, err
 	}
-	botBot, err := bot.NewBot(discordConfig)
+	stage, err := env.NewStageConfig()
+	if err != nil {
+		return nil, err
+	}
+	loggerLogger, err := logger.Initialize(stage)
+	if err != nil {
+		return nil, err
+	}
+	botBot, err := bot.NewBot(discordConfig, loggerLogger)
 	if err != nil {
 		return nil, err
 	}
@@ -72,28 +81,10 @@ func initializeApp() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	app := newApp(botBot, handlerHandler, commandsCommands)
+	app := NewApp(botBot, handlerHandler, commandsCommands)
 	return app, nil
 }
 
 var (
 	_wirePathValue = yaml.Path("config.yml")
 )
-
-// wire.go:
-
-type App struct {
-	bot *bot.Bot
-}
-
-func newApp(
-	b *bot.Bot,
-	h *handler.Handler,
-	_ *commands.Commands,
-) *App {
-	b.ApplyHandler(h)
-
-	return &App{
-		bot: b,
-	}
-}
