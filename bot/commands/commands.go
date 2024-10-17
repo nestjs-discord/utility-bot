@@ -27,6 +27,7 @@ func NewCommands(
 	session *dgo.Session,
 	discordCfg *env.DiscordConfig,
 	commands yaml.Commands,
+	archive *archive.Archive,
 	solved *solved.Solved,
 ) (*Commands, error) {
 	c := &Commands{
@@ -36,7 +37,7 @@ func NewCommands(
 	}
 
 	staticCommands := []*dgo.ApplicationCommand{
-		archive.Command,
+		archive.Command(),
 		reference.Subcommand,
 		solved.Command(),
 		google_it.Command,

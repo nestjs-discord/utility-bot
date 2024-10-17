@@ -1,6 +1,7 @@
 package interaction
 
 import (
+	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
@@ -18,6 +19,7 @@ type Handler struct {
 	moderators   *moderators.Moderators
 	rateLimit    *rate_limit.RateLimit
 	markdown     *markdown.Markdown
+	archive      *archive.Archive
 	solved       *solved.Solved
 	dontPingMods *dont_ping_mods.DontPingMods
 }
@@ -27,6 +29,7 @@ func NewHandler(
 	moderators *moderators.Moderators,
 	rateLimit *rate_limit.RateLimit,
 	markdown *markdown.Markdown,
+	archive *archive.Archive,
 	solved *solved.Solved,
 	dontPingMods *dont_ping_mods.DontPingMods,
 ) *Handler {
@@ -36,6 +39,7 @@ func NewHandler(
 		moderators:   moderators,
 		rateLimit:    rateLimit,
 		markdown:     markdown,
+		archive:      archive,
 		solved:       solved,
 		dontPingMods: dontPingMods,
 	}

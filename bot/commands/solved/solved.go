@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
-	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 	"log/slog"
 	"strings"
@@ -31,30 +30,30 @@ func New(moderators *moderators.Moderators) *Solved {
 	}
 }
 
-func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) {
+func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	channel, err := s.Channel(i.ChannelID)
 	if err != nil {
 		c.logger.Error("unable to get channel info",
 			slog.String("channelId", i.ChannelID),
 		)
-		return
+		return fmt.Errorf("unable to get channel info: %w", err)
 	}
 
 	if !c.validateChannelType(s, i, channel) ||
 		!c.validateThreadLock(s, i, channel) ||
 		!c.validateChannelOwner(s, i, channel) {
-		return
+		return nil
 	}
 
 	// TODO: can this be loaded form the config file?
 	parentChannelInfo, err := s.Channel(channel.ParentID)
 	if err != nil {
-		return
+		return errors.New("TODO")
 	}
 
 	solvedTag, err := c.findSolvedTag(parentChannelInfo.AvailableTags)
 	if err != nil {
-		return
+		return errors.New("TODO")
 	}
 
 	hasSolvedTag := false
@@ -80,7 +79,7 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) {
 				Flags: dgo.MessageFlagsEphemeral,
 			},
 		})
-		return
+		return errors.New("TODO")
 	}
 
 	//
@@ -93,10 +92,7 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) {
 		AppliedTags: &channel.AppliedTags,
 	})
 	if err != nil {
-		util.InteractionRespondError(
-			fmt.Errorf("failed to edit the channel to apply the solved tag: %s", err),
-			s, i)
-		return
+		return fmt.Errorf("failed to edit the channel to apply the solved tag: %w", err)
 	}
 
 	// Send the canned response
@@ -112,8 +108,7 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) {
 		Data: &dgo.InteractionResponseData{Content: content},
 	})
 	if err != nil {
-		util.InteractionRespondError(err, s, i)
-		return
+		return fmt.Errorf("failed to respond to interaction: %w", err)
 	}
 
 	// Default values when "auto-close" option isn't specified
@@ -127,8 +122,7 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) {
 
 		optionValue, err := c.convertToInteger(option.Value)
 		if err != nil {
-			log.Err(err).Interface("value", option.Value).Msg("float64 to int conversion failed on auto-close option's value")
-			return
+			return fmt.Errorf("float64 to int conversion failed on auto-close option value: %s", err)
 		}
 
 		if optionValue == 1 { // close right after
@@ -151,6 +145,7 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) {
 		Int("auto-archive-dur", autoArchiveDuration).
 		Bool("archived", archived).
 		Msg("solved command executed")
+	return nil
 }
 
 func (c *Solved) findSolvedTag(tags []dgo.ForumTag) (*dgo.ForumTag, error) {

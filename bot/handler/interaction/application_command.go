@@ -3,17 +3,18 @@ package interaction
 import (
 	"log/slog"
 
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
-	"github.com/nestjs-discord/utility-bot/internal/discord/handler/interaction"
 )
 
-func (h *Handler) ApplicationCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
+type applicationCommandHandlersMap map[string]func(s *dgo.Session, i *dgo.InteractionCreate) error
+
+func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 	data := i.ApplicationCommandData()
 	userID := i.Member.User.ID
 
@@ -28,13 +29,21 @@ func (h *Handler) ApplicationCommand(s *discordgo.Session, i *discordgo.Interact
 		return
 	}
 
+	staticHandlers := applicationCommandHandlersMap{
+		solved.Name:  h.solved.Handler,
+		archive.Name: h.archive.Handler,
+		// ...
+	}
+
+	if handler, ok := staticHandlers[data.Name]; ok {
+		err := handler(s, i)
+		if err != nil {
+			h.respondError(err, s, i)
+		}
+		return
+	}
+
 	switch data.Name {
-	case solved.Name:
-		h.solved.Handler(s, i)
-		return
-	case archive.Name:
-		interaction.ArchiveHandler(s, i)
-		return
 	case reference.Name:
 		reference.Handler(s, i)
 		return
@@ -53,16 +62,16 @@ func (h *Handler) ApplicationCommand(s *discordgo.Session, i *discordgo.Interact
 	h.applicationCommandUnknownHandler(s, i)
 }
 
-func (h *Handler) applicationCommandUnknownHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (h *Handler) applicationCommandUnknownHandler(s *dgo.Session, i *dgo.InteractionCreate) {
 	h.logger.Error("unknown application command",
-		slog.Any("interaction", i),
+		slog.Any("interaction", *i),
 	)
 
-	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
+	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+		Type: dgo.InteractionResponseChannelMessageWithSource,
+		Data: &dgo.InteractionResponseData{
 			Content: "Unknown application command.",
-			Flags:   discordgo.MessageFlagsEphemeral,
+			Flags:   dgo.MessageFlagsEphemeral,
 		},
 	})
 }

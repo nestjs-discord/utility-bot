@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log"
@@ -87,6 +88,7 @@ func initDependencies() *bot.Bot {
 		log.Fatal(err)
 	}
 
+	iArchive := archive.New(iModerators)
 	iSolved := solved.New(iModerators)
 	iDontPingMods := dont_ping_mods.NewDontPingMods(iModerators)
 	interactionHandler := interaction.NewHandler(
@@ -94,6 +96,7 @@ func initDependencies() *bot.Bot {
 		iModerators,
 		iRateLimit,
 		iMarkdown,
+		iArchive,
 		iSolved,
 		iDontPingMods,
 	)
@@ -112,6 +115,7 @@ func initDependencies() *bot.Bot {
 		session,
 		discordCfg,
 		yamlCommands,
+		iArchive,
 		iSolved,
 	)
 	if err != nil {
