@@ -2,69 +2,56 @@ package markdown
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
-	"github.com/nestjs-discord/utility-bot/internal/discord/util"
-	"github.com/rs/zerolog/log"
 )
 
-func (m *Markdown) ContentHandler(s *discordgo.Session, i *discordgo.InteractionCreate) bool {
+func (m *Markdown) ContentHandler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	name, options := m.normalizeInteractionData(i)
 
-	// Resolve cached content by name
 	cmd, cmdExist := m.commands[name]
 	if !cmdExist {
-		return false
+		return nil // skip
 	}
 
-	var flags discordgo.MessageFlags
+	var flags dgo.MessageFlags
 
 	// Copy the content into a new variable to avoid pointer overwrite.
 	content := cmd.Content
 
 	for _, opt := range options {
 		if opt.Name == common.OptionHide && opt.Value == true {
-			flags = discordgo.MessageFlagsEphemeral
+			flags = dgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
 			content = fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value) + content
 		}
 	}
 
-	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
+	err := s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+		Type: dgo.InteractionResponseChannelMessageWithSource,
+		Data: &dgo.InteractionResponseData{
 			Content:    content,
 			Components: m.convertButtonsToMessageComponents(cmd.Buttons),
 			Flags:      flags,
 		},
 	})
 	if err == nil {
-		return true
+		return nil
 	}
 
-	log.Error().
-		Err(err).
-		Str("name", name).
-		Str("guild-id", i.GuildID).
-		Str("channel-id", i.ChannelID).
-		Str("user-id", i.Member.User.ID).
-		Msg("failed to respond to interaction")
-
-	util.InteractionRespondError(err, s, i)
-
-	return false
+	return fmt.Errorf("content handler failed: %s", err)
 }
 
 // normalizeInteractionData normalizes the interaction data received from a Discord interaction create event.
 // It extracts the name and options from the interaction data, accounting for sub-commands if present.
-func (m *Markdown) normalizeInteractionData(i *discordgo.InteractionCreate) (string, []*discordgo.ApplicationCommandInteractionDataOption) {
+func (m *Markdown) normalizeInteractionData(i *dgo.InteractionCreate) (string, []*dgo.ApplicationCommandInteractionDataOption) {
 	name := i.ApplicationCommandData().Name
 	options := i.ApplicationCommandData().Options
 
 	// Overwrite the "name" and "options" variables if the incoming event is a type sub-command
 	for _, opt := range i.ApplicationCommandData().Options {
-		if opt.Type == discordgo.ApplicationCommandOptionSubCommand {
+		if opt.Type == dgo.ApplicationCommandOptionSubCommand {
 			name += " " + opt.Name
 			options = opt.Options
 			break
@@ -74,19 +61,19 @@ func (m *Markdown) normalizeInteractionData(i *discordgo.InteractionCreate) (str
 	return name, options
 }
 
-func (m *Markdown) convertButtonsToMessageComponents(buttons yaml.CommandButtons) []discordgo.MessageComponent {
-	var components []discordgo.MessageComponent
+func (m *Markdown) convertButtonsToMessageComponents(buttons yaml.CommandButtons) []dgo.MessageComponent {
+	var components []dgo.MessageComponent
 	for _, row := range buttons {
-		componentsInRow := make([]discordgo.MessageComponent, 0, len(row))
+		componentsInRow := make([]dgo.MessageComponent, 0, len(row))
 		for _, btn := range row {
-			componentsInRow = append(componentsInRow, discordgo.Button{
+			componentsInRow = append(componentsInRow, dgo.Button{
 				Label: btn.Label,
 				URL:   btn.URL,
-				Style: discordgo.LinkButton,
-				Emoji: &discordgo.ComponentEmoji{Name: btn.Emoji},
+				Style: dgo.LinkButton,
+				Emoji: &dgo.ComponentEmoji{Name: btn.Emoji},
 			})
 		}
-		components = append(components, discordgo.ActionsRow{
+		components = append(components, dgo.ActionsRow{
 			Components: componentsInRow,
 		})
 	}

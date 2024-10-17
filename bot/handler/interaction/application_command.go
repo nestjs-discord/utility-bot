@@ -1,7 +1,6 @@
 package interaction
 
 import (
-	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"log/slog"
 
 	dgo "github.com/bwmarrin/discordgo"
@@ -47,17 +46,10 @@ func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 		return
 	}
 
-	if h.markdown.ContentHandler(s, i) {
-		return
+	// content handling should happen always at the end
+	// because it automatically responds to the interaction
+	err := h.markdown.ContentHandler(s, i)
+	if err != nil {
+		h.respondError(err, s, i)
 	}
-
-	h.applicationCommandUnknownHandler(s, i)
-}
-
-func (h *Handler) applicationCommandUnknownHandler(s *dgo.Session, i *dgo.InteractionCreate) {
-	h.logger.Error("unknown application command",
-		slog.Any("interaction", *i),
-	)
-
-	respond.InteractionWithEphemeralMessage(s, i, "Unknown application command.")
 }
