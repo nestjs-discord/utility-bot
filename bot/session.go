@@ -21,6 +21,10 @@ func (b *Bot) newSession() error {
 	return nil
 }
 
+func ProvideSession(b *Bot) *discordgo.Session {
+	return b.session
+}
+
 // OpenWebsocketConnection creates a websocket connection to Discord.
 // See: https://discord.com/developers/docs/topics/gateway#connecting
 func (b *Bot) OpenWebsocketConnection() error {

@@ -1,12 +1,15 @@
 package moderators
 
-import "encoding/base64"
+import (
+	"encoding/base64"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+)
 
 type Moderators struct {
-	userIds []string
+	userIds yaml.Moderators
 }
 
-func NewModerators(encUserIds []string) (*Moderators, error) {
+func NewModerators(encUserIds yaml.Moderators) (*Moderators, error) {
 	m := &Moderators{}
 	for index := range encUserIds {
 		decStr, err := m.decodeUserId(encUserIds[index])

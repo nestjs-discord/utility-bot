@@ -17,6 +17,16 @@ We welcome all contributions, including bug reports, feature requests, and code 
 
 Happy coding! 🚀
 
+## Dependency injection
+
+This project uses [`wire`](<https://github.com/google/wire>) Compile-time Dependency Injection.
+
+If you ever need to regenerate the DI codes, run the following command:
+
+```shell
+go generate ./...
+```
+
 ## Build
 
 First, [install Golang](<https://go.dev/doc/install>) and then execute:
