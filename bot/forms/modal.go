@@ -9,7 +9,16 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/samber/lo"
 	"strings"
+	"time"
 )
+
+func (f *Forms) isTimeWithinDays(t time.Time, days int) bool {
+	if t.IsZero() {
+		return false
+	}
+	threshold := time.Now().AddDate(0, 0, -days)
+	return t.After(threshold)
+}
 
 func (f *Forms) OpenModalButtonClicked(s *dgo.Session, i *dgo.InteractionCreate, customId *components.CustomID) error {
 	formId := customId.FormId
@@ -17,6 +26,34 @@ func (f *Forms) OpenModalButtonClicked(s *dgo.Session, i *dgo.InteractionCreate,
 	form, err := f.getFormById(formId)
 	if err != nil {
 		return err
+	}
+
+	accCreatedAt, err := dgo.SnowflakeTimestamp(i.Member.User.ID)
+	if err != nil {
+		return err
+	}
+
+	// Minimum age of the user's Discord account (in days) required open the modal
+	minimumAccountAgeDays := form.MinimumAccountAgeDays
+
+	// Minimum number of days the user must have been a member of the server to open the modal
+	minimumServerJoinDays := form.MinimumServerJoinDays
+
+	if f.isTimeWithinDays(accCreatedAt, minimumAccountAgeDays) {
+		respond.InteractionWithEphemeralMessage(s, i,
+			":warning: This action cannot be performed as your Discord account is too new.",
+		)
+		return nil
+	}
+
+	if f.isTimeWithinDays(i.Member.JoinedAt, minimumServerJoinDays) {
+		respond.InteractionWithEphemeralMessage(s, i,
+			fmt.Sprintf(
+				":warning: In order to perform this action, you must have been a member of this server for at least %d days.",
+				minimumServerJoinDays,
+			),
+		)
+		return nil
 	}
 
 	var msgComponents []dgo.MessageComponent

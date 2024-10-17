@@ -13,14 +13,16 @@ type Path string
 type Moderators []string
 type Forms map[string]Form
 type Form struct {
-	ChannelId        string               `yaml:"channelId" validate:"required,min=5"`
-	ModChannelId     string               `yaml:"modChannelId" validate:"required,min=5"`
-	ModalTitle       string               `yaml:"modalTitle" validate:"required,min=10,max=45"` // TODO: validate title of the popup modal, max 45 characters
-	ModSkipApproval  bool                 `yaml:"modSkipApproval"`
-	Color            int                  `yaml:"color" validate:"required"`
-	OpenModalMessage FormOpenModalMessage `yaml:"openModalMessage"`
-	Footer           string               `yaml:"footer" validate:"required"`
-	Inputs           []FormInput          `yaml:"inputs" validate:"required,min=1,max=5,dive"` // TODO: Between 1 and 5 (inclusive) components that make up the modal
+	ChannelId             string               `yaml:"channelId" validate:"required,min=5"`
+	ModChannelId          string               `yaml:"modChannelId" validate:"required,min=5"`
+	ModalTitle            string               `yaml:"modalTitle" validate:"required,min=10,max=45"` // TODO: validate title of the popup modal, max 45 characters
+	ModSkipApproval       bool                 `yaml:"modSkipApproval"`
+	Color                 int                  `yaml:"color" validate:"required"`
+	MinimumAccountAgeDays int                  `yaml:"minimumAccountAgeDays"`
+	MinimumServerJoinDays int                  `yaml:"minimumServerJoinDays"`
+	OpenModalMessage      FormOpenModalMessage `yaml:"openModalMessage"`
+	Footer                string               `yaml:"footer" validate:"required"`
+	Inputs                []FormInput          `yaml:"inputs" validate:"required,min=1,max=5,dive"` // TODO: Between 1 and 5 (inclusive) components that make up the modal
 }
 type FormOpenModalMessage struct {
 	ButtonLabel      string `yaml:"buttonLabel"`
