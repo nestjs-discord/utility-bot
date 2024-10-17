@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
@@ -9,15 +8,13 @@ import (
 	"log/slog"
 )
 
-var yamlConfigPath = flag.String("yaml-config-path", "./config.yml", "")
-
 func main() {
-	err := logger.Initialize(env.StageDev)
+	_, err := logger.Initialize(env.StageDev)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = yaml.NewConfig(yaml.Path(*yamlConfigPath))
+	_, err = yaml.NewConfig("./config.yml")
 	if err != nil {
 		log.Fatal(err)
 	}
