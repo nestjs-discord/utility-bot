@@ -49,12 +49,11 @@ func (f *Forms) synchronizeOpenModalButtons(session *dgo.Session) error {
 			continue
 		}
 
-		if f.doesHaveButtonComponentWithLabel(message, form.ButtonLabel) {
+		if f.doesHaveButtonComponentWithLabel(message, form.OpenModalMessage) {
 			continue
 		}
 
-		label := form.ButtonLabel
-		if err = f.sendFormButton(session, form.ChannelId, formId, label); err != nil {
+		if err = f.sendOpenModalMessage(session, form.ChannelId, formId, form.OpenModalMessage); err != nil {
 			return fmt.Errorf("unable to send form button: %s", err)
 		}
 	}

@@ -59,7 +59,7 @@ func (f *Forms) OpenModalButtonClicked(s *dgo.Session, i *dgo.InteractionCreate,
 		Type: dgo.InteractionResponseModal,
 		Data: &dgo.InteractionResponseData{
 			CustomID:   formCustomId,
-			Title:      form.Title,
+			Title:      form.ModalTitle,
 			Components: msgComponents,
 		},
 	})

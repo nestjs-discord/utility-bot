@@ -28,7 +28,8 @@ rateLimit: # only applies to the application commands
 
 antispam: # flags the users who spam messages on multiple channels in a short timeframe.
   enabled: true
-  logChannelId: "918987870197395577" # TODO: migrate to the "auto mod messages" channel | prod: 918987870197395577 | dev: 1173297424211648512
+  # TODO: migrate to the "auto mod messages" channel
+  logChannelId: "918987870197395577" # prod: 918987870197395577 | dev: 1173297424211648512
   moderatorsBypass: true
   messageTTLSec: 60 # how long the messages should be kept in the memory.
   maxChannelsPerUser: 3 # the maximum number of channels a user can send messages in within the defined TTL timeframe.
@@ -103,12 +104,33 @@ antispam: # flags the users who spam messages on multiple channels in a short ti
 # https://discord.com/developers/docs/interactions/message-components#text-inputs
 forms:
   jp: # job-profiles announcement channel (for self-promotion)
-    buttonLabel: "Post a new profile"
+    channelId: 1294446757370925147 # prod: 1294483543623335986 | dev: 1294446757370925147 # TODO: back to prod
+    modChannelId: 1292911145883275356 # prod: 1294488503744204860 | dev: 1292911145883275356 # TODO: back to prod
     modalTitle: "Post a new profile"
-    channelId: 1294483543623335986 # prod: 1294483543623335986 | dev: 1294446757370925147
-    modChannelId: 1294488503744204860 # prod: 1294488503744204860 | dev: 1292911145883275356
     modSkipApproval: false
     color: 2600544 # dark green (#27ae60)
+    openModalMessage:
+      buttonLabel: "Post a new profile"
+      embedColor: 14689102 # same as the official NestJS logo (#e0234e)
+      embedTitle: "Rules ⭐️"
+      embedDescription: >
+        - Be cautious of scams! We do not verify profile details; please conduct your own due diligence.
+        
+        - Make sure your [Discord privacy settings](<https://support.discord.com/hc/articles/217916488>) enable you
+        to receive private messages from others on this server.
+        
+        - Nobody enjoys spam, so let's maintain a clean and relevant server.
+        
+        - Please be patient after submitting. It may take a short while for moderators to review your application.
+        
+        - Keep in mind that any data you submit
+        will be shared with the followers of this channel (other Discord servers),
+        so please avoid sharing personal information or anything you might regret in the future.
+        
+        - If you have any questions, don't hesitate to reach out to one of the friendly moderators on this server.
+        They're here to help!
+        
+        -# [github.com/nestjs-discord/utility-bot](<https://github.com/nestjs-discord/utility-bot>)
     footer: "Details of this profile have not been verified, please do your own due diligence."
     inputs:
       - id: "about"
@@ -148,12 +170,33 @@ forms:
   #        multiline: false
 
   jo: # job-opportunities announcement channel (for job listing)
-    buttonLabel: "Post a new opportunity"
+    channelId: 1294446864036528231 # prod: 1294483759189725265 | dev: 1294446864036528231 # TODO: back to prod
+    modChannelId: 1292911220197953558 # prod: 1294488539500777472 | dev: 1292911220197953558 # TODO: back to prod
     modalTitle: "Post a new opportunity"
-    channelId: 1294483759189725265 # prod: 1294483759189725265 | dev: 1294446864036528231
-    modChannelId: 1294488539500777472 # prod: 1294488539500777472 | dev: 1292911220197953558
     modSkipApproval: false
-    color: 14689102 # same as the official nestjs logo (#e0234e)
+    color: 14689102 # same as the official NestJS logo (#e0234e)
+    openModalMessage:
+      buttonLabel: "Post a new opportunity"
+      embedTitle: "Rules ⭐️"
+      embedColor: 14689102 # same as the official NestJS logo (#e0234e)
+      embedDescription: >
+        - Be cautious of scams! We do not verify job details; please conduct your own due diligence.
+        
+        - Make sure your [Discord privacy settings](<https://support.discord.com/hc/articles/217916488>) enable you
+        to receive private messages from others on this server.
+        
+        - Nobody enjoys spam, so let's maintain a clean and relevant server.
+        
+        - Please be patient after submitting. It may take a short while for moderators to review your application.
+        
+        - Keep in mind that any data you submit
+        will be shared with the followers of this channel (other Discord servers),
+        so please avoid sharing personal information or anything you might regret in the future.
+        
+        - If you have any questions, don't hesitate to reach out to one of the friendly moderators on this server.
+        They're here to help!
+        
+        -# [github.com/nestjs-discord/utility-bot](<https://github.com/nestjs-discord/utility-bot>)
     footer: "Details of this opportunity have not been verified, please do your own due diligence."
     inputs:
       - id: "title"

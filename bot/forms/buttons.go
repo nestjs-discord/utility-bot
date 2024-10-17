@@ -3,9 +3,10 @@ package forms
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 )
 
-func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, buttonLabel string) bool {
+func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, openModalMessage yaml.FormOpenModalMessage) bool {
 	// if the message does not have any component
 	if len(msg.Components) == 0 {
 		return false
@@ -24,14 +25,14 @@ func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, buttonL
 	if !ok {
 		return false
 	}
-	if btn.Label != buttonLabel {
+	if btn.Label != openModalMessage.ButtonLabel {
 		return false
 	}
 
 	return true
 }
 
-func (f *Forms) sendFormButton(session *discordgo.Session, channelId string, formId string, btnLabel string) error {
+func (f *Forms) sendOpenModalMessage(session *discordgo.Session, channelId string, formId string, openModalMessage yaml.FormOpenModalMessage) error {
 	customId, err := components.EncodeCustomId(&components.CustomID{
 		Action: OpenModalButton,
 		FormId: formId,
@@ -41,23 +42,31 @@ func (f *Forms) sendFormButton(session *discordgo.Session, channelId string, for
 	}
 
 	button := discordgo.Button{
-		Label:    btnLabel,
+		Label:    openModalMessage.ButtonLabel,
 		Style:    discordgo.SuccessButton,
 		Disabled: false,
 		CustomID: customId,
 	}
 
-	messageData := &discordgo.MessageSend{
-		Content: "", // TODO: add some set of rules (can used embed too)
+	embed := &discordgo.MessageEmbed{
+		Title:       openModalMessage.EmbedTitle,
+		Color:       openModalMessage.EmbedColor,
+		Description: openModalMessage.EmbedDescription,
+	}
+
+	row := discordgo.ActionsRow{
 		Components: []discordgo.MessageComponent{
-			discordgo.ActionsRow{
-				Components: []discordgo.MessageComponent{
-					button,
-				},
-			},
+			button,
 		},
 	}
 
+	messageData := &discordgo.MessageSend{
+		Content:    "‎", // empty character to space out the previous message https://emptycharacter.com/
+		Embeds:     []*discordgo.MessageEmbed{embed},
+		Components: []discordgo.MessageComponent{row},
+	}
+
 	_, err = session.ChannelMessageSendComplex(channelId, messageData)
+
 	return err
 }

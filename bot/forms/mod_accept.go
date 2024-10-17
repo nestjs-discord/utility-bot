@@ -34,14 +34,14 @@ func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	// send the interactive form button again (since we deleted the last one)
-	err = f.sendFormButton(s, form.ChannelId, formId, form.ButtonLabel)
+	err = f.sendOpenModalMessage(s, form.ChannelId, formId, form.OpenModalMessage)
 	if err != nil {
 		return fmt.Errorf("failed to send the interactive form button again (after deleting): %s", err)
 	}
 
 	// at the point, since we know a new interactive form button is sent into the public channel
 	// so it is safe to delete the old message that has the interactive form button
-	if len(messages) == 1 && f.doesHaveButtonComponentWithLabel(messages[0], form.ButtonLabel) {
+	if len(messages) == 1 && f.doesHaveButtonComponentWithLabel(messages[0], form.OpenModalMessage) {
 		_ = s.ChannelMessageDelete(form.ChannelId, messages[0].ID)
 	}
 
