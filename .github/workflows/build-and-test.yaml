@@ -47,6 +47,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
+      - name: Generate
+        run: go generate ./...
+
       - name: Build
         run: go build cmd/run/main.go
 
