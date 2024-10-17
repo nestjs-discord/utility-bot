@@ -28,7 +28,7 @@ rateLimit: # only applies to the application commands
 
 antispam: # flags the users who spam messages on multiple channels in a short timeframe.
   enabled: true
-  logChannelId: "918987870197395577" # TODO: migrate to the "auto mod messages" channel
+  logChannelId: "918987870197395577" # TODO: migrate to the "auto mod messages" channel | prod: 918987870197395577 | dev: 1173297424211648512
   moderatorsBypass: true
   messageTTLSec: 60 # how long the messages should be kept in the memory.
   maxChannelsPerUser: 3 # the maximum number of channels a user can send messages in within the defined TTL timeframe.
@@ -83,6 +83,13 @@ antispam: # flags the users who spam messages on multiple channels in a short ti
     # Bots
     # - "926544704034734111" # bots-info (read-only)
     - "926544725606035527" # bot-commands
+
+    ############################### Dev channels
+    - "1173300675917135912" # 1
+    - "1173300686667120640" # 2
+    - "1173300694766334123" # 3
+    - "1173300701863084082" # 4
+    - "1173300709307994214" # 5
 
 # When the destination of the form submission (form.foo.channelId) is an announcement channel,
 # ensure the bot *explicitly* has the following permissions:
