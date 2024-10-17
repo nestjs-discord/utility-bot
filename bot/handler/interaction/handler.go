@@ -4,6 +4,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
+	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
@@ -22,6 +23,7 @@ type Handler struct {
 	markdown     *markdown.Markdown
 	archive      *archive.Archive
 	googleIt     *google_it.GoogleIt
+	reference    *reference.Reference
 	solved       *solved.Solved
 	dontPingMods *dont_ping_mods.DontPingMods
 }
@@ -33,6 +35,7 @@ func NewHandler(
 	markdown *markdown.Markdown,
 	archive *archive.Archive,
 	googleIt *google_it.GoogleIt,
+	reference *reference.Reference,
 	solved *solved.Solved,
 	dontPingMods *dont_ping_mods.DontPingMods,
 ) *Handler {
@@ -44,6 +47,7 @@ func NewHandler(
 		markdown:     markdown,
 		archive:      archive,
 		googleIt:     googleIt,
+		reference:    reference,
 		solved:       solved,
 		dontPingMods: dontPingMods,
 	}

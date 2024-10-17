@@ -9,31 +9,39 @@ import (
 const Name = "reference"
 const QueryOption = "query"
 
-var options = []*discordgo.ApplicationCommandOption{
-	{
-		Name:         QueryOption,
-		Type:         discordgo.ApplicationCommandOptionString,
-		Description:  "The query to search for",
-		Required:     true,
-		Autocomplete: true,
-	},
-	common.TargetOption,
-	common.HideOption,
+type Reference struct{}
+
+func New() *Reference {
+	return &Reference{}
 }
 
-var Subcommand = &discordgo.ApplicationCommand{
-	Name:        Name,
-	Description: "reference related sub-commands",
-	Options:     []*discordgo.ApplicationCommandOption{},
-}
+func (r *Reference) Command() *discordgo.ApplicationCommand {
+	options := []*discordgo.ApplicationCommandOption{
+		{
+			Name:         QueryOption,
+			Type:         discordgo.ApplicationCommandOptionString,
+			Description:  "The query to search for",
+			Required:     true,
+			Autocomplete: true,
+		},
+		common.TargetOption,
+		common.HideOption,
+	}
 
-func init() {
+	subcommand := &discordgo.ApplicationCommand{
+		Name:        Name,
+		Description: "reference related sub-commands",
+		Options:     []*discordgo.ApplicationCommandOption{},
+	}
+
 	for slug, app := range algolia.Apps {
-		Subcommand.Options = append(Subcommand.Options, &discordgo.ApplicationCommandOption{
+		subcommand.Options = append(subcommand.Options, &discordgo.ApplicationCommandOption{
 			Type:        discordgo.ApplicationCommandOptionSubCommand,
 			Name:        slug,
 			Description: "Display docs for " + string(app),
 			Options:     options,
 		})
 	}
+
+	return subcommand
 }

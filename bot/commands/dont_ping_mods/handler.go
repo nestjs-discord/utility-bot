@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
-	"github.com/nestjs-discord/utility-bot/internal/discord/util"
 	"github.com/rs/zerolog/log"
 	"time"
 )
@@ -22,7 +22,7 @@ func NewDontPingMods(
 	}
 }
 
-func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCreate) error {
 	content := "Please **do not** tag the moderators unless someone is breaking server rules. " +
 		"The mods are here to help enforce the rules of the server, " +
 		"and while most of them are knowledgeable about Nest, " +
@@ -56,21 +56,19 @@ func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCre
 		},
 	})
 	if err != nil {
-		msg := fmt.Errorf("failed to respond to interaction: %s", err)
-		util.InteractionRespondError(msg, s, i)
-		return
+		return fmt.Errorf("failed to respond to interaction: %s", err)
 	}
 
 	currentChannelInfo, err := s.Channel(i.ChannelID)
 	if err != nil {
-		log.Error().Err(err).Msg("failed to fetch the channel information on dont-ping-mods command")
-		return
+		return fmt.Errorf("failed to fetch the channel information on dont-ping-mods command: %s", err)
 	}
 
 	// Skip further steps when the current channel is not a forum post (thread)
 	if currentChannelInfo.Type != discordgo.ChannelTypeGuildPublicThread &&
 		currentChannelInfo.Type != discordgo.ChannelTypeGuildPrivateThread {
-		return
+		respond.InteractionWithEphemeralMessage(s, i, "⚠️ This command only works on the forum posts.")
+		return nil
 	}
 
 	// Loop over moderators defined in the configuration file
@@ -92,5 +90,5 @@ func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCre
 		time.Sleep(100 * time.Millisecond)
 	}
 
-	// Silence is golden :)
+	return nil
 }

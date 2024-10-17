@@ -2,19 +2,13 @@ package main
 
 import (
 	"flag"
-	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
-	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
-	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
-	"github.com/nestjs-discord/utility-bot/infra/logger"
-	"log"
-	"log/slog"
-	"os"
-	"os/signal"
-	"syscall"
-
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
 	"github.com/nestjs-discord/utility-bot/bot/commands"
+	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
+	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
+	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
+	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
@@ -24,6 +18,11 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
+	"github.com/nestjs-discord/utility-bot/infra/logger"
+	"log"
+	"log/slog"
+	"os"
+	"os/signal"
 )
 
 var (
@@ -90,6 +89,7 @@ func initDependencies() *bot.Bot {
 	}
 
 	iArchive := archive.New(iModerators)
+	iReference := reference.New()
 	iSolved := solved.New(iModerators)
 	iDontPingMods := dont_ping_mods.NewDontPingMods(iModerators)
 	iGoogleIt := google_it.NewGoogleIt()
@@ -101,6 +101,7 @@ func initDependencies() *bot.Bot {
 		iMarkdown,
 		iArchive,
 		iGoogleIt,
+		iReference,
 		iSolved,
 		iDontPingMods,
 	)
@@ -121,6 +122,7 @@ func initDependencies() *bot.Bot {
 		yamlCommands,
 		iArchive,
 		iGoogleIt,
+		iReference,
 		iSolved,
 	)
 	if err != nil {
@@ -137,19 +139,13 @@ func main() {
 		log.Fatalf("bot open failed: %v", err)
 	}
 
-	// Graceful shutdown
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGTERM) // TODO: remove unnecessary ones
-	signalReceived := <-sc
-
-	slog.Info("signal received",
-		slog.String("signal", signalReceived.String()),
-	)
-
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+	<-stop
+	slog.Info("shutting down")
 	err = b.Close()
 	if err != nil {
 		log.Fatalf("bot close failed: %v", err)
 	}
-
-	slog.Info("shutdown completed")
+	slog.Info("shutdown done")
 }

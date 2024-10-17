@@ -31,9 +31,11 @@ func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 	}
 
 	staticHandlers := applicationCommandHandlersMap{
-		solved.Name:    h.solved.Handler,
-		google_it.Name: h.googleIt.Handler,
-		archive.Name:   h.archive.Handler,
+		archive.Name:        h.archive.Handler,
+		dont_ping_mods.Name: h.dontPingMods.Handler,
+		google_it.Name:      h.googleIt.Handler,
+		reference.Name:      h.reference.Handler,
+		solved.Name:         h.solved.Handler,
 		// ...
 	}
 
@@ -42,15 +44,6 @@ func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 		if err != nil {
 			h.respondError(err, s, i)
 		}
-		return
-	}
-
-	switch data.Name {
-	case reference.Name:
-		reference.Handler(s, i)
-		return
-	case dont_ping_mods.Name:
-		h.dontPingMods.Handler(s, i)
 		return
 	}
 

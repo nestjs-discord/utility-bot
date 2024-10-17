@@ -29,6 +29,7 @@ func NewCommands(
 	commands yaml.Commands,
 	archive *archive.Archive,
 	googleIt *google_it.GoogleIt,
+	reference *reference.Reference,
 	solved *solved.Solved,
 ) (*Commands, error) {
 	c := &Commands{
@@ -41,7 +42,7 @@ func NewCommands(
 		archive.Command(),
 		dont_ping_mods.Command,
 		googleIt.Command(),
-		reference.Subcommand,
+		reference.Command(),
 		solved.Command(),
 	}
 

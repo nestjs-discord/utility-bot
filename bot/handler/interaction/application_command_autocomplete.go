@@ -16,7 +16,7 @@ func (h *Handler) ApplicationCommandAutocomplete(s *discordgo.Session, i *discor
 
 	switch data.Name {
 	case reference.Name:
-		reference.AutocompleteHandler(s, i)
+		h.reference.AutocompleteHandler(s, i)
 		return
 	case google_it.Name:
 		h.googleIt.AutocompleteHandler(s, i)
