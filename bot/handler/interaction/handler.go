@@ -3,6 +3,7 @@ package interaction
 import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
+	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
@@ -20,6 +21,7 @@ type Handler struct {
 	rateLimit    *rate_limit.RateLimit
 	markdown     *markdown.Markdown
 	archive      *archive.Archive
+	googleIt     *google_it.GoogleIt
 	solved       *solved.Solved
 	dontPingMods *dont_ping_mods.DontPingMods
 }
@@ -30,6 +32,7 @@ func NewHandler(
 	rateLimit *rate_limit.RateLimit,
 	markdown *markdown.Markdown,
 	archive *archive.Archive,
+	googleIt *google_it.GoogleIt,
 	solved *solved.Solved,
 	dontPingMods *dont_ping_mods.DontPingMods,
 ) *Handler {
@@ -40,6 +43,7 @@ func NewHandler(
 		rateLimit:    rateLimit,
 		markdown:     markdown,
 		archive:      archive,
+		googleIt:     googleIt,
 		solved:       solved,
 		dontPingMods: dontPingMods,
 	}

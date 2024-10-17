@@ -5,6 +5,7 @@ import (
 	"fmt"
 	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/samber/lo"
 	"strings"
@@ -202,13 +203,7 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 		_, _ = s.ChannelMessageCrosspost(sentMessage.ChannelID, sentMessage.ID)
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{
-			Content: respContent,
-			Flags:   dgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i, respContent)
 
 	return nil
 }

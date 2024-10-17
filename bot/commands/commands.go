@@ -28,6 +28,7 @@ func NewCommands(
 	discordCfg *env.DiscordConfig,
 	commands yaml.Commands,
 	archive *archive.Archive,
+	googleIt *google_it.GoogleIt,
 	solved *solved.Solved,
 ) (*Commands, error) {
 	c := &Commands{
@@ -38,10 +39,10 @@ func NewCommands(
 
 	staticCommands := []*dgo.ApplicationCommand{
 		archive.Command(),
+		dont_ping_mods.Command,
+		googleIt.Command(),
 		reference.Subcommand,
 		solved.Command(),
-		google_it.Command,
-		dont_ping_mods.Command,
 	}
 
 	err := c.registerApplicationCommands(staticCommands, commands)

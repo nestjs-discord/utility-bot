@@ -5,7 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (g *GoogleIt) AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 	focusedValue := extractFocusedValue(options)
 	var choices []*discordgo.ApplicationCommandOptionChoice
@@ -29,7 +29,7 @@ func AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	log.Debug().Str("focused-value", focusedValue).Msg("google-it: autocomplete")
 
-	res, err := googleClient.Search(focusedValue)
+	res, err := g.client.Search(focusedValue)
 	if err != nil {
 		log.Err(err).Str("query", focusedValue).Msg("google client failed to query a value")
 		return

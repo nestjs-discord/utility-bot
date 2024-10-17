@@ -2,6 +2,7 @@ package forms
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"time"
 )
 
@@ -30,11 +31,5 @@ func (f *Forms) raceConditionStoreMessageId(messageId string) {
 func (f *Forms) raceConditionRespond(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	msg := "Race condition detected! 😅\n"
 	msg += "Another moderator has already handled this message."
-	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: msg,
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i, msg)
 }

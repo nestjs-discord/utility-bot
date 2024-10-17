@@ -1,13 +1,14 @@
 package google_it
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
 	"net/url"
 	"strings"
 )
 
-func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (g *GoogleIt) Handler(s *discordgo.Session, i *discordgo.InteractionCreate) error {
 	var suggestions []string
 
 	options := i.ApplicationCommandData().Options
@@ -25,9 +26,10 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 	log.Debug().Strs("suggestions", suggestions).Msg("google-it handler")
 
-	content := "Please make an effort to use services like Google or Stack Overflow to search for your question before submitting it here."
-	content += " "
-	content += "There is a very decent chance your problem has already been solved by someone else in some way."
+	content := "Please make an effort to use services like Google or Stack Overflow " +
+		"to search for your question before submitting it here." +
+		" " +
+		"There is a very decent chance your problem has already been solved by someone else in some way."
 
 	if len(suggestions) > 0 {
 		content += "\n\n"
@@ -46,6 +48,8 @@ func Handler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		},
 	})
 	if err != nil {
-		log.Err(err).Strs("suggestions", suggestions).Msg("interaction response failed in google-it handler")
+		return fmt.Errorf("interaction respond failed: %s", err)
 	}
+
+	return nil
 }

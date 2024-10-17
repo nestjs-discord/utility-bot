@@ -3,6 +3,7 @@ package solved
 import (
 	"errors"
 	"fmt"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"github.com/rs/zerolog/log"
@@ -70,16 +71,11 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 
 	// https://discord.com/developers/docs/resources/channel#modify-channel-json-params-thread
 	if len(channel.AppliedTags) > 5 {
-		_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-			Type: dgo.InteractionResponseChannelMessageWithSource,
-			Data: &dgo.InteractionResponseData{
-				Content: ":warning: The current post already has five tags applied to it. " +
-					"To apply the \"Solved\" tag, please remove at least one tag, " +
-					"as Discord allows a maximum of 5 tags per forum post.",
-				Flags: dgo.MessageFlagsEphemeral,
-			},
-		})
-		return errors.New("TODO")
+		msg := ":warning: The current post already has five tags applied to it. " +
+			"To apply the \"Solved\" tag, please remove at least one tag, " +
+			"as Discord allows a maximum of 5 tags per forum post."
+		respond.InteractionWithEphemeralMessage(s, i, msg)
+		return nil
 	}
 
 	//

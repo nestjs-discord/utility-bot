@@ -1,6 +1,9 @@
 package archive
 
-import dgo "github.com/bwmarrin/discordgo"
+import (
+	dgo "github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
+)
 
 func (a *Archive) validateChannelType(s *dgo.Session, i *dgo.InteractionCreate, channel *dgo.Channel) bool {
 	if channel.Type == dgo.ChannelTypeGuildPublicThread ||
@@ -8,13 +11,7 @@ func (a *Archive) validateChannelType(s *dgo.Session, i *dgo.InteractionCreate, 
 		return true
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{
-			Content: "⚠️ You can only use this command in forum posts.",
-			Flags:   dgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i, "⚠️ You can only use this command in forum posts.")
 
 	return false
 }
@@ -24,13 +21,7 @@ func (a *Archive) validateThreadLock(s *dgo.Session, i *dgo.InteractionCreate, c
 		return true
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{
-			Content: "⚠️ Cannot perform this action on the locked forum posts",
-			Flags:   dgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i, "⚠️ Cannot perform this action on the locked forum posts.")
 
 	return false
 }

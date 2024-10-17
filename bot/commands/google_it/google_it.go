@@ -10,14 +10,28 @@ const (
 	OptionSuffix = "-suggestion"
 )
 
-var googleClient = google.NewGoogle() // TODO: don't use global instance
+type GoogleIt struct {
+	client *google.Google
+}
 
-func init() {
+func NewGoogleIt() *GoogleIt {
+	return &GoogleIt{
+		client: google.NewGoogle(),
+	}
+}
+
+func (g *GoogleIt) Command() *discordgo.ApplicationCommand {
+	cmd := &discordgo.ApplicationCommand{
+		Name:        Name,
+		Description: "Tell someone to search on Google or StackOverflow!",
+		Type:        discordgo.ChatApplicationCommand,
+	}
+
 	elements := []string{"first", "second", "third", "fourth"}
 	minLength := 3
 
 	for i, opt := range elements {
-		Command.Options = append(Command.Options, &discordgo.ApplicationCommandOption{
+		cmd.Options = append(cmd.Options, &discordgo.ApplicationCommandOption{
 			Name:         opt + OptionSuffix,
 			Description:  opt + " suggestion",
 			Type:         discordgo.ApplicationCommandOptionString,
@@ -26,10 +40,6 @@ func init() {
 			MinLength:    &minLength,
 		})
 	}
-}
 
-var Command = &discordgo.ApplicationCommand{
-	Name:        Name,
-	Description: "Tell someone to search on Google or StackOverflow!",
-	Type:        discordgo.ChatApplicationCommand,
+	return cmd
 }

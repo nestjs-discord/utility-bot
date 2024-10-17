@@ -2,6 +2,7 @@ package solved
 
 import (
 	dgo "github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 )
 
 func (c *Solved) validateChannelType(s *dgo.Session, i *dgo.InteractionCreate, channel *dgo.Channel) bool {
@@ -10,13 +11,7 @@ func (c *Solved) validateChannelType(s *dgo.Session, i *dgo.InteractionCreate, c
 		return true
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{
-			Content: "⚠️ You can only use this command in forum posts.",
-			Flags:   dgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i, "⚠️ You can only use this command in forum posts")
 
 	return false
 }
@@ -26,13 +21,9 @@ func (c *Solved) validateThreadLock(s *dgo.Session, i *dgo.InteractionCreate, ch
 		return true
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{
-			Content: "⚠️ Cannot perform this action on the locked forum posts",
-			Flags:   dgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i,
+		"⚠️ Cannot perform this action on the locked forum posts",
+	)
 
 	return false
 }
@@ -45,13 +36,9 @@ func (c *Solved) validateChannelOwner(s *dgo.Session, i *dgo.InteractionCreate, 
 		return true
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{
-			Content: "⚠️ Only forum post owner and moderators can use this command.",
-			Flags:   dgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i,
+		"⚠️ Only the forum post owner and the moderators can use this command",
+	)
 
 	return false
 }

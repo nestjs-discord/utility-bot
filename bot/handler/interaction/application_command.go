@@ -1,6 +1,7 @@
 package interaction
 
 import (
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"log/slog"
 
 	dgo "github.com/bwmarrin/discordgo"
@@ -30,8 +31,9 @@ func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 	}
 
 	staticHandlers := applicationCommandHandlersMap{
-		solved.Name:  h.solved.Handler,
-		archive.Name: h.archive.Handler,
+		solved.Name:    h.solved.Handler,
+		google_it.Name: h.googleIt.Handler,
+		archive.Name:   h.archive.Handler,
 		// ...
 	}
 
@@ -46,9 +48,6 @@ func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 	switch data.Name {
 	case reference.Name:
 		reference.Handler(s, i)
-		return
-	case google_it.Name:
-		google_it.Handler(s, i)
 		return
 	case dont_ping_mods.Name:
 		h.dontPingMods.Handler(s, i)
@@ -67,11 +66,5 @@ func (h *Handler) applicationCommandUnknownHandler(s *dgo.Session, i *dgo.Intera
 		slog.Any("interaction", *i),
 	)
 
-	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{
-			Content: "Unknown application command.",
-			Flags:   dgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i, "Unknown application command.")
 }

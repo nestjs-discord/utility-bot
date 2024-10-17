@@ -1,9 +1,9 @@
 package archive
 
 import (
-	"errors"
 	"fmt"
 	dgo "github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/bot/permissions"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
@@ -42,7 +42,8 @@ func (a *Archive) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	}
 
 	if !a.moderators.IsUserModerator(i.Member.User.ID) {
-		return errors.New("not a moderator")
+		respond.InteractionWithEphemeralMessage(s, i, "⚠️ Only the moderators can perform this task.")
+		return nil
 	}
 
 	if !a.validateChannelType(s, i, channel) ||

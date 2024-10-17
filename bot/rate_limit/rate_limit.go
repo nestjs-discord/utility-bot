@@ -2,6 +2,7 @@ package rate_limit
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"sync"
@@ -97,11 +98,5 @@ func (r *RateLimit) CheckRateLimit(userID string) bool {
 }
 
 func (r *RateLimit) ForbidInteraction(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: r.cfg.Message,
-			Flags:   discordgo.MessageFlagsEphemeral,
-		},
-	})
+	respond.InteractionWithEphemeralMessage(s, i, r.cfg.Message)
 }
