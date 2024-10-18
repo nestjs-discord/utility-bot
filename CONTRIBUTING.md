@@ -35,6 +35,16 @@ First, [install Golang](<https://go.dev/doc/install>) and then execute:
 go build -o bin/ cmd/run/main.go
 ```
 
+## Docker
+
+```sh
+docker compose down --remove-orphans
+docker compose --env-file ./.env up -d --build
+docker compose ps
+docker stats --no-stream
+docker compose logs --follow
+```
+
 ## References
 
 - <https://discord.com/developers/docs/intro>

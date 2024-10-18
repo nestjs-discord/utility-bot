@@ -9,13 +9,25 @@
 
 Crafted with love ❤️ for the official NestJS Discord server.
 
-## Configuration
+# Goals
+
+The primary objectives of this project are:
+
+1. Automate moderation actions.
+2. Enable members to respond to common scenarios using [application commands](<https://discord.com/developers/docs/interactions/application-commands>).
+3. Provide tools to encourage engagement and collaboration.
+
+> [!NOTE]
+> This bot is custom-made for our server, and all features are subject to change based on our community's needs.
+> We reserve the right to introduce breaking changes at any time.
+
+# Configuration
 
 ```sh
 cp .env.example .env
 ```
 
-## Running
+# At a glance
 
 ```sh
 # validates the configuration files (can be used by the contributors or in a CI/CD pipeline)
@@ -29,14 +41,4 @@ go run cmd/run/main.go
 
 # cleans the registered application commands
 go run cmd/clean/main.go
-```
-
-## Docker
-
-```sh
-docker compose down --remove-orphans
-docker compose --env-file ./.env up -d --build
-docker compose ps
-docker stats --no-stream
-docker compose logs --follow
 ```
