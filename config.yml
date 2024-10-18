@@ -164,12 +164,12 @@ forms:
         max: 200
         required: false
         multiline: true
-  #      - id: "email"
-  #        placeholder: "your.email.address@example.com"
-  #        min: 5
-  #        max: 60
-  #        required: false
-  #        multiline: false
+#      - id: "email"
+#        placeholder: "your.email.address@example.com"
+#        min: 5
+#        max: 60
+#        required: false
+#        multiline: false
 
   jo: # job-opportunities announcement channel (for job listing)
     channelId: 1294446864036528231 # prod: 1294483759189725265 | dev: 1294446864036528231 # TODO: back to prod
@@ -523,15 +523,23 @@ commands:
       
       ```
     buttons:
-      - - label: "Read more"
+      - - label: "Documentation"
           url: "https://docs.nestjs.com/faq/hybrid-application"
           emoji: "📖"
   docs nest-debug:
     description: "Debug NestJS dependencies with environment variable"
     content: >
-      Along with just manually verifying your dependencies are correct, as of Nest 8.1.0 you can set the `NEST_DEBUG` environment variable to a string that resolves as truthy, and get extra logging information while Nest is resolving all the dependencies for the application[.](https://docs.nestjs.com/assets/injector_logs.png)
+      Along with just manually verifying your dependencies are correct,
+      as of Nest 8.1.0 you can set the `NEST_DEBUG` environment variable to a string that resolves as truthy,
+      and get extra logging information while Nest is resolving all the dependencies for the application
+      [.](https://docs.nestjs.com/assets/injector_logs.png)
+      
 
-      The string in yellow is the host class of the dependency being injected, the string in blue is the name of the injected dependency, or its injection token, and the string in purple is the module in which the dependency is being searched for. Using this, you can usually trace back the dependency resolution for what's happening and why you're getting dependency injection problems.
+      The string in yellow is the host class of the dependency being injected,
+      the string in blue is the name of the injected dependency,
+      or its injection token, and the string in purple is the module in which the dependency is being searched for.
+      Using this, you can usually trace back the dependency resolution for what's happening
+      and why you're getting dependency injection problems.
 
   docs process-env-population:
     description: "What to do when process.env is not populated"
