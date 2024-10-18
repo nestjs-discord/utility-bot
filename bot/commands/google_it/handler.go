@@ -3,6 +3,7 @@ package google_it
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/security"
 	"log/slog"
 	"net/url"
 	"strings"
@@ -39,6 +40,7 @@ func (g *GoogleIt) Handler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		content += "\n"
 
 		for _, suggestion := range suggestions {
+			suggestion = security.RemoveDangerousMentions(suggestion)
 			content += "- <https://google.com/search?q=" + url.QueryEscape(suggestion) + ">" + "\n"
 		}
 	}

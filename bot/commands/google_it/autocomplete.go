@@ -2,6 +2,7 @@ package google_it
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/security"
 	"log/slog"
 )
 
@@ -30,6 +31,8 @@ func (g *GoogleIt) AutocompleteHandler(s *discordgo.Session, i *discordgo.Intera
 	g.logger.Debug("autocomplete",
 		slog.String("focusedValue", focusedValue),
 	)
+
+	focusedValue = security.RemoveDangerousMentions(focusedValue)
 
 	res, err := g.client.Search(focusedValue)
 	if err != nil {
