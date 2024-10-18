@@ -143,10 +143,10 @@ func (f FormInput) validate() error {
 	}
 
 	if len(f.Label) < 5 {
-		return errors.New("id is too short")
+		return errors.New("label is too short")
 	}
 	if len(f.Label) > 40 {
-		return errors.New("id is too long")
+		return errors.New("label is too long")
 	}
 
 	if f.Placeholder == "" {

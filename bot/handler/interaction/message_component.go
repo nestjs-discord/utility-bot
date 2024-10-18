@@ -4,6 +4,7 @@ import (
 	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
+	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"log/slog"
 )
 
@@ -29,10 +30,11 @@ func (h *Handler) MessageComponent(s *dgo.Session, i *dgo.InteractionCreate) {
 	}
 
 	messageComponentHandlers := messageComponentHandlersMap{
-		forms.OpenModalButton:       h.forms.ModalOpenButtonClicked,
-		forms.ModeratorAcceptButton: h.forms.ModAcceptButtonClicked,
-		forms.ModeratorRejectButton: h.forms.ModRejectButtonClicked,
-		forms.ModeratorBanButton:    h.forms.ModBanButtonClicked,
+		forms.OpenModalButton:            h.forms.ModalOpenButtonClicked,
+		forms.ModeratorAcceptButton:      h.forms.ModAcceptButtonClicked,
+		forms.ModeratorRejectButton:      h.forms.ModRejectButtonClicked,
+		forms.ModeratorBanButton:         h.forms.ModBanButtonClicked,
+		markdown.AcknowledgeButtonAction: h.markdown.AcknowledgeButtonClicked,
 	}
 
 	handler, ok := messageComponentHandlers[customId.Action]

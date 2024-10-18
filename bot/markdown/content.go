@@ -20,11 +20,29 @@ func (m *Markdown) ContentHandler(s *dgo.Session, i *dgo.InteractionCreate) erro
 	// Copy the content into a new variable to avoid pointer overwrite.
 	content := cmd.Content
 
+	dynamicComponents := m.convertButtonsToMessageComponents(cmd.Buttons)
+
 	for _, opt := range options {
 		if opt.Name == common.OptionHide && opt.Value == true {
 			flags = dgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
-			content = fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value) + content
+			userIdToMention := opt.UserValue(s)
+			content = fmt.Sprintf("*Suggestion for:* %s\n\n", userIdToMention.Mention()) + content
+
+			if len(dynamicComponents) > 3 { // Discord limit
+				continue
+			}
+
+			ackButton, err := m.generateAckButton(userIdToMention)
+			if err != nil {
+				return fmt.Errorf("generate ack button failed: %v", err)
+			}
+
+			dynamicComponents = append(dynamicComponents, dgo.ActionsRow{
+				Components: []dgo.MessageComponent{
+					ackButton,
+				},
+			})
 		}
 	}
 
@@ -32,7 +50,7 @@ func (m *Markdown) ContentHandler(s *dgo.Session, i *dgo.InteractionCreate) erro
 		Type: dgo.InteractionResponseChannelMessageWithSource,
 		Data: &dgo.InteractionResponseData{
 			Content:    content,
-			Components: m.convertButtonsToMessageComponents(cmd.Buttons),
+			Components: dynamicComponents,
 			Flags:      flags,
 		},
 	})
