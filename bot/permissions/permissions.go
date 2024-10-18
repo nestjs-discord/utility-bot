@@ -21,5 +21,5 @@ const (
 	DefaultCommands   = dgo.PermissionUseSlashCommands
 	ProtectedCommands = dgo.PermissionManageMessages |
 		dgo.PermissionUseSlashCommands
-	BotIntents = dgo.IntentsGuildMessages | dgo.IntentsMessageContent
+	BotIntents = dgo.IntentsGuildMessages | dgo.IntentsMessageContent | dgo.IntentAutoModerationExecution
 )
