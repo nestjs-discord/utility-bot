@@ -3,14 +3,12 @@ package solved
 import (
 	"errors"
 	"fmt"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log/slog"
-	"strings"
-
-	dgo "github.com/bwmarrin/discordgo"
 )
 
 const (
@@ -133,16 +131,6 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		slog.Bool("archived", archived),
 	)
 	return nil
-}
-
-func (c *Solved) findSolvedTag(tags []dgo.ForumTag) (*dgo.ForumTag, error) {
-	for _, tag := range tags {
-		if strings.ToLower(tag.Name) == "solved" {
-			return &tag, nil
-		}
-	}
-
-	return nil, errors.New("failed to find the solved tag")
 }
 
 func (c *Solved) convertToInteger(value interface{}) (int, error) {
