@@ -6,8 +6,6 @@ import (
 	"os"
 )
 
-// TODO: remove all the "validate" tags and perform manual validation
-
 type Path string
 
 type Config struct {

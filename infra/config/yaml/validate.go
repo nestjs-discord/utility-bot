@@ -2,7 +2,6 @@ package yaml
 
 import (
 	"fmt"
-	"log/slog"
 	"reflect"
 )
 
@@ -30,9 +29,9 @@ func (c Config) validate() error {
 			return fmt.Errorf("the '%s' key has error: %v", fieldName, err)
 		}
 
-		slog.Debug("validated", // TODO: replace with logger instance
-			slog.String("field", fieldName),
-		)
+		//slog.Debug("validated",
+		//	slog.String("field", fieldName),
+		//)
 	}
 
 	return nil
