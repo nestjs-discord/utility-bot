@@ -8,6 +8,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
+	"github.com/nestjs-discord/utility-bot/bot/security"
 	"github.com/samber/lo"
 	"strings"
 )
@@ -40,6 +41,7 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 			val = strings.ReplaceAll(val, "  ", " ")     // remove double spaces
 			val = gomoji.RemoveEmojis(val)               // we don't want emojis
 			val = markdown.ConvertLinksToHyperlinks(val) // improves embed visualization
+			val = security.RemoveDangerousMentions(val)
 
 			if val == "" {
 				continue
