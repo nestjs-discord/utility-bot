@@ -18,8 +18,9 @@ type Forms struct {
 }
 
 type userInput struct {
-	InputId string
-	Value   string
+	InputId    string
+	InputLabel string
+	InputValue string
 }
 
 func NewForms(cfg yaml.Forms, markdown *markdown.Markdown, session *dgo.Session) (*Forms, error) {

@@ -126,6 +126,7 @@ func (f FormOpenModalMessage) validate() error {
 
 type FormInput struct {
 	Id          string `yaml:"id"`
+	Label       string `yaml:"label"`
 	Placeholder string `yaml:"placeholder"`
 	Multiline   bool   `yaml:"multiline"`
 	Min         int    `yaml:"min"`
@@ -138,6 +139,13 @@ func (f FormInput) validate() error {
 		return errors.New("id is too short")
 	}
 	if len(f.Id) > 40 {
+		return errors.New("id is too long")
+	}
+
+	if len(f.Label) < 5 {
+		return errors.New("id is too short")
+	}
+	if len(f.Label) > 40 {
 		return errors.New("id is too long")
 	}
 

@@ -5,7 +5,6 @@ import (
 	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
-	"github.com/samber/lo"
 	"time"
 )
 
@@ -60,7 +59,7 @@ func (f *Forms) ModalOpenButtonClicked(s *dgo.Session, i *dgo.InteractionCreate,
 			style = dgo.TextInputParagraph
 		}
 
-		label := lo.Capitalize(input.Id)
+		label := input.Label
 
 		comp := dgo.TextInput{
 			CustomID:    input.Id,

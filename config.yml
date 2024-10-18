@@ -136,35 +136,41 @@ forms:
     footer: "Details of this profile have not been verified, please do your own due diligence."
     inputs:
       - id: "about"
+        label: "About"
         placeholder: "Shortly describe yourself!"
         multiline: false
         min: 15
         max: 100
         required: true
       - id: "skills"
+        label: "Skills"
         placeholder: "NestJS, Node.js, TypeScript, Golang, ..."
         multiline: true
         min: 2
         max: 400
         required: true
       - id: "experiences"
+        label: "Experiences"
         placeholder: "Use bullet points (-) for better formatting."
         multiline: true
         min: 2
         max: 600
       - id: "location"
+        label: "Location"
         placeholder: "Germany, Berlin - Remote, willing to relocate within EU"
         min: 2
         max: 150
         required: true
         multiline: false
       - id: "links"
+        label: "Links"
         placeholder: "https://github.com/foo/bar\nhttps://your.personal-website.com/"
         min: 0
         max: 200
         required: false
         multiline: true
 #      - id: "email"
+#        label: "Email"
 #        placeholder: "your.email.address@example.com"
 #        min: 5
 #        max: 60
@@ -204,36 +210,42 @@ forms:
     footer: "Details of this opportunity have not been verified, please do your own due diligence."
     inputs:
       - id: "title"
+        label: "Title"
         placeholder: "Senior Software Engineer"
         min: 10
         max: 100
         required: true
         multiline: false
       - id: "compensation"
+        label: "Compensation"
         placeholder: "$50 per hour"
         min: 5
         max: 150
         required: true
         multiline: false
       - id: "location"
+        label: "Location"
         placeholder: "Germany, Berlin - Remote, willing to relocate within EU"
         min: 5
         max: 150
         required: true
         multiline: false
       - id: "description"
+        label: "Description"
         placeholder: "We are seeking an engineer to assist with back-end development and server management."
         min: 50
         max: 1000
         required: true
         multiline: true
       - id: "links"
+        label: "Links"
         placeholder: "https://company.com/jobs\nhttps://github.com/organization"
         min: 10
         max: 200
         required: true
         multiline: true
 #      - id: "email"
+#        label: "Email"
 #        placeholder: "address@company.com"
 #        min: 5
 #        max: 70

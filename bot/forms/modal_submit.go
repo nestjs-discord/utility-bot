@@ -8,9 +8,19 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/security"
-	"github.com/samber/lo"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"strings"
 )
+
+func (f *Forms) getInputLabelByInputId(inputs []yaml.FormInput, id string) string {
+	for _, formInput := range inputs {
+		if formInput.Id == id {
+			return formInput.Label
+		}
+	}
+
+	return "Label not found!"
+}
 
 func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customId *components.CustomID) error {
 	form, err := f.getFormById(customId.FormId)
@@ -46,9 +56,15 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 				continue
 			}
 
+			// Discord only returns us the input CustomID
+			// We have to manually loop through the config file to fetch the input label
+			inputId := child.CustomID
+			inputLabel := f.getInputLabelByInputId(form.Inputs, inputId)
+
 			userInputs = append(userInputs, userInput{
-				InputId: child.CustomID,
-				Value:   val,
+				InputId:    inputId,
+				InputLabel: inputLabel,
+				InputValue: val,
 			})
 		}
 	}
@@ -108,8 +124,8 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 	// append user inputs
 	for _, inp := range userInputs {
 		formDataEmbed.Fields = append(formDataEmbed.Fields, &dgo.MessageEmbedField{
-			Name:   lo.Capitalize(inp.InputId),
-			Value:  inp.Value,
+			Name:   inp.InputLabel,
+			Value:  inp.InputValue,
 			Inline: false,
 		})
 	}
