@@ -22,6 +22,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
 	"github.com/nestjs-discord/utility-bot/bot/session"
+	"github.com/nestjs-discord/utility-bot/bot/status"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
@@ -80,7 +81,8 @@ func InitializeApp() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	handlerHandler := handler.NewHandler(interactionHandler, antispamAntispam, formsForms, markdownMarkdown, moderatorsModerators)
+	statusStatus := status.NewStatus(discordgoSession)
+	handlerHandler := handler.NewHandler(interactionHandler, antispamAntispam, formsForms, markdownMarkdown, moderatorsModerators, statusStatus)
 	commandsCommands, err := commands.NewCommands(discordgoSession, discordConfig, yamlCommands, archiveArchive, googleIt, referenceReference, solvedSolved)
 	if err != nil {
 		return nil, err

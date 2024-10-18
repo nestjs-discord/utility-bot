@@ -42,3 +42,7 @@ go run cmd/run/main.go
 # cleans the registered application commands
 go run cmd/clean/main.go
 ```
+
+# Donations
+
+TBD.

@@ -20,6 +20,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
 	"github.com/nestjs-discord/utility-bot/bot/session"
+	"github.com/nestjs-discord/utility-bot/bot/status"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
@@ -58,6 +59,7 @@ func InitializeApp() (*App, error) {
 		moderators.NewModerators,
 		rate_limit.NewRateLimit,
 		forms.NewForms,
+		status.NewStatus,
 
 		// commands
 		archive.New,
