@@ -2,6 +2,7 @@
 
 [![tag](https://img.shields.io/github/tag/nestjs-discord/utility-bot.svg)](https://github.com/nestjs-discord/utility-bot/releases)
 [![build-and-test](https://github.com/nestjs-discord/utility-bot/actions/workflows/build-and-test.yaml/badge.svg)](https://github.com/nestjs-discord/utility-bot/actions/workflows/build-and-test.yaml)
+[![golangci-lint](https://github.com/nestjs-discord/utility-bot/actions/workflows/golangci-lint.yml/badge.svg?branch=main)](https://github.com/nestjs-discord/utility-bot/actions/workflows/golangci-lint.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/nestjs-discord/utility-bot/badge/main)](https://www.codefactor.io/repository/github/nestjs-discord/utility-bot/overview/main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nestjs-discord/utility-bot)](https://goreportcard.com/report/github.com/nestjs-discord/utility-bot)
 [![Discord](https://img.shields.io/discord/520622812742811698?logo=nestjs&logoColor=%23e0234e&label=Discord&color=%235765F2)](<https://discord.gg/nestjs>)
