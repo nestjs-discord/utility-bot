@@ -5,6 +5,7 @@ go 1.23
 require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/dgraph-io/ristretto v1.0.0
+	github.com/forPelevin/gomoji v1.2.0
 	github.com/google/go-querystring v1.1.0
 	github.com/google/wire v0.6.0
 	github.com/joho/godotenv v1.5.1
@@ -24,6 +25,7 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
+	github.com/rivo/uniseg v0.4.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	golang.org/x/crypto v0.21.0 // indirect

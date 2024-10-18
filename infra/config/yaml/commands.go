@@ -3,6 +3,7 @@ package yaml
 import (
 	"errors"
 	"fmt"
+	"github.com/forPelevin/gomoji"
 	"net/url"
 	"strings"
 )
@@ -115,7 +116,15 @@ func (c CommandButton) validate() error {
 		return fmt.Errorf("url is invalid: %s", err)
 	}
 
-	// TODO: validate emoji
+	if c.Emoji == "" {
+		return errors.New("emoji is required")
+	}
+	if !gomoji.ContainsEmoji(c.Emoji) {
+		return errors.New("invalid emoji")
+	}
+	if len(gomoji.FindAll(c.Emoji)) != 1 {
+		return errors.New("only 1 emoji is allowed")
+	}
 
 	return nil
 }
