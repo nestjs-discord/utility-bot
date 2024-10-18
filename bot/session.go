@@ -6,6 +6,8 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/permissions"
 )
 
+// TODO: can this file be refactored into a `bot/session` package?
+
 // newSession creates a new Discord session with the provided token.
 func (b *Bot) newSession() error {
 	session, err := discordgo.New("Bot " + b.discordCfg.Token)

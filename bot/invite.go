@@ -12,7 +12,7 @@ type inviteLinkQuery struct {
 	Scope       string `url:"scope"`
 }
 
-func (b *Bot) logServerInviteLink() error {
+func (b *Bot) logServerInviteLink() error { // TODO: make this a separate command
 	qs := inviteLinkQuery{
 		ClientID:    b.discordCfg.AppId,
 		Permissions: permissions.InviteLink,
