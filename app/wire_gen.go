@@ -53,8 +53,10 @@ func InitializeApp() (*App, error) {
 		return nil, err
 	}
 	yamlForms := yaml.NewForms(config)
+	yamlCommands := yaml.NewCommands(config)
+	markdownMarkdown := markdown.NewMarkdown(yamlCommands)
 	discordgoSession := session.ProvideSession(sessionSession)
-	formsForms, err := forms.NewForms(yamlForms, discordgoSession)
+	formsForms, err := forms.NewForms(yamlForms, markdownMarkdown, discordgoSession)
 	if err != nil {
 		return nil, err
 	}
@@ -65,8 +67,6 @@ func InitializeApp() (*App, error) {
 	}
 	rateLimit := yaml.NewRateLimit(config)
 	rate_limitRateLimit := rate_limit.NewRateLimit(rateLimit, moderatorsModerators)
-	yamlCommands := yaml.NewCommands(config)
-	markdownMarkdown := markdown.NewMarkdown(yamlCommands)
 	archiveArchive := archive.New(moderatorsModerators)
 	googleIt := google_it.NewGoogleIt()
 	referenceReference := reference.New()

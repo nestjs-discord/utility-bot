@@ -1,6 +1,7 @@
 package markdown
 
 import (
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -32,9 +33,11 @@ func TestConvertLinksToHyperlinks(t *testing.T) {
 		},
 	}
 
+	m := NewMarkdown(yaml.Commands{})
+
 	for _, test := range tests {
 		t.Run(test.input, func(t *testing.T) {
-			result := ConvertLinksToHyperlinks(test.input)
+			result := m.ConvertLinksToHyperlinks(test.input)
 			assert.Equal(t, test.expected, result)
 		})
 	}

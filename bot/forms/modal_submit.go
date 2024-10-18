@@ -7,7 +7,6 @@ import (
 	"github.com/forPelevin/gomoji"
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
-	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/security"
 	"github.com/samber/lo"
 	"strings"
@@ -35,12 +34,12 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 				break
 			}
 
-			val := strings.TrimSpace(child.Value)        // basic space trim
-			val = strings.ReplaceAll(val, "\n\n", "\n")  // remove double next lines
-			val = strings.ReplaceAll(val, "\t", " ")     // replace the tab character
-			val = strings.ReplaceAll(val, "  ", " ")     // remove double spaces
-			val = gomoji.RemoveEmojis(val)               // we don't want emojis
-			val = markdown.ConvertLinksToHyperlinks(val) // improves embed visualization
+			val := strings.TrimSpace(child.Value)          // basic space trim
+			val = strings.ReplaceAll(val, "\n\n", "\n")    // remove double next lines
+			val = strings.ReplaceAll(val, "\t", " ")       // replace the tab character
+			val = strings.ReplaceAll(val, "  ", " ")       // remove double spaces
+			val = gomoji.RemoveEmojis(val)                 // we don't want emojis
+			val = f.markdown.ConvertLinksToHyperlinks(val) // improves embed visualization
 			val = security.RemoveDangerousMentions(val)
 
 			if val == "" {
