@@ -5,7 +5,7 @@ import dgo "github.com/bwmarrin/discordgo"
 func (c *Solved) Command() *dgo.ApplicationCommand {
 	return &dgo.ApplicationCommand{
 		Name:        Name,
-		Description: "Close and mark a forum post as solved.", // TODO: load from the config
+		Description: c.cfg.Description,
 		Options: []*dgo.ApplicationCommandOption{
 			{
 				Required:    false,
