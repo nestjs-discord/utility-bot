@@ -20,6 +20,9 @@ cp .env.example .env
 # validates the configuration files (can be used by the contributors or in a CI/CD pipeline)
 go run cmd/validate/main.go
 
+# prints out the server invite link
+go run cmd/invite/main.go
+
 # launches the Discord bot
 go run cmd/run/main.go
 

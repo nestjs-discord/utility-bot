@@ -25,11 +25,6 @@ func NewBot(discordCfg *env.DiscordConfig, _ *logger.Logger) (*Bot, error) {
 		return nil, err
 	}
 
-	err = bot.logServerInviteLink()
-	if err != nil {
-		return nil, err
-	}
-
 	return bot, nil
 }
 
