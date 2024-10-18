@@ -6,6 +6,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/bot/permissions"
+	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log/slog"
 )
@@ -14,13 +15,15 @@ const Name = "archive"
 
 type Archive struct {
 	logger     *slog.Logger
+	cfg        yaml.ArchiveCommand
 	moderators *moderators.Moderators
 	// TODO: yaml config
 }
 
-func New(moderators *moderators.Moderators) *Archive {
+func New(cfg yaml.ArchiveCommand, moderators *moderators.Moderators) *Archive {
 	return &Archive{
 		logger:     logger.NewWithSubsystem("bot", "commands", "archive"),
+		cfg:        cfg,
 		moderators: moderators,
 	}
 }
@@ -30,7 +33,7 @@ func (a *Archive) Command() *dgo.ApplicationCommand {
 
 	return &dgo.ApplicationCommand{
 		Name:                     Name,
-		Description:              "Close and lock a forum post.",
+		Description:              a.cfg.Description,
 		DefaultMemberPermissions: &perm,
 	}
 }
@@ -51,13 +54,9 @@ func (a *Archive) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		return nil // already sent the response
 	}
 
-	content := "This post has been marked as \"archived\".\n" +
-		"Please use it as a reference, but do not re-open it. " +
-		"If you have a similar issue and cannot resolve it after reading this thread, please open a new post."
-
 	err = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
 		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{Content: content},
+		Data: &dgo.InteractionResponseData{Content: a.cfg.Response},
 	})
 	if err != nil {
 		return fmt.Errorf("unable to respond to interaction: %s", err)

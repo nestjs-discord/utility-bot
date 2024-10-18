@@ -42,11 +42,13 @@ func InitializeApp() (*App, error) {
 				yaml.NewConfig,
 			),
 			wire.NewSet(
-				yaml.NewCommands,
 				yaml.NewModerators,
 				yaml.NewRateLimit,
 				yaml.NewAntispam,
 				yaml.NewForms,
+				yaml.NewArchiveCommand,
+				yaml.NewSolvedCommand,
+				yaml.NewCommands,
 			),
 		),
 

@@ -10,7 +10,7 @@ func (c *Solved) Command() *dgo.ApplicationCommand {
 			{
 				Required:    false,
 				Name:        AutoClose,
-				Description: "If the 'auto-close' option isn't specified, the post will remain open after using the command.",
+				Description: c.cfg.Description,
 				Type:        dgo.ApplicationCommandOptionInteger,
 				Choices: []*dgo.ApplicationCommandOptionChoice{
 					{

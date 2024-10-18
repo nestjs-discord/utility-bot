@@ -9,11 +9,13 @@ import (
 type Path string
 
 type Config struct {
-	Moderators Moderators `yaml:"moderators"`
-	Antispam   Antispam   `yaml:"antispam"`
-	RateLimit  RateLimit  `yaml:"rateLimit"`
-	Forms      Forms      `yaml:"forms"`
-	Commands   Commands   `yaml:"commands"`
+	Moderators     Moderators     `yaml:"moderators"`
+	Antispam       Antispam       `yaml:"antispam"`
+	RateLimit      RateLimit      `yaml:"rateLimit"`
+	Forms          Forms          `yaml:"forms"`
+	ArchiveCommand ArchiveCommand `yaml:"archiveCommand"`
+	SolvedCommand  SolvedCommand  `yaml:"solvedCommand"`
+	Commands       Commands       `yaml:"commands"`
 }
 
 func NewConfig(path Path) (*Config, error) {
