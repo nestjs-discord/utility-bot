@@ -22,7 +22,6 @@ type Solved struct {
 	logger     *slog.Logger
 	cfg        yaml.SolvedCommand
 	moderators *moderators.Moderators
-	// TODO: yaml config
 }
 
 func New(cfg yaml.SolvedCommand, moderators *moderators.Moderators) *Solved {
@@ -48,27 +47,22 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		return nil
 	}
 
-	// TODO: can this be loaded form the config file?
-	parentChannelInfo, err := s.Channel(channel.ParentID)
-	if err != nil {
-		return errors.New("TODO")
-	}
-
-	solvedTag, err := c.findSolvedTag(parentChannelInfo.AvailableTags)
-	if err != nil {
-		return errors.New("TODO")
+	solvedTagId, ok := c.cfg.ChannelSolvedTag[channel.ParentID]
+	if !ok {
+		respond.InteractionWithEphemeralMessage(s, i, "Failed to find the solve tag on this forum channel.")
+		return nil
 	}
 
 	hasSolvedTag := false
 
 	for _, appliedTag := range channel.AppliedTags {
-		if appliedTag == solvedTag.ID {
+		if appliedTag == solvedTagId {
 			hasSolvedTag = true
 			break
 		}
 	}
 	if !hasSolvedTag {
-		channel.AppliedTags = append(channel.AppliedTags, solvedTag.ID)
+		channel.AppliedTags = append(channel.AppliedTags, solvedTagId)
 	}
 
 	// https://discord.com/developers/docs/resources/channel#modify-channel-json-params-thread

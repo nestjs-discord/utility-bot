@@ -17,7 +17,6 @@ type Archive struct {
 	logger     *slog.Logger
 	cfg        yaml.ArchiveCommand
 	moderators *moderators.Moderators
-	// TODO: yaml config
 }
 
 func New(cfg yaml.ArchiveCommand, moderators *moderators.Moderators) *Archive {
