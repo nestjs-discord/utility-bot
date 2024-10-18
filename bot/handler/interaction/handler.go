@@ -2,6 +2,7 @@ package interaction
 
 import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
+	"github.com/nestjs-discord/utility-bot/bot/commands/credits"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
@@ -22,6 +23,7 @@ type Handler struct {
 	rateLimit    *rate_limit.RateLimit
 	markdown     *markdown.Markdown
 	archive      *archive.Archive
+	credits      *credits.Credits
 	googleIt     *google_it.GoogleIt
 	reference    *reference.Reference
 	solved       *solved.Solved
@@ -34,6 +36,7 @@ func NewHandler(
 	rateLimit *rate_limit.RateLimit,
 	markdown *markdown.Markdown,
 	archive *archive.Archive,
+	credits *credits.Credits,
 	googleIt *google_it.GoogleIt,
 	reference *reference.Reference,
 	solved *solved.Solved,
@@ -46,6 +49,7 @@ func NewHandler(
 		rateLimit:    rateLimit,
 		markdown:     markdown,
 		archive:      archive,
+		credits:      credits,
 		googleIt:     googleIt,
 		reference:    reference,
 		solved:       solved,

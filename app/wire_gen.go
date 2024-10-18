@@ -11,6 +11,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
 	"github.com/nestjs-discord/utility-bot/bot/commands"
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
+	"github.com/nestjs-discord/utility-bot/bot/commands/credits"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
@@ -70,12 +71,13 @@ func InitializeApp() (*App, error) {
 	rate_limitRateLimit := rate_limit.NewRateLimit(rateLimit, moderatorsModerators)
 	archiveCommand := yaml.NewArchiveCommand(config)
 	archiveArchive := archive.New(archiveCommand, moderatorsModerators)
+	creditsCredits := credits.NewCredits()
 	googleIt := google_it.NewGoogleIt()
 	referenceReference := reference.New()
 	solvedCommand := yaml.NewSolvedCommand(config)
 	solvedSolved := solved.New(solvedCommand, moderatorsModerators)
 	dontPingMods := dont_ping_mods.NewDontPingMods(moderatorsModerators)
-	interactionHandler := interaction.NewHandler(formsForms, moderatorsModerators, rate_limitRateLimit, markdownMarkdown, archiveArchive, googleIt, referenceReference, solvedSolved, dontPingMods)
+	interactionHandler := interaction.NewHandler(formsForms, moderatorsModerators, rate_limitRateLimit, markdownMarkdown, archiveArchive, creditsCredits, googleIt, referenceReference, solvedSolved, dontPingMods)
 	yamlAntispam := yaml.NewAntispam(config)
 	antispamAntispam, err := antispam.NewAntispam(yamlAntispam, moderatorsModerators)
 	if err != nil {
@@ -83,7 +85,7 @@ func InitializeApp() (*App, error) {
 	}
 	statusStatus := status.NewStatus(discordgoSession)
 	handlerHandler := handler.NewHandler(interactionHandler, antispamAntispam, formsForms, markdownMarkdown, moderatorsModerators, statusStatus)
-	commandsCommands, err := commands.NewCommands(discordgoSession, discordConfig, yamlCommands, archiveArchive, googleIt, referenceReference, solvedSolved)
+	commandsCommands, err := commands.NewCommands(discordgoSession, discordConfig, yamlCommands, archiveArchive, creditsCredits, dontPingMods, googleIt, referenceReference, solvedSolved)
 	if err != nil {
 		return nil, err
 	}

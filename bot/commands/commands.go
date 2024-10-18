@@ -5,6 +5,7 @@ import (
 	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
+	"github.com/nestjs-discord/utility-bot/bot/commands/credits"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
@@ -28,6 +29,8 @@ func NewCommands(
 	discordCfg *env.DiscordConfig,
 	commands yaml.Commands,
 	archive *archive.Archive,
+	credits *credits.Credits,
+	dontPingMods *dont_ping_mods.DontPingMods,
 	googleIt *google_it.GoogleIt,
 	reference *reference.Reference,
 	solved *solved.Solved,
@@ -40,7 +43,8 @@ func NewCommands(
 
 	staticCommands := []*dgo.ApplicationCommand{
 		archive.Command(),
-		dont_ping_mods.Command,
+		dontPingMods.Command(),
+		credits.Command(),
 		googleIt.Command(),
 		reference.Command(),
 		solved.Command(),

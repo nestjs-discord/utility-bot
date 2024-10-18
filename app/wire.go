@@ -9,6 +9,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
 	"github.com/nestjs-discord/utility-bot/bot/commands"
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
+	"github.com/nestjs-discord/utility-bot/bot/commands/credits"
 	"github.com/nestjs-discord/utility-bot/bot/commands/dont_ping_mods"
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
@@ -63,6 +64,7 @@ func InitializeApp() (*App, error) {
 
 		// commands
 		archive.New,
+		credits.NewCredits,
 		reference.New,
 		solved.New,
 		dont_ping_mods.NewDontPingMods,

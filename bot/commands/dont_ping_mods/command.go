@@ -8,13 +8,15 @@ import (
 
 const Name = "dont-ping-mods"
 
-var perm = int64(permissions.ProtectedCommands)
+func (d *DontPingMods) Command() *discordgo.ApplicationCommand {
+	perm := int64(permissions.ProtectedCommands)
 
-var Command = &discordgo.ApplicationCommand{
-	Name:                     Name,
-	Description:              "Tell someone to stop pinging mods for help",
-	DefaultMemberPermissions: &perm,
-	Options: []*discordgo.ApplicationCommandOption{
-		common.TargetOption,
-	},
+	return &discordgo.ApplicationCommand{
+		Name:                     Name,
+		Description:              "Tell someone to stop pinging mods for help",
+		DefaultMemberPermissions: &perm,
+		Options: []*discordgo.ApplicationCommandOption{
+			common.TargetOption,
+		},
+	}
 }

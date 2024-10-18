@@ -25,7 +25,7 @@ func NewStatus(session *dgo.Session) *Status {
 }
 
 func (s *Status) StartUpdatingInBackground() {
-	ticker := time.NewTicker(1 * time.Minute)
+	ticker := time.NewTicker(5 * time.Minute)
 	quit := make(chan struct{})
 	go func() {
 		for {

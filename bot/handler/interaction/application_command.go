@@ -1,6 +1,7 @@
 package interaction
 
 import (
+	"github.com/nestjs-discord/utility-bot/bot/commands/credits"
 	"log/slog"
 
 	dgo "github.com/bwmarrin/discordgo"
@@ -31,6 +32,7 @@ func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 
 	staticHandlers := applicationCommandHandlersMap{
 		archive.Name:        h.archive.Handler,
+		credits.Name:        h.credits.Handler,
 		dont_ping_mods.Name: h.dontPingMods.Handler,
 		google_it.Name:      h.googleIt.Handler,
 		reference.Name:      h.reference.Handler,
