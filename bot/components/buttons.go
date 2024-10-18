@@ -13,12 +13,19 @@ var (
 
 // CustomID
 // See: https://discord.com/developers/docs/interactions/message-components#custom-id
+//
+// NOTE:
+// When making changes to the existing JSON fields, it's important to be cautious.
+// Adding more fields is safe, but altering or removing existing ones
+// can cause issues when the bot receives updates from old messages.
+//
+// Remember, marking the JSON tag with omitempty reduces the payload size when the fields are empty.
 type CustomID struct {
 	Action    string `json:"a"`
 	UserId    string `json:"u,omitempty"`
 	ChannelId string `json:"c,omitempty"`
 	FormId    string `json:"f,omitempty"`
-	// TODO: do we need other fields?
+	// More fields can be added here...
 }
 
 func EncodeCustomId(id *CustomID) (string, error) {
