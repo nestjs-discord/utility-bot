@@ -80,11 +80,18 @@ func (f Form) validate() error {
 		return errors.New("inputs must not exceed 5")
 	}
 
+	var totalInputsLength = 0
+
 	for index, input := range f.Inputs {
 		err = input.validate()
 		if err != nil {
 			return fmt.Errorf("inputs[%d] is invalid: %s", index, err)
 		}
+		totalInputsLength += input.Max
+	}
+
+	if totalInputsLength > 3000 {
+		return errors.New("inputs must not exceed 3000 characters")
 	}
 
 	return nil
