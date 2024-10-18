@@ -4,6 +4,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/commands"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
+	"github.com/nestjs-discord/utility-bot/bot/session"
 )
 
 type App struct {
@@ -12,11 +13,11 @@ type App struct {
 
 func NewApp(
 	b *bot.Bot,
+	s *session.Session,
 	h *handler.Handler,
 	_ *commands.Commands,
 ) *App {
-	b.ApplyHandler(h)
-
+	s.ApplyHandler(h)
 	return &App{
 		Bot: b,
 	}

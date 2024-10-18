@@ -32,7 +32,7 @@ func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, openMod
 	return true
 }
 
-func (f *Forms) sendOpenModalMessage(session *discordgo.Session, channelId string, formId string, openModalMessage yaml.FormOpenModalMessage) error {
+func (f *Forms) sendOpenModalMessage(channelId string, formId string, openModalMessage yaml.FormOpenModalMessage) error {
 	customId, err := components.EncodeCustomId(&components.CustomID{
 		Action: OpenModalButton,
 		FormId: formId,
@@ -66,7 +66,7 @@ func (f *Forms) sendOpenModalMessage(session *discordgo.Session, channelId strin
 		Components: []discordgo.MessageComponent{row},
 	}
 
-	_, err = session.ChannelMessageSendComplex(channelId, messageData)
+	_, err = f.session.ChannelMessageSendComplex(channelId, messageData)
 
 	return err
 }

@@ -14,7 +14,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = application.Bot.OpenWebsocketConnection()
+	err = application.Bot.Open()
 	if err != nil {
 		log.Fatalf("bot open failed: %v", err)
 	}

@@ -12,6 +12,7 @@ type Forms struct {
 	cfg             yaml.Forms
 	modActionsCache *ristretto.Cache[string, bool]
 	modActionLock   sync.RWMutex
+	session         *dgo.Session
 }
 
 type userInput struct {
@@ -23,6 +24,7 @@ func NewForms(cfg yaml.Forms, session *dgo.Session) (*Forms, error) {
 	f := &Forms{
 		cfg:           cfg,
 		modActionLock: sync.RWMutex{},
+		session:       session,
 	}
 
 	err := f.initCacheInstance()
@@ -30,7 +32,7 @@ func NewForms(cfg yaml.Forms, session *dgo.Session) (*Forms, error) {
 		return nil, err
 	}
 
-	err = f.synchronizeOpenModalButtons(session)
+	err = f.synchronizeOpenModalButtons()
 	if err != nil {
 		return nil, err
 	}
@@ -38,9 +40,27 @@ func NewForms(cfg yaml.Forms, session *dgo.Session) (*Forms, error) {
 	return f, nil
 }
 
-func (f *Forms) synchronizeOpenModalButtons(session *dgo.Session) error {
+func (f *Forms) lastChannelMessage(channelId string) (*dgo.Message, error) {
+	limit := 1
+	beforeId := ""
+	afterId := ""
+	aroundId := ""
+
+	messages, err := f.session.ChannelMessages(channelId, limit, beforeId, afterId, aroundId)
+	if err != nil {
+		return nil, fmt.Errorf("unable to get channel messages: %s", err)
+	}
+
+	if len(messages) == 0 {
+		return nil, nil
+	}
+
+	return messages[0], nil
+}
+
+func (f *Forms) synchronizeOpenModalButtons() error {
 	for formId, form := range f.cfg {
-		message, err := f.getLastChannelMessage(session, form.ChannelId)
+		message, err := f.lastChannelMessage(form.ChannelId)
 		if err != nil {
 			return err
 		}
@@ -53,30 +73,12 @@ func (f *Forms) synchronizeOpenModalButtons(session *dgo.Session) error {
 			continue
 		}
 
-		if err = f.sendOpenModalMessage(session, form.ChannelId, formId, form.OpenModalMessage); err != nil {
+		if err = f.sendOpenModalMessage(form.ChannelId, formId, form.OpenModalMessage); err != nil {
 			return fmt.Errorf("unable to send form button: %s", err)
 		}
 	}
 
 	return nil
-}
-
-func (f *Forms) getLastChannelMessage(session *dgo.Session, channelId string) (*dgo.Message, error) {
-	limit := 1
-	beforeId := ""
-	afterId := ""
-	aroundId := ""
-
-	messages, err := session.ChannelMessages(channelId, limit, beforeId, afterId, aroundId)
-	if err != nil {
-		return nil, fmt.Errorf("unable to get channel messages: %s", err)
-	}
-
-	if len(messages) == 0 {
-		return nil, nil
-	}
-
-	return messages[0], nil
 }
 
 func (f *Forms) getFormById(id string) (*yaml.Form, error) {

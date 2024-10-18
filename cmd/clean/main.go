@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/nestjs-discord/utility-bot/bot"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"log"
@@ -14,14 +14,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// handler := handler.NewHandler()
-	b, err := bot.NewBot(discordCfg, nil)
+	session, err := dgo.New("Bot " + discordCfg.Token)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("unable to create the session: %v", err)
 	}
 
 	err = commands.CleanApplicationCommands(
-		bot.ProvideSession(b),
+		session,
 		discordCfg.AppId,
 		discordCfg.GuildId,
 	)

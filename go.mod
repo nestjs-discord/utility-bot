@@ -6,7 +6,6 @@ require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/dgraph-io/ristretto v1.0.0
 	github.com/forPelevin/gomoji v1.2.0
-	github.com/google/go-querystring v1.1.0
 	github.com/google/wire v0.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lmittmann/tint v1.0.5
@@ -20,7 +19,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

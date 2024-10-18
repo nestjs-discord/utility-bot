@@ -21,6 +21,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
+	"github.com/nestjs-discord/utility-bot/bot/session"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
@@ -45,14 +46,15 @@ func InitializeApp() (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+	sessionSession := bot.ProvideSession(botBot)
 	path := _wirePathValue
 	config, err := yaml.NewConfig(path)
 	if err != nil {
 		return nil, err
 	}
 	yamlForms := yaml.NewForms(config)
-	session := bot.ProvideSession(botBot)
-	formsForms, err := forms.NewForms(yamlForms, session)
+	discordgoSession := session.ProvideSession(sessionSession)
+	formsForms, err := forms.NewForms(yamlForms, discordgoSession)
 	if err != nil {
 		return nil, err
 	}
@@ -77,11 +79,11 @@ func InitializeApp() (*App, error) {
 		return nil, err
 	}
 	handlerHandler := handler.NewHandler(interactionHandler, antispamAntispam, formsForms, markdownMarkdown, moderatorsModerators)
-	commandsCommands, err := commands.NewCommands(session, discordConfig, yamlCommands, archiveArchive, googleIt, referenceReference, solvedSolved)
+	commandsCommands, err := commands.NewCommands(discordgoSession, discordConfig, yamlCommands, archiveArchive, googleIt, referenceReference, solvedSolved)
 	if err != nil {
 		return nil, err
 	}
-	app := NewApp(botBot, handlerHandler, commandsCommands)
+	app := NewApp(botBot, sessionSession, handlerHandler, commandsCommands)
 	return app, nil
 }
 

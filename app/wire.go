@@ -19,6 +19,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/bot/rate_limit"
+	"github.com/nestjs-discord/utility-bot/bot/session"
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
@@ -49,12 +50,6 @@ func InitializeApp() (*App, error) {
 			),
 		),
 
-		// bot
-		wire.NewSet(
-			bot.NewBot,
-			bot.ProvideSession,
-		),
-
 		// bot features
 		antispam.NewAntispam,
 		markdown.NewMarkdown,
@@ -71,6 +66,12 @@ func InitializeApp() (*App, error) {
 
 		interaction.NewHandler,
 		handler.NewHandler,
+
+		wire.NewSet(
+			bot.NewBot,
+			bot.ProvideSession,
+			session.ProvideSession,
+		),
 
 		commands.NewCommands,
 
