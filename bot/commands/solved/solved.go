@@ -30,6 +30,15 @@ func NewSolved(cfg yaml.SolvedCommand, moderators *moderators.Moderators) *Solve
 	}
 }
 
+func (c *Solved) doesChannelHaveTagId(channel *dgo.Channel, tagId string) bool {
+	for _, appliedTag := range channel.AppliedTags {
+		if appliedTag == tagId {
+			return true
+		}
+	}
+	return false
+}
+
 func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	channel, err := s.Channel(i.ChannelID)
 	if err != nil {
@@ -51,22 +60,14 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		return nil
 	}
 
-	hasSolvedTag := false
-
-	for _, appliedTag := range channel.AppliedTags {
-		if appliedTag == solvedTagId {
-			hasSolvedTag = true
-			break
-		}
-	}
-	if !hasSolvedTag {
+	if !c.doesChannelHaveTagId(channel, solvedTagId) {
 		channel.AppliedTags = append(channel.AppliedTags, solvedTagId)
 	}
 
 	// https://discord.com/developers/docs/resources/channel#modify-channel-json-params-thread
 	if len(channel.AppliedTags) > 5 {
-		msg := ":warning: The current post already has five tags applied to it. " +
-			"To apply the \"Solved\" tag, please remove at least one tag, " +
+		msg := ":warning: The current post already has five tags applied to it.\n" +
+			"To apply the \"solved\" tag, please remove at least one tag, " +
 			"as Discord allows a maximum of 5 tags per forum post."
 		respond.InteractionWithEphemeralMessage(s, i, msg)
 		return nil
@@ -108,7 +109,7 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 			return fmt.Errorf("float64 to int conversion failed on auto-close option value: %s", err)
 		}
 
-		if optionValue == 1 { // close right after
+		if option.IntValue() == 1 { // close right after
 			archived = true
 			continue
 		}
