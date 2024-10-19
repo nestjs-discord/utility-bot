@@ -1,27 +1,27 @@
 package google_it
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/security"
 	"log/slog"
 )
 
-func (g *GoogleIt) AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (g *GoogleIt) AutocompleteHandler(s *dgo.Session, i *dgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 	focusedValue := extractFocusedValue(options)
-	var choices []*discordgo.ApplicationCommandOptionChoice
+	var choices []*dgo.ApplicationCommandOptionChoice
 
 	// to avoid spamming google api
 	if len(focusedValue) < 3 {
 
-		choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
+		choices = append(choices, &dgo.ApplicationCommandOptionChoice{
 			Name:  focusedValue,
 			Value: focusedValue,
 		})
 
-		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionApplicationCommandAutocompleteResult,
-			Data: &discordgo.InteractionResponseData{
+		_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+			Type: dgo.InteractionApplicationCommandAutocompleteResult,
+			Data: &dgo.InteractionResponseData{
 				Choices: choices,
 			},
 		})
@@ -43,15 +43,15 @@ func (g *GoogleIt) AutocompleteHandler(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	for _, item := range res {
-		choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
+		choices = append(choices, &dgo.ApplicationCommandOptionChoice{
 			Name:  item,
 			Value: item,
 		})
 	}
 
-	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionApplicationCommandAutocompleteResult,
-		Data: &discordgo.InteractionResponseData{
+	err = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+		Type: dgo.InteractionApplicationCommandAutocompleteResult,
+		Data: &dgo.InteractionResponseData{
 			Choices: choices,
 		},
 	})
@@ -63,9 +63,9 @@ func (g *GoogleIt) AutocompleteHandler(s *discordgo.Session, i *discordgo.Intera
 	}
 }
 
-func extractFocusedValue(options []*discordgo.ApplicationCommandInteractionDataOption) string {
+func extractFocusedValue(options []*dgo.ApplicationCommandInteractionDataOption) string {
 	for _, opt := range options {
-		if opt.Type != discordgo.ApplicationCommandOptionString {
+		if opt.Type != dgo.ApplicationCommandOptionString {
 			continue
 		}
 

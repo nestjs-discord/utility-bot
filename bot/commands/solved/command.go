@@ -1,6 +1,8 @@
 package solved
 
-import dgo "github.com/bwmarrin/discordgo"
+import (
+	dgo "github.com/bwmarrin/discordgo"
+)
 
 func (c *Solved) Command() *dgo.ApplicationCommand {
 	return &dgo.ApplicationCommand{

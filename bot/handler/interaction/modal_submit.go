@@ -1,13 +1,13 @@
 package interaction
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"log/slog"
 )
 
-func (h *Handler) ModalSubmit(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (h *Handler) ModalSubmit(s *dgo.Session, i *dgo.InteractionCreate) {
 	data := i.ModalSubmitData()
 
 	if data.CustomID == "" {

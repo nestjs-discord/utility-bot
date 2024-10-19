@@ -2,7 +2,7 @@ package stats
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"math"
 	"runtime"
 	"time"
@@ -10,13 +10,13 @@ import (
 
 var uptime = time.Now()
 
-func Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
+func Handler(s *dgo.Session, i *dgo.MessageCreate) {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 
-	embed := &discordgo.MessageEmbed{
-		Type: discordgo.EmbedTypeRich,
-		Fields: []*discordgo.MessageEmbedField{
+	embed := &dgo.MessageEmbed{
+		Type: dgo.EmbedTypeRich,
+		Fields: []*dgo.MessageEmbedField{
 			{
 				Name:  "Total allocated memory (ever allocated for heap objects)",
 				Value: formatBytes(m.TotalAlloc),

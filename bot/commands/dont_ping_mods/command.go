@@ -1,21 +1,21 @@
 package dont_ping_mods
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
 	"github.com/nestjs-discord/utility-bot/bot/permissions"
 )
 
 const Name = "dont-ping-mods"
 
-func (d *DontPingMods) Command() *discordgo.ApplicationCommand {
+func (d *DontPingMods) Command() *dgo.ApplicationCommand {
 	perm := int64(permissions.ProtectedCommands)
 
-	return &discordgo.ApplicationCommand{
+	return &dgo.ApplicationCommand{
 		Name:                     Name,
 		Description:              "Tell someone to stop pinging mods for help",
 		DefaultMemberPermissions: &perm,
-		Options: []*discordgo.ApplicationCommandOption{
+		Options: []*dgo.ApplicationCommandOption{
 			common.TargetOption,
 		},
 	}

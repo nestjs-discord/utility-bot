@@ -2,16 +2,16 @@ package forms
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"strings"
 	"time"
 )
 
-func (f *Forms) ModBanModalSubmit(s *discordgo.Session, i *discordgo.InteractionCreate, customId *components.CustomID) error {
+func (f *Forms) ModBanModalSubmit(s *dgo.Session, i *dgo.InteractionCreate, customId *components.CustomID) error {
 	data := i.ModalSubmitData()
-	val := data.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value
+	val := data.Components[0].(*dgo.ActionsRow).Components[0].(*dgo.TextInput).Value
 	if strings.ToLower(val) != "yes" {
 		respond.InteractionWithEphemeralMessage(s, i, "Submit 'yes' to confirm the action.")
 		return nil
@@ -29,7 +29,7 @@ func (f *Forms) ModBanModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 		return fmt.Errorf("failed to ban the given user: %s", err)
 	}
 
-	msgEdit := discordgo.NewMessageEdit(i.ChannelID, i.Message.ID)
+	msgEdit := dgo.NewMessageEdit(i.ChannelID, i.Message.ID)
 	content := fmt.Sprintf("Banned by %s, <t:%d:R>\n",
 		i.Member.User.Mention(),
 		time.Now().UTC().Unix(),
@@ -37,7 +37,7 @@ func (f *Forms) ModBanModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 	msgEdit.SetContent(content)
 
 	// remove the message components
-	emptyComponent := make([]discordgo.MessageComponent, 0)
+	emptyComponent := make([]dgo.MessageComponent, 0)
 	msgEdit.Components = &emptyComponent
 
 	_, err = s.ChannelMessageEditComplex(msgEdit)

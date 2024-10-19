@@ -1,19 +1,21 @@
 package handler
 
-import "github.com/bwmarrin/discordgo"
+import (
+	dgo "github.com/bwmarrin/discordgo"
+)
 
-func (h *Handler) InteractionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (h *Handler) InteractionCreate(s *dgo.Session, i *dgo.InteractionCreate) {
 	switch i.Type {
-	case discordgo.InteractionApplicationCommand:
+	case dgo.InteractionApplicationCommand:
 		h.opts.InteractionHandler.ApplicationCommand(s, i)
 		return
-	case discordgo.InteractionApplicationCommandAutocomplete:
+	case dgo.InteractionApplicationCommandAutocomplete:
 		h.opts.InteractionHandler.ApplicationCommandAutocomplete(s, i)
 		return
-	case discordgo.InteractionMessageComponent:
+	case dgo.InteractionMessageComponent:
 		h.opts.InteractionHandler.MessageComponent(s, i)
 		return
-	case discordgo.InteractionModalSubmit:
+	case dgo.InteractionModalSubmit:
 		h.opts.InteractionHandler.ModalSubmit(s, i)
 		return
 	}

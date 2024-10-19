@@ -1,7 +1,7 @@
 package google_it
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"github.com/nestjs-discord/utility-bot/infra/services/google"
 	"log/slog"
@@ -24,21 +24,21 @@ func NewGoogleIt() *GoogleIt {
 	}
 }
 
-func (g *GoogleIt) Command() *discordgo.ApplicationCommand {
-	cmd := &discordgo.ApplicationCommand{
+func (g *GoogleIt) Command() *dgo.ApplicationCommand {
+	cmd := &dgo.ApplicationCommand{
 		Name:        Name,
 		Description: "Tell someone to search on Google or StackOverflow!",
-		Type:        discordgo.ChatApplicationCommand,
+		Type:        dgo.ChatApplicationCommand,
 	}
 
 	elements := []string{"first", "second", "third", "fourth"}
 	minLength := 3
 
 	for i, opt := range elements {
-		cmd.Options = append(cmd.Options, &discordgo.ApplicationCommandOption{
+		cmd.Options = append(cmd.Options, &dgo.ApplicationCommandOption{
 			Name:         opt + OptionSuffix,
 			Description:  opt + " suggestion",
-			Type:         discordgo.ApplicationCommandOptionString,
+			Type:         dgo.ApplicationCommandOptionString,
 			Required:     i == 0, // only the first item is required
 			Autocomplete: true,
 			MinLength:    &minLength,

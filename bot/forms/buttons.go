@@ -1,18 +1,18 @@
 package forms
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 )
 
-func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, openModalMessage yaml.FormOpenModalMessage) bool {
+func (f *Forms) doesHaveButtonComponentWithLabel(msg *dgo.Message, openModalMessage yaml.FormOpenModalMessage) bool {
 	// if the message does not have any component
 	if len(msg.Components) == 0 {
 		return false
 	}
 
-	actionsRow, ok := msg.Components[0].(*discordgo.ActionsRow)
+	actionsRow, ok := msg.Components[0].(*dgo.ActionsRow)
 	if !ok {
 		return false
 	}
@@ -21,7 +21,7 @@ func (f *Forms) doesHaveButtonComponentWithLabel(msg *discordgo.Message, openMod
 		return false
 	}
 
-	btn, ok := actionsRow.Components[0].(*discordgo.Button)
+	btn, ok := actionsRow.Components[0].(*dgo.Button)
 	if !ok {
 		return false
 	}
@@ -41,29 +41,29 @@ func (f *Forms) sendOpenModalMessage(channelId string, formId string, openModalM
 		return err
 	}
 
-	button := discordgo.Button{
+	button := dgo.Button{
 		Label:    openModalMessage.ButtonLabel,
-		Style:    discordgo.SuccessButton,
+		Style:    dgo.SuccessButton,
 		Disabled: false,
 		CustomID: customId,
 	}
 
-	embed := &discordgo.MessageEmbed{
+	embed := &dgo.MessageEmbed{
 		Title:       openModalMessage.EmbedTitle,
 		Color:       openModalMessage.EmbedColor,
 		Description: openModalMessage.EmbedDescription,
 	}
 
-	row := discordgo.ActionsRow{
-		Components: []discordgo.MessageComponent{
+	row := dgo.ActionsRow{
+		Components: []dgo.MessageComponent{
 			button,
 		},
 	}
 
-	messageData := &discordgo.MessageSend{
+	messageData := &dgo.MessageSend{
 		Content:    "‎", // empty character to space out the previous message https://emptycharacter.com/
-		Embeds:     []*discordgo.MessageEmbed{embed},
-		Components: []discordgo.MessageComponent{row},
+		Embeds:     []*dgo.MessageEmbed{embed},
+		Components: []dgo.MessageComponent{row},
 	}
 
 	_, err = f.opts.Session.ChannelMessageSendComplex(channelId, messageData)

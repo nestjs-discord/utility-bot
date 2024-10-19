@@ -1,13 +1,13 @@
 package reference
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/infra/services/algolia"
 )
 
-func (r *Reference) AutocompleteHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (r *Reference) AutocompleteHandler(s *dgo.Session, i *dgo.InteractionCreate) {
 	rootOptions := i.ApplicationCommandData().Options
-	var choices []*discordgo.ApplicationCommandOptionChoice
+	var choices []*dgo.ApplicationCommandOptionChoice
 
 	for _, rootOption := range rootOptions {
 		app, ok := algolia.Apps[rootOption.Name]
@@ -26,7 +26,7 @@ func (r *Reference) AutocompleteHandler(s *discordgo.Session, i *discordgo.Inter
 		}
 
 		for _, hit := range hits {
-			choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
+			choices = append(choices, &dgo.ApplicationCommandOptionChoice{
 				Name:  algolia.Truncate(algolia.GetFormattedHierarchy(hit), 95),
 				Value: hit.ObjectID,
 			})
@@ -36,12 +36,12 @@ func (r *Reference) AutocompleteHandler(s *discordgo.Session, i *discordgo.Inter
 		break
 	}
 
-	response := &discordgo.InteractionResponseData{
+	response := &dgo.InteractionResponseData{
 		Choices: choices,
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionApplicationCommandAutocompleteResult,
+	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+		Type: dgo.InteractionApplicationCommandAutocompleteResult,
 		Data: response,
 	})
 }

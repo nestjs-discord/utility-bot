@@ -1,6 +1,8 @@
 package respond
 
-import dgo "github.com/bwmarrin/discordgo"
+import (
+	dgo "github.com/bwmarrin/discordgo"
+)
 
 func InteractionWithEphemeralMessage(s *dgo.Session, i *dgo.InteractionCreate, message string) {
 	_ = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{

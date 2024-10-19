@@ -2,12 +2,12 @@ package forms
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
 	"time"
 )
 
-func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.InteractionCreate, customId *components.CustomID) error {
+func (f *Forms) ModAcceptButtonClicked(s *dgo.Session, i *dgo.InteractionCreate, customId *components.CustomID) error {
 	if f.raceConditionCheck(i.Message.ID) {
 		f.raceConditionRespond(s, i)
 		return nil
@@ -26,7 +26,7 @@ func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	// Send the embed data into the public channel
-	sentMessage, err := s.ChannelMessageSendComplex(form.ChannelId, &discordgo.MessageSend{
+	sentMessage, err := s.ChannelMessageSendComplex(form.ChannelId, &dgo.MessageSend{
 		Embeds: i.Message.Embeds,
 	})
 	if err != nil {
@@ -58,11 +58,11 @@ func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.Intera
 		content += "\nCross posted the message to the followers ✅"
 	}
 
-	msgEdit := discordgo.NewMessageEdit(i.ChannelID, i.Message.ID)
+	msgEdit := dgo.NewMessageEdit(i.ChannelID, i.Message.ID)
 	msgEdit.SetContent(content)
 
 	// remove the message components
-	emptyComponent := make([]discordgo.MessageComponent, 0)
+	emptyComponent := make([]dgo.MessageComponent, 0)
 	msgEdit.Components = &emptyComponent
 
 	_, err = s.ChannelMessageEditComplex(msgEdit)

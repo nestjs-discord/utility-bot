@@ -2,12 +2,12 @@ package antispam
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"strings"
 )
 
-func (a *Antispam) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.MessageSend {
-	return &discordgo.MessageSend{
+func (a *Antispam) GenerateAlertMessage(i *dgo.MessageCreate) *dgo.MessageSend {
+	return &dgo.MessageSend{
 		Content:    "",
 		Embed:      a.generateAlertEmbed(i),
 		Components: a.generateAlertComponents(i),
@@ -15,12 +15,12 @@ func (a *Antispam) GenerateAlertMessage(i *discordgo.MessageCreate) *discordgo.M
 	}
 }
 
-func (a *Antispam) generateAlertFiles(i *discordgo.MessageCreate) []*discordgo.File {
-	var files []*discordgo.File
+func (a *Antispam) generateAlertFiles(i *dgo.MessageCreate) []*dgo.File {
+	var files []*dgo.File
 	userUniqueMessages := a.GetUserUniqueMessages(userIdType(i.Author.ID))
 	for msg, msgId := range userUniqueMessages {
 		fileName := fmt.Sprintf("msg-%s.txt", msgId)
-		files = append(files, &discordgo.File{
+		files = append(files, &dgo.File{
 			Name:        fileName,
 			ContentType: "text/plain",
 			Reader:      strings.NewReader(msg),
@@ -29,16 +29,16 @@ func (a *Antispam) generateAlertFiles(i *discordgo.MessageCreate) []*discordgo.F
 	return files
 }
 
-func (a *Antispam) generateAlertComponents(i *discordgo.MessageCreate) []discordgo.MessageComponent {
-	return []discordgo.MessageComponent{
-		discordgo.ActionsRow{
-			Components: []discordgo.MessageComponent{
-				discordgo.Button{
-					Emoji: &discordgo.ComponentEmoji{
+func (a *Antispam) generateAlertComponents(i *dgo.MessageCreate) []dgo.MessageComponent {
+	return []dgo.MessageComponent{
+		dgo.ActionsRow{
+			Components: []dgo.MessageComponent{
+				dgo.Button{
+					Emoji: &dgo.ComponentEmoji{
 						Name: "🔗",
 					},
 					Label: "Jump to the message",
-					Style: discordgo.LinkButton,
+					Style: dgo.LinkButton,
 					URL:   fmt.Sprintf("https://discord.com/channels/%s/%s/%s", i.GuildID, i.ChannelID, i.ID),
 				},
 			},
@@ -46,22 +46,22 @@ func (a *Antispam) generateAlertComponents(i *discordgo.MessageCreate) []discord
 	}
 }
 
-func (a *Antispam) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.MessageEmbed {
-	embed := &discordgo.MessageEmbed{
+func (a *Antispam) generateAlertEmbed(i *dgo.MessageCreate) *dgo.MessageEmbed {
+	embed := &dgo.MessageEmbed{
 		Title:       "Spam alert! 🚨",
 		Color:       0xff0000, // Red
 		Description: a.generateAlertEmbedDescription(),
 	}
 
-	embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
+	embed.Fields = append(embed.Fields, &dgo.MessageEmbedField{
 		Name:   "Username",
 		Value:  "`" + i.Author.String() + "`",
 		Inline: true,
 	})
 
-	authorAccCreatedAt, err := discordgo.SnowflakeTimestamp(i.Author.ID)
+	authorAccCreatedAt, err := dgo.SnowflakeTimestamp(i.Author.ID)
 	if err == nil {
-		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
+		embed.Fields = append(embed.Fields, &dgo.MessageEmbedField{
 			Name: "Account created",
 			//Value: humanize.Time(authorAccCreatedAt),
 			Value:  fmt.Sprintf("<t:%d:R>", authorAccCreatedAt.UTC().Unix()),
@@ -69,7 +69,7 @@ func (a *Antispam) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.Mes
 		})
 	}
 
-	embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
+	embed.Fields = append(embed.Fields, &dgo.MessageEmbedField{
 		Name:  "Search query",
 		Value: "`from: " + i.Author.ID + "`",
 	})
@@ -84,7 +84,7 @@ func (a *Antispam) generateAlertEmbed(i *discordgo.MessageCreate) *discordgo.Mes
 			msg = msg[:347] + "..."
 		}
 
-		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
+		embed.Fields = append(embed.Fields, &dgo.MessageEmbedField{
 			Value: "```text\n" + msg + "\n```",
 		})
 	}

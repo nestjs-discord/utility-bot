@@ -2,7 +2,7 @@ package antispam
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"log/slog"
 )
 
@@ -13,7 +13,7 @@ type Message struct {
 }
 
 func NewMessage(ID string, content string) (Message, error) {
-	msgTimestamp, err := discordgo.SnowflakeTimestamp(ID)
+	msgTimestamp, err := dgo.SnowflakeTimestamp(ID)
 	if err != nil {
 		return Message{}, fmt.Errorf("failed to get snowflake timestamp: %s", err)
 	}
@@ -71,7 +71,7 @@ func (a *Antispam) GetUserMessages(userId userIdType) map[string]string {
 	return res
 }
 
-func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
+func (a *Antispam) Handler(s *dgo.Session, i *dgo.MessageCreate) {
 	channelId := i.ChannelID
 
 	// Skip executing auto-mod logic if the provided channel ID is not in the list of channels being tracked.
@@ -168,7 +168,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// _, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("```json\n%s\n```", string(jsonStr)))
 }
 
-func (a *Antispam) TrackHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
+func (a *Antispam) TrackHandler(s *dgo.Session, i *dgo.MessageCreate) {
 	content := "### Antispam feature is tracking the following channels: 👇\n"
 	for _, channelId := range a.opts.Cfg.TrackedChannelIds {
 		content += fmt.Sprintf("- <#%s>\n", channelId)

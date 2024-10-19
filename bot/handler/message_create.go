@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/stats"
 
 	"log/slog"
 )
 
-func (h *Handler) MessageCreate(s *discordgo.Session, i *discordgo.MessageCreate) {
+func (h *Handler) MessageCreate(s *dgo.Session, i *dgo.MessageCreate) {
 	if i.Message.Author.Bot {
 		return
 	}

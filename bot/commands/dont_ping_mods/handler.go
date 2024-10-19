@@ -2,7 +2,7 @@ package dont_ping_mods
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
@@ -25,7 +25,7 @@ func NewDontPingMods(
 	}
 }
 
-func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCreate) error {
+func (d *DontPingMods) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	content := "Please **do not** tag the moderators unless someone is breaking server rules. " +
 		"The mods are here to help enforce the rules of the server, " +
 		"and while most of them are knowledgeable about Nest, " +
@@ -38,20 +38,20 @@ func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCre
 		}
 	}
 
-	button := discordgo.Button{
-		Emoji: &discordgo.ComponentEmoji{Name: "🔗"},
+	button := dgo.Button{
+		Emoji: &dgo.ComponentEmoji{Name: "🔗"},
 		Label: "Server Rules",
-		Style: discordgo.LinkButton,
+		Style: dgo.LinkButton,
 		URL:   "https://discord.com/channels/520622812742811698/527853342152458287/769643761797431336",
 	}
 
-	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
+	err := s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+		Type: dgo.InteractionResponseChannelMessageWithSource,
+		Data: &dgo.InteractionResponseData{
 			Content: content,
-			Components: []discordgo.MessageComponent{
-				discordgo.ActionsRow{
-					Components: []discordgo.MessageComponent{
+			Components: []dgo.MessageComponent{
+				dgo.ActionsRow{
+					Components: []dgo.MessageComponent{
 						button,
 					},
 				},
@@ -68,8 +68,8 @@ func (d *DontPingMods) Handler(s *discordgo.Session, i *discordgo.InteractionCre
 	}
 
 	// Skip further steps when the current channel is not a forum post (thread)
-	if currentChannelInfo.Type != discordgo.ChannelTypeGuildPublicThread &&
-		currentChannelInfo.Type != discordgo.ChannelTypeGuildPrivateThread {
+	if currentChannelInfo.Type != dgo.ChannelTypeGuildPublicThread &&
+		currentChannelInfo.Type != dgo.ChannelTypeGuildPrivateThread {
 		respond.InteractionWithEphemeralMessage(s, i, "⚠️ This command only works on the forum posts.")
 		return nil
 	}

@@ -2,19 +2,19 @@ package google_it
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/security"
 	"log/slog"
 	"net/url"
 	"strings"
 )
 
-func (g *GoogleIt) Handler(s *discordgo.Session, i *discordgo.InteractionCreate) error {
+func (g *GoogleIt) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	var suggestions []string
 
 	options := i.ApplicationCommandData().Options
 	for _, opt := range options {
-		if opt.Type != discordgo.ApplicationCommandOptionString {
+		if opt.Type != dgo.ApplicationCommandOptionString {
 			continue
 		}
 
@@ -45,9 +45,9 @@ func (g *GoogleIt) Handler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		}
 	}
 
-	err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
+	err := s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+		Type: dgo.InteractionResponseChannelMessageWithSource,
+		Data: &dgo.InteractionResponseData{
 			Content: content,
 		},
 	})

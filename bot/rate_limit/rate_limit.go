@@ -1,7 +1,7 @@
 package rate_limit
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
@@ -100,6 +100,6 @@ func (r *RateLimit) CheckRateLimit(userID string) bool {
 	return r.GetUsageCount(userID) > r.opts.Cfg.MaxUsage
 }
 
-func (r *RateLimit) ForbidInteraction(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (r *RateLimit) ForbidInteraction(s *dgo.Session, i *dgo.InteractionCreate) {
 	respond.InteractionWithEphemeralMessage(s, i, r.opts.Cfg.Message)
 }

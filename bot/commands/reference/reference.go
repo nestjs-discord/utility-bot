@@ -1,7 +1,7 @@
 package reference
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
 	"github.com/nestjs-discord/utility-bot/infra/services/algolia"
 )
@@ -15,11 +15,11 @@ func NewReference() *Reference {
 	return &Reference{}
 }
 
-func (r *Reference) Command() *discordgo.ApplicationCommand {
-	options := []*discordgo.ApplicationCommandOption{
+func (r *Reference) Command() *dgo.ApplicationCommand {
+	options := []*dgo.ApplicationCommandOption{
 		{
 			Name:         QueryOption,
-			Type:         discordgo.ApplicationCommandOptionString,
+			Type:         dgo.ApplicationCommandOptionString,
 			Description:  "The query to search for",
 			Required:     true,
 			Autocomplete: true,
@@ -28,15 +28,15 @@ func (r *Reference) Command() *discordgo.ApplicationCommand {
 		common.HideOption,
 	}
 
-	subcommand := &discordgo.ApplicationCommand{
+	subcommand := &dgo.ApplicationCommand{
 		Name:        Name,
 		Description: "reference related sub-commands",
-		Options:     []*discordgo.ApplicationCommandOption{},
+		Options:     []*dgo.ApplicationCommandOption{},
 	}
 
 	for slug, app := range algolia.Apps {
-		subcommand.Options = append(subcommand.Options, &discordgo.ApplicationCommandOption{
-			Type:        discordgo.ApplicationCommandOptionSubCommand,
+		subcommand.Options = append(subcommand.Options, &dgo.ApplicationCommandOption{
+			Type:        dgo.ApplicationCommandOptionSubCommand,
 			Name:        slug,
 			Description: "Display docs for " + string(app),
 			Options:     options,

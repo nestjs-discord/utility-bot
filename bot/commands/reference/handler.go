@@ -3,7 +3,7 @@ package reference
 import (
 	"errors"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
 	"github.com/nestjs-discord/utility-bot/infra/services/algolia"
 	"strings"
@@ -21,7 +21,7 @@ var emojis = map[string]string{
 	algolia.TypeScript.ToSlug():     "<:typescript:1106968521692414043>",
 }
 
-func (r *Reference) Handler(s *discordgo.Session, i *discordgo.InteractionCreate) error {
+func (r *Reference) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	options := i.ApplicationCommandData().Options
 
 	for _, option := range options {
@@ -61,11 +61,11 @@ func (r *Reference) Handler(s *discordgo.Session, i *discordgo.InteractionCreate
 			content.WriteString(algolia.Truncate(hit.Content, 350) + "\n")
 		}
 
-		err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
+		err = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+			Type: dgo.InteractionResponseChannelMessageWithSource,
+			Data: &dgo.InteractionResponseData{
 				Content:    content.String(),
-				Flags:      flags | discordgo.MessageFlagsSupressEmbeds,
+				Flags:      flags | dgo.MessageFlagsSupressEmbeds,
 				Components: generateReferenceComponents(hit),
 			},
 		})
@@ -78,12 +78,12 @@ func (r *Reference) Handler(s *discordgo.Session, i *discordgo.InteractionCreate
 	return errors.New("reference handler failed")
 }
 
-func parseReferenceOptions(option *discordgo.ApplicationCommandInteractionDataOption, content *strings.Builder) discordgo.MessageFlags {
-	var flags discordgo.MessageFlags
+func parseReferenceOptions(option *dgo.ApplicationCommandInteractionDataOption, content *strings.Builder) dgo.MessageFlags {
+	var flags dgo.MessageFlags
 
 	for _, opt := range option.Options {
 		if opt.Name == common.OptionHide && opt.Value == true {
-			flags = discordgo.MessageFlagsEphemeral
+			flags = dgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
 			content.WriteString(fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value))
 		}
@@ -92,15 +92,15 @@ func parseReferenceOptions(option *discordgo.ApplicationCommandInteractionDataOp
 	return flags
 }
 
-func generateReferenceComponents(hit *algolia.Hit) []discordgo.MessageComponent {
-	components := []discordgo.MessageComponent{
-		discordgo.ActionsRow{
-			Components: []discordgo.MessageComponent{
-				discordgo.Button{
+func generateReferenceComponents(hit *algolia.Hit) []dgo.MessageComponent {
+	components := []dgo.MessageComponent{
+		dgo.ActionsRow{
+			Components: []dgo.MessageComponent{
+				dgo.Button{
 					Label: "Read more",
 					URL:   hit.URL,
-					Style: discordgo.LinkButton,
-					Emoji: &discordgo.ComponentEmoji{Name: "📖"},
+					Style: dgo.LinkButton,
+					Emoji: &dgo.ComponentEmoji{Name: "📖"},
 				},
 			},
 		},
@@ -108,7 +108,7 @@ func generateReferenceComponents(hit *algolia.Hit) []discordgo.MessageComponent 
 	return components
 }
 
-func getStringValueByName(name string, options []*discordgo.ApplicationCommandInteractionDataOption) (string, error) {
+func getStringValueByName(name string, options []*dgo.ApplicationCommandInteractionDataOption) (string, error) {
 	for _, opt := range options {
 		if opt.Name == name {
 			return opt.StringValue(), nil

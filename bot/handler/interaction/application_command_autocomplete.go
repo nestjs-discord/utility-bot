@@ -1,13 +1,13 @@
 package interaction
 
 import (
-	"github.com/bwmarrin/discordgo"
+	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
 	"log/slog"
 )
 
-func (h *Handler) ApplicationCommandAutocomplete(s *discordgo.Session, i *discordgo.InteractionCreate) {
+func (h *Handler) ApplicationCommandAutocomplete(s *dgo.Session, i *dgo.InteractionCreate) {
 	data := i.ApplicationCommandData()
 
 	h.logger.Debug("interaction application command autocomplete",
