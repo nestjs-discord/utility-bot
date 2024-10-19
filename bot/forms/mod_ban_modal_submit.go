@@ -17,11 +17,6 @@ func (f *Forms) ModBanModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 		return nil
 	}
 
-	if f.raceConditionCheck(i.Message.ID) {
-		f.raceConditionRespond(s, i)
-		return nil
-	}
-
 	userIdToBan := customId.UserId
 
 	banReason := fmt.Sprintf("Banned by %s (%s)",
