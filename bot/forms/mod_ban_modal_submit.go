@@ -4,10 +4,24 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/components"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
+	"strings"
 	"time"
 )
 
-func (f *Forms) ModBanButtonClicked(s *discordgo.Session, i *discordgo.InteractionCreate, customId *components.CustomID) error {
+func (f *Forms) ModBanModalSubmit(s *discordgo.Session, i *discordgo.InteractionCreate, customId *components.CustomID) error {
+	data := i.ModalSubmitData()
+	val := data.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value
+	if strings.ToLower(val) != "yes" {
+		respond.InteractionWithEphemeralMessage(s, i, "Submit 'yes' to confirm the action.")
+		return nil
+	}
+
+	if f.raceConditionCheck(i.Message.ID) {
+		f.raceConditionRespond(s, i)
+		return nil
+	}
+
 	userIdToBan := customId.UserId
 
 	banReason := fmt.Sprintf("Banned by %s (%s)",

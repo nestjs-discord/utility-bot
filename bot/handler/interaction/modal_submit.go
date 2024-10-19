@@ -26,13 +26,17 @@ func (h *Handler) ModalSubmit(s *discordgo.Session, i *discordgo.InteractionCrea
 		return
 	}
 
-	// this may be replaced this with a switch statement in the future..!
-	if customId.Action != forms.Modal {
+	switch customId.Action {
+	case forms.Modal:
+		err = h.forms.ModalSubmitted(s, i, customId)
+		if err != nil {
+			h.respondError(err, s, i)
+		}
+	case forms.ModeratorBanConfirmModal:
+		err = h.forms.ModBanModalSubmit(s, i, customId)
+		if err != nil {
+			h.respondError(err, s, i)
+		}
 		return
-	}
-
-	err = h.forms.ModalSubmitted(s, i, customId)
-	if err != nil {
-		h.respondError(err, s, i)
 	}
 }
