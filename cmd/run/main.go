@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/nestjs-discord/utility-bot/app"
+	"github.com/nestjs-discord/utility-bot/infra/ioc"
 	"log"
 	"log/slog"
 	"os"
@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	application, cleanup, err := app.InitializeApp()
+	application, cleanup, err := ioc.InitializeApp()
 	if err != nil {
 		log.Fatal(err)
 	}

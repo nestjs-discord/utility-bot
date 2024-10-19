@@ -4,9 +4,10 @@
 //go:build !wireinject
 // +build !wireinject
 
-package app
+package ioc
 
 import (
+	"github.com/nestjs-discord/utility-bot/app"
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
 	"github.com/nestjs-discord/utility-bot/bot/auto_mod"
@@ -33,7 +34,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeApp() (*App, func(), error) {
+func InitializeApp() (*app.App, func(), error) {
 	discordConfig, err := env.NewDiscordConfig()
 	if err != nil {
 		return nil, nil, err
@@ -112,8 +113,8 @@ func InitializeApp() (*App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	app := NewApp(botBot, sessionSession, handlerHandler, cronCron, commandsCommands)
-	return app, func() {
+	appApp := app.NewApp(botBot, sessionSession, handlerHandler, cronCron, commandsCommands)
+	return appApp, func() {
 		cleanup2()
 		cleanup()
 	}, nil

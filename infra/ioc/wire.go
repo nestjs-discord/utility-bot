@@ -1,10 +1,11 @@
 //go:build wireinject
 // +build wireinject
 
-package app
+package ioc
 
 import (
 	"github.com/google/wire"
+	"github.com/nestjs-discord/utility-bot/app"
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
 	"github.com/nestjs-discord/utility-bot/bot/auto_mod"
@@ -29,7 +30,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 )
 
-func InitializeApp() (*App, func(), error) {
+func InitializeApp() (*app.App, func(), error) {
 	panic(wire.Build(
 		// infra/config/env
 		wire.NewSet(
@@ -90,6 +91,6 @@ func InitializeApp() (*App, func(), error) {
 			cron.NewCron,
 		),
 
-		NewApp,
+		app.NewApp,
 	))
 }
