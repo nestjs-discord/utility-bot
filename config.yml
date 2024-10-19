@@ -103,8 +103,8 @@ antispam: # flags the users who spam messages on multiple channels in a short ti
 # https://discord.com/developers/docs/interactions/message-components#text-inputs
 forms:
   jp: # job-profiles announcement channel (for self-promotion)
-    channelId: "1294446757370925147" # prod: 1294483543623335986 | dev: 1294446757370925147 # TODO: back to prod
-    modChannelId: "1292911145883275356" # prod: 1294488503744204860 | dev: 1292911145883275356 # TODO: back to prod
+    channelId: "1294483543623335986" # prod: 1294483543623335986 | dev: 1294446757370925147
+    modChannelId: "1294488503744204860" # prod: 1294488503744204860 | dev: 1292911145883275356
     modalTitle: "Post a new profile"
     modSkipApproval: false
     color: 2600544 # dark green (#27ae60)
@@ -177,8 +177,8 @@ forms:
 #        multiline: false
 
   jo: # job-opportunities announcement channel (for job listing)
-    channelId: "1294446864036528231" # prod: 1294483759189725265 | dev: 1294446864036528231 # TODO: back to prod
-    modChannelId: "1292911220197953558" # prod: 1294488539500777472 | dev: 1292911220197953558 # TODO: back to prod
+    channelId: "1294483759189725265" # prod: 1294483759189725265 | dev: 1294446864036528231
+    modChannelId: "1294488539500777472" # prod: 1294488539500777472 | dev: 1292911220197953558
     modalTitle: "Post a new opportunity"
     modSkipApproval: false
     color: 14689102 # same as the official NestJS logo (#e0234e)

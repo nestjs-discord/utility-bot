@@ -38,12 +38,12 @@ func NewForms(opts Options) (*Forms, error) {
 
 	err := f.initCacheInstance()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("init form cache instance failed: %s", err)
 	}
 
 	err = f.synchronizeOpenModalButtons()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("synchronize open modal buttons failed: %s", err)
 	}
 
 	return f, nil
