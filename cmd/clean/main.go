@@ -22,7 +22,7 @@ func main() {
 	err = commands.CleanApplicationCommands(
 		session,
 		discordCfg.AppId,
-		discordCfg.GuildId,
+		discordCfg.GuildId.String(),
 	)
 	if err != nil {
 		log.Fatal(err)
