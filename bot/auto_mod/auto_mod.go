@@ -12,7 +12,8 @@ type AutoMod struct {
 	session *dgo.Session
 	guildId env.GuildId
 
-	rules []*dgo.AutoModerationRule
+	keywordFilter map[string]string
+	regexPatterns map[string]string
 }
 
 func NewAutoMod(session *dgo.Session, guildId env.GuildId) (*AutoMod, error) {
@@ -22,21 +23,12 @@ func NewAutoMod(session *dgo.Session, guildId env.GuildId) (*AutoMod, error) {
 		guildId: guildId,
 	}
 
+	a.emptyCachedRules()
+
 	return a, nil
 }
 
-func (a *AutoMod) ExecuteBackgroundJob() error {
-	a.logger.Debug("executing background job")
-	return a.syncRules()
-}
-
-func (a *AutoMod) syncRules() error {
-	rules, err := a.session.AutoModerationRules(a.guildId.String())
-	if err != nil {
-		return err
-	}
-
-	a.rules = rules
-
-	return nil
+func (a *AutoMod) emptyCachedRules() {
+	a.keywordFilter = make(map[string]string)
+	a.regexPatterns = make(map[string]string)
 }

@@ -45,7 +45,8 @@ func (f *Forms) ModAcceptButtonClicked(s *discordgo.Session, i *discordgo.Intera
 		_ = s.ChannelMessageDelete(form.ChannelId, messages[0].ID)
 	}
 
-	content := fmt.Sprintf("Accepted by %s, <t:%d:R>",
+	content := fmt.Sprintf("%s\n\nAccepted by %s, <t:%d:R>",
+		i.Message.Content,
 		i.Member.User.Mention(),
 		time.Now().UTC().Unix(),
 	)

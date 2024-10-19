@@ -31,7 +31,7 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 	data := i.ModalSubmitData()
 
 	// map of the 'input id' to the 'user given value'
-	var userInputs []userInput
+	var userInputs []userInputType
 	for _, parentComp := range data.Components {
 		row, isRow := parentComp.(*dgo.ActionsRow)
 		if !isRow {
@@ -44,15 +44,15 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 				break
 			}
 
-			val := strings.TrimSpace(child.Value)          // basic space trim
-			val = strings.ReplaceAll(val, "\n\n", "\n")    // remove double next lines
-			val = strings.ReplaceAll(val, "\t", " ")       // replace the tab character
-			val = strings.ReplaceAll(val, "  ", " ")       // remove double spaces
-			val = gomoji.RemoveEmojis(val)                 // we don't want emojis
-			val = f.markdown.ConvertLinksToHyperlinks(val) // improves embed visualization
-			val = security.RemoveDangerousMentions(val)
+			userInput := strings.TrimSpace(child.Value)                // basic space trim
+			userInput = strings.ReplaceAll(userInput, "\n\n", "\n")    // remove double next lines
+			userInput = strings.ReplaceAll(userInput, "\t", " ")       // replace the tab character
+			userInput = strings.ReplaceAll(userInput, "  ", " ")       // remove double spaces
+			userInput = gomoji.RemoveEmojis(userInput)                 // we don't want emojis
+			userInput = f.markdown.ConvertLinksToHyperlinks(userInput) // improves embed visualization
+			userInput = security.RemoveDangerousMentions(userInput)
 
-			if val == "" {
+			if userInput == "" {
 				continue
 			}
 
@@ -61,10 +61,11 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 			inputId := child.CustomID
 			inputLabel := f.getInputLabelByInputId(form.Inputs, inputId)
 
-			userInputs = append(userInputs, userInput{
-				InputId:    inputId,
-				InputLabel: inputLabel,
-				InputValue: val,
+			userInputs = append(userInputs, userInputType{
+				InputId:      inputId,
+				InputLabel:   inputLabel,
+				InputValue:   userInput,
+				AutoModCheck: f.autoMod.ValidateUserInputAgainstServerRules(userInput),
 			})
 		}
 	}
@@ -121,6 +122,8 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 		},
 	}
 
+	message := &dgo.MessageSend{}
+
 	// append user inputs
 	for _, inp := range userInputs {
 		formDataEmbed.Fields = append(formDataEmbed.Fields, &dgo.MessageEmbedField{
@@ -128,14 +131,24 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 			Value:  inp.InputValue,
 			Inline: false,
 		})
+
+		if inp.AutoModCheck != nil {
+			if message.Content == "" {
+				message.Content = "### 🚨 Auto Mod rules have been triggered: 🚨\n\n"
+			}
+			message.Content += fmt.Sprintf(
+				"_%s_: ||%s||\n",
+				inp.InputLabel,
+				inp.AutoModCheck,
+			)
+		}
 	}
 
 	channelId := form.ChannelId
-	message := &dgo.MessageSend{
-		Embeds: []*dgo.MessageEmbed{
-			discordProfileEmbed,
-			formDataEmbed,
-		},
+
+	message.Embeds = []*dgo.MessageEmbed{
+		discordProfileEmbed,
+		formDataEmbed,
 	}
 
 	respContent := "Thank you for taking your time to fill this form. ✅"

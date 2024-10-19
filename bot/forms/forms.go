@@ -19,10 +19,11 @@ type Forms struct {
 	session         *dgo.Session
 }
 
-type userInput struct {
-	InputId    string
-	InputLabel string
-	InputValue string
+type userInputType struct {
+	InputId      string
+	InputLabel   string
+	InputValue   string
+	AutoModCheck error
 }
 
 func NewForms(cfg yaml.Forms,

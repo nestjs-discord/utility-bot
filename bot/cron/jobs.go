@@ -19,7 +19,7 @@ func (c *Cron) registerJobs() error {
 	}
 
 	_, err = c.scheduler.NewJob(
-		gc.DurationJob(1*time.Minute),
+		gc.DurationJob(10*time.Minute),
 		gc.NewTask(c.opts.Status.ExecuteBackgroundJob),
 		gc.WithSingletonMode(gc.LimitModeReschedule),
 		gc.WithStartAt(gc.WithStartImmediately()),
