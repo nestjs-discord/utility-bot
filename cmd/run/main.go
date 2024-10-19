@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	application, err := app.InitializeApp()
+	application, cleanup, err := app.InitializeApp()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,9 +24,6 @@ func main() {
 	signal.Notify(stop, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	<-stop
 	slog.Info("shutting down")
-	err = application.Bot.Close()
-	if err != nil {
-		log.Fatalf("bot close failed: %v", err)
-	}
+	cleanup()
 	slog.Info("shutdown done")
 }

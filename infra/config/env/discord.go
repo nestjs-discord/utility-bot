@@ -8,7 +8,7 @@ import (
 type DiscordConfig struct {
 	Token   string
 	AppId   string
-	GuildId string
+	GuildId GuildId
 }
 
 func NewDiscordConfig() (*DiscordConfig, error) {
@@ -30,6 +30,16 @@ func NewDiscordConfig() (*DiscordConfig, error) {
 	return &DiscordConfig{
 		Token:   token,
 		AppId:   appId,
-		GuildId: guildId,
+		GuildId: GuildId(guildId),
 	}, nil
+}
+
+type GuildId string
+
+func (id GuildId) String() string {
+	return string(id)
+}
+
+func ProvideGuildId(c *DiscordConfig) GuildId {
+	return c.GuildId
 }

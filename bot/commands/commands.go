@@ -79,7 +79,7 @@ func (c *Commands) registerApplicationCommands(staticCommands []*dgo.Application
 
 	_, err := c.session.ApplicationCommandBulkOverwrite(
 		c.discordCfg.AppId,
-		c.discordCfg.GuildId, // TODO: can we globally register the commands instead? (on production only)
+		c.discordCfg.GuildId.String(), // TODO: can we globally register the commands instead? (on production only)
 		commands,
 	)
 	if err != nil {

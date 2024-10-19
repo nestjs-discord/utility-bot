@@ -9,6 +9,7 @@ package app
 import (
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
+	"github.com/nestjs-discord/utility-bot/bot/auto_mod"
 	"github.com/nestjs-discord/utility-bot/bot/commands"
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
 	"github.com/nestjs-discord/utility-bot/bot/commands/credits"
@@ -16,6 +17,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
+	"github.com/nestjs-discord/utility-bot/bot/cron"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
@@ -31,41 +33,50 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeApp() (*App, error) {
+func InitializeApp() (*App, func(), error) {
 	discordConfig, err := env.NewDiscordConfig()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	stage, err := env.NewStageConfig()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	loggerLogger, err := logger.Initialize(stage)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	botBot, err := bot.NewBot(discordConfig, loggerLogger)
+	botBot, cleanup, err := bot.NewBot(discordConfig, loggerLogger)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	sessionSession := bot.ProvideSession(botBot)
 	path := _wirePathValue
 	config, err := yaml.NewConfig(path)
 	if err != nil {
-		return nil, err
+		cleanup()
+		return nil, nil, err
 	}
 	yamlForms := yaml.NewForms(config)
+	discordgoSession := session.ProvideSession(sessionSession)
+	guildId := env.ProvideGuildId(discordConfig)
+	autoMod, err := auto_mod.NewAutoMod(discordgoSession, guildId)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	yamlCommands := yaml.NewCommands(config)
 	markdownMarkdown := markdown.NewMarkdown(yamlCommands)
-	discordgoSession := session.ProvideSession(sessionSession)
-	formsForms, err := forms.NewForms(yamlForms, markdownMarkdown, discordgoSession)
+	formsForms, err := forms.NewForms(yamlForms, autoMod, markdownMarkdown, discordgoSession)
 	if err != nil {
-		return nil, err
+		cleanup()
+		return nil, nil, err
 	}
 	yamlModerators := yaml.NewModerators(config)
 	moderatorsModerators, err := moderators.NewModerators(yamlModerators)
 	if err != nil {
-		return nil, err
+		cleanup()
+		return nil, nil, err
 	}
 	rateLimit := yaml.NewRateLimit(config)
 	rate_limitRateLimit := rate_limit.NewRateLimit(rateLimit, moderatorsModerators)
@@ -81,16 +92,31 @@ func InitializeApp() (*App, error) {
 	yamlAntispam := yaml.NewAntispam(config)
 	antispamAntispam, err := antispam.NewAntispam(yamlAntispam, moderatorsModerators)
 	if err != nil {
-		return nil, err
+		cleanup()
+		return nil, nil, err
 	}
+	handlerHandler := handler.NewHandler(interactionHandler, antispamAntispam, formsForms, markdownMarkdown, moderatorsModerators)
 	statusStatus := status.NewStatus(discordgoSession)
-	handlerHandler := handler.NewHandler(interactionHandler, antispamAntispam, formsForms, markdownMarkdown, moderatorsModerators, statusStatus)
+	option := cron.Option{
+		AutoMod: autoMod,
+		Status:  statusStatus,
+	}
+	cronCron, cleanup2, err := cron.NewCron(option)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	commandsCommands, err := commands.NewCommands(discordgoSession, discordConfig, yamlCommands, archiveArchive, creditsCredits, dontPingMods, googleIt, referenceReference, solvedSolved)
 	if err != nil {
-		return nil, err
+		cleanup2()
+		cleanup()
+		return nil, nil, err
 	}
-	app := NewApp(botBot, sessionSession, handlerHandler, commandsCommands)
-	return app, nil
+	app := NewApp(botBot, sessionSession, handlerHandler, cronCron, commandsCommands)
+	return app, func() {
+		cleanup2()
+		cleanup()
+	}, nil
 }
 
 var (

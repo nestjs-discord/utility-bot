@@ -4,6 +4,7 @@ import (
 	"fmt"
 	dgo "github.com/bwmarrin/discordgo"
 	"github.com/dgraph-io/ristretto"
+	"github.com/nestjs-discord/utility-bot/bot/auto_mod"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"sync"
@@ -11,6 +12,7 @@ import (
 
 type Forms struct {
 	cfg             yaml.Forms
+	autoMod         *auto_mod.AutoMod
 	markdown        *markdown.Markdown
 	modActionsCache *ristretto.Cache[string, bool]
 	modActionLock   sync.RWMutex
@@ -23,9 +25,14 @@ type userInput struct {
 	InputValue string
 }
 
-func NewForms(cfg yaml.Forms, markdown *markdown.Markdown, session *dgo.Session) (*Forms, error) {
+func NewForms(cfg yaml.Forms,
+	autoMod *auto_mod.AutoMod,
+	markdown *markdown.Markdown,
+	session *dgo.Session,
+) (*Forms, error) {
 	f := &Forms{
 		cfg:           cfg,
+		autoMod:       autoMod,
 		markdown:      markdown,
 		modActionLock: sync.RWMutex{},
 		session:       session,

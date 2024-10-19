@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
+	"github.com/nestjs-discord/utility-bot/bot/auto_mod"
 	"github.com/nestjs-discord/utility-bot/bot/commands"
 	"github.com/nestjs-discord/utility-bot/bot/commands/archive"
 	"github.com/nestjs-discord/utility-bot/bot/commands/credits"
@@ -14,6 +15,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
+	"github.com/nestjs-discord/utility-bot/bot/cron"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
@@ -27,12 +29,13 @@ import (
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 )
 
-func InitializeApp() (*App, error) {
+func InitializeApp() (*App, func(), error) {
 	panic(wire.Build(
 		// infra/config/env
 		wire.NewSet(
 			env.NewStageConfig,
 			env.NewDiscordConfig,
+			env.ProvideGuildId,
 		),
 
 		logger.Initialize,
@@ -56,6 +59,7 @@ func InitializeApp() (*App, error) {
 
 		// bot features
 		antispam.NewAntispam,
+		auto_mod.NewAutoMod,
 		markdown.NewMarkdown,
 		moderators.NewModerators,
 		rate_limit.NewRateLimit,
@@ -80,6 +84,11 @@ func InitializeApp() (*App, error) {
 		),
 
 		commands.NewCommands,
+
+		wire.NewSet(
+			wire.Struct(new(cron.Option), "*"),
+			cron.NewCron,
+		),
 
 		NewApp,
 	))

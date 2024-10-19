@@ -10,6 +10,4 @@ func (h *Handler) Ready(_ *discordgo.Session, r *discordgo.Ready) {
 		slog.String("id", r.User.ID),
 		slog.String("user", r.User.String()),
 	)
-
-	h.status.StartUpdatingInBackground()
 }

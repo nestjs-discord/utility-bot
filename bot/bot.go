@@ -12,10 +12,10 @@ type Bot struct {
 	session *session.Session
 }
 
-func NewBot(discordCfg *env.DiscordConfig, _ *logger.Logger) (*Bot, error) {
+func NewBot(discordCfg *env.DiscordConfig, _ *logger.Logger) (*Bot, func(), error) {
 	s, err := session.NewSession(discordCfg)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	b := &Bot{
@@ -23,7 +23,16 @@ func NewBot(discordCfg *env.DiscordConfig, _ *logger.Logger) (*Bot, error) {
 		session: s,
 	}
 
-	return b, nil
+	cleanup := func() {
+		err = b.Close()
+		if err != nil {
+			b.logger.Error("close failed",
+				slog.Any("err", err),
+			)
+		}
+	}
+
+	return b, cleanup, nil
 }
 
 func ProvideSession(b *Bot) *session.Session {

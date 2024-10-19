@@ -5,7 +5,6 @@ import (
 	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
 	"log/slog"
-	"time"
 )
 
 const (
@@ -24,31 +23,22 @@ func NewStatus(session *dgo.Session) *Status {
 	}
 }
 
-func (s *Status) StartUpdatingInBackground() {
-	ticker := time.NewTicker(5 * time.Minute)
-	quit := make(chan struct{})
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				text := "tbd" // TODO: offline logic
-				err := s.setCustomActivity(text)
-				if err != nil {
-					s.logger.Error("set custom activity failed",
-						slog.Any("err", err),
-					)
-					continue
-				}
-				s.logger.Info("updated",
-					slog.String("text", text),
-				)
+func (s *Status) ExecuteBackgroundJob() error {
+	s.logger.Debug("executing background job")
 
-			case <-quit:
-				ticker.Stop()
-				return
-			}
-		}
-	}()
+	text := "tbd" // TODO: offline logic
+	err := s.setCustomActivity(text)
+	if err != nil {
+		s.logger.Error("set custom activity failed",
+			slog.Any("err", err),
+		)
+		return err
+	}
+	s.logger.Info("updated",
+		slog.String("text", text),
+	)
+
+	return nil
 }
 
 func (s *Status) setCustomActivity(text string) error {
