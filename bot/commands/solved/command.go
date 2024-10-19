@@ -7,12 +7,12 @@ import (
 func (c *Solved) Command() *dgo.ApplicationCommand {
 	return &dgo.ApplicationCommand{
 		Name:        Name,
-		Description: c.cfg.Description,
+		Description: c.opts.Cfg.Description,
 		Options: []*dgo.ApplicationCommandOption{
 			{
 				Required:    false,
 				Name:        AutoClose,
-				Description: c.cfg.Description,
+				Description: c.opts.Cfg.Description,
 				Type:        dgo.ApplicationCommandOptionInteger,
 				Choices: []*dgo.ApplicationCommandOptionChoice{
 					{

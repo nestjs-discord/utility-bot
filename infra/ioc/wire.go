@@ -50,7 +50,7 @@ func InitializeApp() (*app.App, func(), error) {
 						dont_ping_mods.NewDontPingMods,
 						google_it.NewGoogleIt,
 						reference.NewReference,
-						solved.NewSolved,
+						w.NewSet(solved.NewSolved, w.Struct(new(solved.Options), "*")),
 					),
 				),
 				w.NewSet(forms.NewForms, w.Struct(new(forms.Options), "*")),

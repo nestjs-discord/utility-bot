@@ -16,27 +16,21 @@ const (
 	AutoClose = "auto-close"
 )
 
+type Options struct {
+	Cfg        yaml.SolvedCommand
+	Moderators *moderators.Moderators
+}
+
 type Solved struct {
-	logger     *slog.Logger
-	cfg        yaml.SolvedCommand
-	moderators *moderators.Moderators
+	opts   Options
+	logger *slog.Logger
 }
 
-func NewSolved(cfg yaml.SolvedCommand, moderators *moderators.Moderators) *Solved {
+func NewSolved(opts Options) *Solved {
 	return &Solved{
-		logger:     logger.NewWithSubsystem("bot", "commands", "solved"),
-		cfg:        cfg,
-		moderators: moderators,
+		opts:   opts,
+		logger: logger.NewWithSubsystem("bot", "commands", "solved"),
 	}
-}
-
-func (c *Solved) doesChannelHaveTagId(channel *dgo.Channel, tagId string) bool {
-	for _, appliedTag := range channel.AppliedTags {
-		if appliedTag == tagId {
-			return true
-		}
-	}
-	return false
 }
 
 func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
@@ -54,7 +48,7 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		return nil
 	}
 
-	solvedTagId, ok := c.cfg.ChannelSolvedTag[channel.ParentID]
+	solvedTagId, ok := c.opts.Cfg.ChannelSolvedTag[channel.ParentID]
 	if !ok {
 		respond.InteractionWithEphemeralMessage(s, i, "Failed to find the solve tag on this forum channel.")
 		return nil
@@ -86,13 +80,9 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		return fmt.Errorf("failed to edit the channel to apply the solved tag: %w", err)
 	}
 
-	// Send the canned response
-	err = s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
-		Type: dgo.InteractionResponseChannelMessageWithSource,
-		Data: &dgo.InteractionResponseData{Content: c.cfg.Response},
-	})
+	err = c.sendCannedResponse(s, i)
 	if err != nil {
-		return fmt.Errorf("failed to respond to interaction: %w", err)
+		return err
 	}
 
 	// Default values when "auto-close" option isn't specified
@@ -132,6 +122,26 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		slog.Bool("archived", archived),
 	)
 	return nil
+}
+
+func (c *Solved) sendCannedResponse(s *dgo.Session, i *dgo.InteractionCreate) error {
+	err := s.InteractionRespond(i.Interaction, &dgo.InteractionResponse{
+		Type: dgo.InteractionResponseChannelMessageWithSource,
+		Data: &dgo.InteractionResponseData{Content: c.opts.Cfg.Response},
+	})
+	if err != nil {
+		return fmt.Errorf("failed to respond to interaction: %w", err)
+	}
+	return nil
+}
+
+func (c *Solved) doesChannelHaveTagId(channel *dgo.Channel, tagId string) bool {
+	for _, appliedTag := range channel.AppliedTags {
+		if appliedTag == tagId {
+			return true
+		}
+	}
+	return false
 }
 
 func (c *Solved) convertToInteger(value interface{}) (int, error) {

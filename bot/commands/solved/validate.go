@@ -32,7 +32,7 @@ func (c *Solved) validateChannelOwner(s *dgo.Session, i *dgo.InteractionCreate, 
 	postOwnerId := channel.OwnerID
 	executedById := i.Member.User.ID
 	if postOwnerId == executedById ||
-		c.moderators.IsUserModerator(executedById) {
+		c.opts.Moderators.IsUserModerator(executedById) {
 		return true
 	}
 

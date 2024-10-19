@@ -107,7 +107,11 @@ func InitializeApp() (*app.App, func(), error) {
 	googleIt := google_it.NewGoogleIt()
 	referenceReference := reference.NewReference()
 	solvedCommand := yaml.NewSolvedCommand(config)
-	solvedSolved := solved.NewSolved(solvedCommand, moderatorsModerators)
+	solvedOptions := solved.Options{
+		Cfg:        solvedCommand,
+		Moderators: moderatorsModerators,
+	}
+	solvedSolved := solved.NewSolved(solvedOptions)
 	dontPingMods := dont_ping_mods.NewDontPingMods(moderatorsModerators)
 	interactionOptions := interaction.Options{
 		Forms:        formsForms,
