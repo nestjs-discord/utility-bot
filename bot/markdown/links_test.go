@@ -33,7 +33,11 @@ func TestConvertLinksToHyperlinks(t *testing.T) {
 		},
 	}
 
-	m := NewMarkdown(yaml.Commands{})
+	opts := Options{
+		Commands: yaml.Commands{},
+	}
+
+	m := NewMarkdown(opts)
 
 	for _, test := range tests {
 		t.Run(test.input, func(t *testing.T) {
