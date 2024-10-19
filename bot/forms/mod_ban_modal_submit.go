@@ -45,5 +45,7 @@ func (f *Forms) ModBanModalSubmit(s *discordgo.Session, i *discordgo.Interaction
 		return fmt.Errorf("failed to edit the message: %s", err)
 	}
 
+	respond.InteractionWithEphemeralMessage(s, i, "Successfully banned the user.")
+
 	return nil
 }

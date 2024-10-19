@@ -15,7 +15,8 @@ func (f *Forms) ModRejectButtonClicked(s *discordgo.Session, i *discordgo.Intera
 	}
 
 	msgEdit := discordgo.NewMessageEdit(i.ChannelID, i.Message.ID)
-	content := fmt.Sprintf("Rejected by %s, <t:%d:R>\n",
+	content := fmt.Sprintf("%s\n\nRejected by %s, <t:%d:R>\n",
+		i.Message.Content,
 		i.Member.User.Mention(),
 		time.Now().UTC().Unix(),
 	)
