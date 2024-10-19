@@ -10,7 +10,7 @@ import (
 func (m *Markdown) ContentHandler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	name, options := m.normalizeInteractionData(i)
 
-	cmd, cmdExist := m.commands[name]
+	cmd, cmdExist := m.opts.Commands[name]
 	if !cmdExist {
 		return nil // skip
 	}

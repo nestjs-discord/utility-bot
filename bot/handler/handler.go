@@ -10,29 +10,23 @@ import (
 	"log/slog"
 )
 
-type Handler struct {
-	logger             *slog.Logger
-	interactionHandler *interaction.Handler
-	antispam           *antispam.Antispam
-	forms              *forms.Forms
-	markdown           *markdown.Markdown
-	moderators         *moderators.Moderators
+type Options struct {
+	InteractionHandler *interaction.Handler
+	Antispam           *antispam.Antispam
+	Forms              *forms.Forms
+	Markdown           *markdown.Markdown
+	Moderators         *moderators.Moderators
 }
 
-func NewHandler(
-	interactionHandler *interaction.Handler,
-	antispam *antispam.Antispam,
-	forms *forms.Forms,
-	markdown *markdown.Markdown,
-	moderators *moderators.Moderators,
-) *Handler {
+type Handler struct {
+	opts   Options
+	logger *slog.Logger
+}
+
+func NewHandler(opts Options) *Handler {
 	h := &Handler{
-		logger:             logger.NewWithSubsystem("bot", "handler"),
-		interactionHandler: interactionHandler,
-		antispam:           antispam,
-		forms:              forms,
-		markdown:           markdown,
-		moderators:         moderators,
+		opts:   opts,
+		logger: logger.NewWithSubsystem("bot", "handler"),
 	}
 
 	return h

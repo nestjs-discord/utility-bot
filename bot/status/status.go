@@ -11,15 +11,19 @@ const (
 	maxCustomStatusLength = 60
 )
 
-type Status struct {
-	logger  *slog.Logger
-	session *dgo.Session
+type Options struct {
+	Session *dgo.Session
 }
 
-func NewStatus(session *dgo.Session) *Status {
+type Status struct {
+	opts   Options
+	logger *slog.Logger
+}
+
+func NewStatus(opts Options) *Status {
 	return &Status{
-		logger:  logger.NewWithSubsystem("bot", "status"),
-		session: session,
+		opts:   opts,
+		logger: logger.NewWithSubsystem("bot", "status"),
 	}
 }
 
@@ -43,7 +47,7 @@ func (s *Status) setCustomActivity(text string) error {
 		},
 	}
 
-	return s.session.UpdateStatusComplex(dgo.UpdateStatusData{
+	return s.opts.Session.UpdateStatusComplex(dgo.UpdateStatusData{
 		Activities: activities,
 	})
 }

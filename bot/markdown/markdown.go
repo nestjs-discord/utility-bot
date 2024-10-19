@@ -6,14 +6,18 @@ import (
 	"log/slog"
 )
 
-type Markdown struct {
-	logger   *slog.Logger
-	commands yaml.Commands
+type Options struct {
+	Commands yaml.Commands
 }
 
-func NewMarkdown(commands yaml.Commands) *Markdown {
+type Markdown struct {
+	opts   Options
+	logger *slog.Logger
+}
+
+func NewMarkdown(opts Options) *Markdown {
 	return &Markdown{
-		logger:   logger.NewWithSubsystem("bot", "markdown"),
-		commands: commands,
+		opts:   opts,
+		logger: logger.NewWithSubsystem("bot", "markdown"),
 	}
 }

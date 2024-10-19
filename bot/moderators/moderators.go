@@ -5,14 +5,19 @@ import (
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 )
 
-type Moderators struct {
-	userIds yaml.Moderators
+type Options struct {
+	EncodedUserIds yaml.Moderators
 }
 
-func NewModerators(encUserIds yaml.Moderators) (*Moderators, error) {
+type Moderators struct {
+	opts    Options
+	userIds []string
+}
+
+func NewModerators(opts Options) (*Moderators, error) {
 	m := &Moderators{}
-	for index := range encUserIds {
-		decStr, err := m.decodeUserId(encUserIds[index])
+	for index := range opts.EncodedUserIds {
+		decStr, err := m.decodeUserId(opts.EncodedUserIds[index])
 		if err != nil {
 			return nil, err
 		}

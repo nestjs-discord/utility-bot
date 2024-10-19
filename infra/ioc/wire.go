@@ -4,7 +4,7 @@
 package ioc
 
 import (
-	"github.com/google/wire"
+	w "github.com/google/wire"
 	"github.com/nestjs-discord/utility-bot/app"
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
@@ -30,90 +30,75 @@ import (
 	"github.com/nestjs-discord/utility-bot/modules/cron"
 )
 
-var botSet = wire.NewSet(
-	wire.NewSet(
-		wire.Struct(new(antispam.Options), "*"),
-		antispam.NewAntispam,
-	),
-	wire.NewSet(
-		wire.Struct(new(auto_mod.Options), "*"),
-		auto_mod.NewAutoMod,
-	),
-	wire.NewSet(
-		botCommands,
-		wire.Struct(new(commands.Options), "*"),
-		commands.NewCommands,
-	),
-	wire.NewSet(
-		wire.Struct(new(forms.Options), "*"),
-		forms.NewForms,
-	),
-	wire.NewSet(
-		wire.NewSet(
-			wire.Struct(new(interaction.Options), "*"),
-			interaction.NewInteractionHandler,
-		),
-		handler.NewHandler,
-	),
-	markdown.NewMarkdown,
-	moderators.NewModerators,
-	rate_limit.NewRateLimit,
-	status.NewStatus,
-)
-
-var botCommands = wire.NewSet(
-	archive.NewArchive,
-	credits.NewCredits,
-	dont_ping_mods.NewDontPingMods,
-	google_it.NewGoogleIt,
-	reference.NewReference,
-	solved.NewSolved,
-)
-
-var infra = wire.NewSet(
-	// infra/config/env
-	wire.NewSet(
-		env.NewStageConfig,
-		env.NewDiscordConfig,
-		env.ProvideGuildId,
-	),
-	// infra/config/yaml
-	wire.NewSet(
-		wire.NewSet(
-			wire.Value(yaml.Path("config.yml")),
-			yaml.NewConfig,
-		),
-		wire.NewSet(
-			yaml.NewModerators,
-			yaml.NewRateLimit,
-			yaml.NewAntispam,
-			yaml.NewForms,
-			yaml.NewArchiveCommand,
-			yaml.NewSolvedCommand,
-			yaml.NewCommands,
-		),
-	),
-	// infra/logger
-	logger.NewLogger,
-)
-
-var modules = wire.NewSet(
-	wire.NewSet(
-		wire.Struct(new(cron.Option), "*"),
-		cron.NewCron,
-	),
-)
-
 func InitializeApp() (*app.App, func(), error) {
-	panic(wire.Build(
+	panic(w.Build(
 		app.NewApp,
-		wire.NewSet(
+
+		// bot
+		w.NewSet(
 			bot.NewBot,
 			bot.ProvideSession,
 			session.ProvideSession,
-			botSet,
+			w.NewSet(
+				w.NewSet(antispam.NewAntispam, w.Struct(new(antispam.Options), "*")),
+				w.NewSet(auto_mod.NewAutoMod, w.Struct(new(auto_mod.Options), "*")),
+				w.NewSet(
+					commands.NewCommands, w.Struct(new(commands.Options), "*"),
+					w.NewSet(
+						archive.NewArchive,
+						credits.NewCredits,
+						dont_ping_mods.NewDontPingMods,
+						google_it.NewGoogleIt,
+						reference.NewReference,
+						solved.NewSolved,
+					),
+				),
+				w.NewSet(forms.NewForms, w.Struct(new(forms.Options), "*")),
+				w.NewSet(
+					w.NewSet(interaction.NewInteractionHandler, w.Struct(new(interaction.Options), "*")),
+					w.NewSet(handler.NewHandler, w.Struct(new(handler.Options), "*")),
+				),
+				w.NewSet(markdown.NewMarkdown, w.Struct(new(markdown.Options), "*")),
+				w.NewSet(moderators.NewModerators, w.Struct(new(moderators.Options), "*")),
+				w.NewSet(rate_limit.NewRateLimit, w.Struct(new(rate_limit.Options), "*")),
+				w.NewSet(status.NewStatus, w.Struct(new(status.Options), "*")),
+			),
 		),
-		infra,
-		modules,
+
+		// infra
+		w.NewSet(
+
+			// infra/config/env
+			w.NewSet(
+				env.NewStageConfig,
+				env.NewDiscordConfig,
+				env.ProvideGuildId,
+			),
+
+			// infra/config/yaml
+			w.NewSet(
+				w.NewSet(
+					w.Value(yaml.Path("config.yml")),
+					yaml.NewConfig,
+				),
+				w.NewSet(
+					yaml.NewModerators,
+					yaml.NewRateLimit,
+					yaml.NewAntispam,
+					yaml.NewForms,
+					yaml.NewArchiveCommand,
+					yaml.NewSolvedCommand,
+					yaml.NewCommands,
+				),
+			),
+
+			// infra/logger
+			logger.NewLogger,
+		),
+
+		// modules
+		w.NewSet(
+			w.NewSet(cron.NewCron, w.Struct(new(cron.Option), "*")),
+		),
 	))
 }

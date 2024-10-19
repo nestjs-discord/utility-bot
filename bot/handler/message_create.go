@@ -17,17 +17,17 @@ func (h *Handler) MessageCreate(s *discordgo.Session, i *discordgo.MessageCreate
 		slog.String("content", i.Message.Content),
 	)
 
-	if h.antispam.Enabled() {
-		h.antispam.Handler(s, i)
+	if h.opts.Antispam.Enabled() {
+		h.opts.Antispam.Handler(s, i)
 	}
 
-	if !h.moderators.IsUserModerator(i.Author.ID) {
+	if !h.opts.Moderators.IsUserModerator(i.Author.ID) {
 		return
 	}
 
 	switch i.Content {
 	case "!antispam":
-		h.antispam.TrackHandler(s, i)
+		h.opts.Antispam.TrackHandler(s, i)
 		return
 	case "!stats":
 		stats.Handler(s, i)

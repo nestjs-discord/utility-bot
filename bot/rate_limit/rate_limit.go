@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+type Options struct {
+	Cfg        yaml.RateLimit
+	Moderators *moderators.Moderators
+}
+
 // RateLimit is a thread-safe map-based implementation of a TTL (Time to Live) rate limiter
 // It allows you to track usage count for each key and automatically evict stale entries from the map.
 //
@@ -21,10 +26,9 @@ import (
 // The RateLimit instance created with New() will automatically evict entries that have not been accessed for more than
 // the specified TTL. This eviction process is done asynchronously by a goroutine.
 type RateLimit struct {
-	cfg        yaml.RateLimit
-	moderators *moderators.Moderators
-	m          map[string]*item // The underlying map that holds the key-value pairs
-	l          sync.Mutex       // The mutex used to synchronize access to the map
+	opts Options
+	m    map[string]*item // The underlying map that holds the key-value pairs
+	l    sync.Mutex       // The mutex used to synchronize access to the map
 }
 
 // item is a struct that represents a value in the map along with its creation timestamp
@@ -35,18 +39,17 @@ type item struct {
 
 // NewRateLimit returns a new RateLimit instance with a maximum TTL of maxTTL seconds.
 // The returned instance automatically evicts stale entries every second.
-func NewRateLimit(cfg yaml.RateLimit, moderators *moderators.Moderators) *RateLimit {
+func NewRateLimit(opts Options) *RateLimit {
 	r := &RateLimit{
-		cfg:        cfg,
-		moderators: moderators,
-		m:          make(map[string]*item),
+		opts: opts,
+		m:    make(map[string]*item),
 	}
 
 	go func() {
 		for now := range time.Tick(time.Second) {
 			r.l.Lock()
 			for k, v := range r.m {
-				if now.Unix()-v.createdTs > int64(cfg.TTLSec) {
+				if now.Unix()-v.createdTs > int64(opts.Cfg.TTLSec) {
 					delete(r.m, k)
 				}
 			}
@@ -88,15 +91,15 @@ func (r *RateLimit) GetUsageCount(k string) (v int) {
 }
 
 func (r *RateLimit) CheckRateLimit(userID string) bool {
-	if r.moderators.IsUserModerator(userID) {
+	if r.opts.Moderators.IsUserModerator(userID) {
 		return false
 	}
 
 	r.IncrementUsage(userID)
 
-	return r.GetUsageCount(userID) > r.cfg.MaxUsage
+	return r.GetUsageCount(userID) > r.opts.Cfg.MaxUsage
 }
 
 func (r *RateLimit) ForbidInteraction(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	respond.InteractionWithEphemeralMessage(s, i, r.cfg.Message)
+	respond.InteractionWithEphemeralMessage(s, i, r.opts.Cfg.Message)
 }

@@ -7,7 +7,6 @@
 package ioc
 
 import (
-	"github.com/google/wire"
 	"github.com/nestjs-discord/utility-bot/app"
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
@@ -72,7 +71,10 @@ func InitializeApp() (*app.App, func(), error) {
 		return nil, nil, err
 	}
 	yamlCommands := yaml.NewCommands(config)
-	markdownMarkdown := markdown.NewMarkdown(yamlCommands)
+	markdownOptions := markdown.Options{
+		Commands: yamlCommands,
+	}
+	markdownMarkdown := markdown.NewMarkdown(markdownOptions)
 	formsOptions := forms.Options{
 		Cfg:      yamlForms,
 		AutoMod:  autoMod,
@@ -85,13 +87,20 @@ func InitializeApp() (*app.App, func(), error) {
 		return nil, nil, err
 	}
 	yamlModerators := yaml.NewModerators(config)
-	moderatorsModerators, err := moderators.NewModerators(yamlModerators)
+	moderatorsOptions := moderators.Options{
+		EncodedUserIds: yamlModerators,
+	}
+	moderatorsModerators, err := moderators.NewModerators(moderatorsOptions)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	rateLimit := yaml.NewRateLimit(config)
-	rate_limitRateLimit := rate_limit.NewRateLimit(rateLimit, moderatorsModerators)
+	rate_limitOptions := rate_limit.Options{
+		Cfg:        rateLimit,
+		Moderators: moderatorsModerators,
+	}
+	rate_limitRateLimit := rate_limit.NewRateLimit(rate_limitOptions)
 	archiveCommand := yaml.NewArchiveCommand(config)
 	archiveArchive := archive.NewArchive(archiveCommand, moderatorsModerators)
 	creditsCredits := credits.NewCredits()
@@ -123,8 +132,18 @@ func InitializeApp() (*app.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	handlerHandler := handler.NewHandler(interactionHandler, antispamAntispam, formsForms, markdownMarkdown, moderatorsModerators)
-	statusStatus := status.NewStatus(discordgoSession)
+	handlerOptions := handler.Options{
+		InteractionHandler: interactionHandler,
+		Antispam:           antispamAntispam,
+		Forms:              formsForms,
+		Markdown:           markdownMarkdown,
+		Moderators:         moderatorsModerators,
+	}
+	handlerHandler := handler.NewHandler(handlerOptions)
+	statusOptions := status.Options{
+		Session: discordgoSession,
+	}
+	statusStatus := status.NewStatus(statusOptions)
 	option := cron.Option{
 		AutoMod: autoMod,
 		Status:  statusStatus,
@@ -161,17 +180,3 @@ func InitializeApp() (*app.App, func(), error) {
 var (
 	_wirePathValue = yaml.Path("config.yml")
 )
-
-// wire.go:
-
-var botSet = wire.NewSet(wire.NewSet(wire.Struct(new(antispam.Options), "*"), antispam.NewAntispam), wire.NewSet(wire.Struct(new(auto_mod.Options), "*"), auto_mod.NewAutoMod), wire.NewSet(
-	botCommands, wire.Struct(new(commands.Options), "*"), commands.NewCommands,
-), wire.NewSet(wire.Struct(new(forms.Options), "*"), forms.NewForms), wire.NewSet(wire.NewSet(wire.Struct(new(interaction.Options), "*"), interaction.NewInteractionHandler), handler.NewHandler), markdown.NewMarkdown, moderators.NewModerators, rate_limit.NewRateLimit, status.NewStatus,
-)
-
-var botCommands = wire.NewSet(archive.NewArchive, credits.NewCredits, dont_ping_mods.NewDontPingMods, google_it.NewGoogleIt, reference.NewReference, solved.NewSolved)
-
-var infra = wire.NewSet(wire.NewSet(env.NewStageConfig, env.NewDiscordConfig, env.ProvideGuildId), wire.NewSet(wire.NewSet(wire.Value(yaml.Path("config.yml")), yaml.NewConfig), wire.NewSet(yaml.NewModerators, yaml.NewRateLimit, yaml.NewAntispam, yaml.NewForms, yaml.NewArchiveCommand, yaml.NewSolvedCommand, yaml.NewCommands)), logger.NewLogger,
-)
-
-var modules = wire.NewSet(wire.NewSet(wire.Struct(new(cron.Option), "*"), cron.NewCron))
