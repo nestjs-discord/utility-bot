@@ -10,7 +10,6 @@ type Options struct {
 }
 
 type Moderators struct {
-	opts    Options
 	userIds []string
 }
 
