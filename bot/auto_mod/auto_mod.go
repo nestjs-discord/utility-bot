@@ -7,20 +7,23 @@ import (
 	"log/slog"
 )
 
+type Options struct {
+	Session *dgo.Session
+	GuildId env.GuildId
+}
+
 type AutoMod struct {
-	logger  *slog.Logger
-	session *dgo.Session
-	guildId env.GuildId
+	opts   Options
+	logger *slog.Logger
 
 	keywordFilter map[string]string
 	regexPatterns map[string]string
 }
 
-func NewAutoMod(session *dgo.Session, guildId env.GuildId) (*AutoMod, error) {
+func NewAutoMod(opts Options) (*AutoMod, error) {
 	a := &AutoMod{
-		logger:  logger.NewWithSubsystem("bot", "auto-mod"),
-		session: session,
-		guildId: guildId,
+		logger: logger.NewWithSubsystem("bot", "auto-mod"),
+		opts:   opts,
 	}
 
 	a.emptyCachedRules()

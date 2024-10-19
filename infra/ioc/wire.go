@@ -16,7 +16,6 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
-	"github.com/nestjs-discord/utility-bot/bot/cron"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
@@ -28,78 +27,93 @@ import (
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
+	"github.com/nestjs-discord/utility-bot/modules/cron"
 )
 
-func InitializeApp() (*app.App, func(), error) {
-	panic(wire.Build(
-		// infra/config/env
-		wire.NewSet(
-			env.NewStageConfig,
-			env.NewDiscordConfig,
-			env.ProvideGuildId,
-		),
-
-		logger.NewLogger,
-
-		// infra/config/yaml
-		wire.NewSet(
-			wire.NewSet(
-				wire.Value(yaml.Path("config.yml")),
-				yaml.NewConfig,
-			),
-			wire.NewSet(
-				yaml.NewModerators,
-				yaml.NewRateLimit,
-				yaml.NewAntispam,
-				yaml.NewForms,
-				yaml.NewArchiveCommand,
-				yaml.NewSolvedCommand,
-				yaml.NewCommands,
-			),
-		),
-
-		// bot features
+var botSet = wire.NewSet(
+	wire.NewSet(
+		wire.Struct(new(antispam.Options), "*"),
 		antispam.NewAntispam,
+	),
+	wire.NewSet(
+		wire.Struct(new(auto_mod.Options), "*"),
 		auto_mod.NewAutoMod,
-		markdown.NewMarkdown,
-		moderators.NewModerators,
-		rate_limit.NewRateLimit,
-		wire.NewSet(
-			wire.Struct(new(forms.Options), "*"),
-			forms.NewForms,
-		),
-		status.NewStatus,
-
-		// commands
-		archive.NewArchive,
-		credits.NewCredits,
-		reference.NewReference,
-		solved.NewSolved,
-		dont_ping_mods.NewDontPingMods,
-		google_it.NewGoogleIt,
-
+	),
+	wire.NewSet(
+		botCommands,
+		wire.Struct(new(commands.Options), "*"),
+		commands.NewCommands,
+	),
+	wire.NewSet(
+		wire.Struct(new(forms.Options), "*"),
+		forms.NewForms,
+	),
+	wire.NewSet(
 		wire.NewSet(
 			wire.Struct(new(interaction.Options), "*"),
 			interaction.NewInteractionHandler,
 		),
 		handler.NewHandler,
+	),
+	markdown.NewMarkdown,
+	moderators.NewModerators,
+	rate_limit.NewRateLimit,
+	status.NewStatus,
+)
 
+var botCommands = wire.NewSet(
+	archive.NewArchive,
+	credits.NewCredits,
+	dont_ping_mods.NewDontPingMods,
+	google_it.NewGoogleIt,
+	reference.NewReference,
+	solved.NewSolved,
+)
+
+var infra = wire.NewSet(
+	// infra/config/env
+	wire.NewSet(
+		env.NewStageConfig,
+		env.NewDiscordConfig,
+		env.ProvideGuildId,
+	),
+	// infra/config/yaml
+	wire.NewSet(
+		wire.NewSet(
+			wire.Value(yaml.Path("config.yml")),
+			yaml.NewConfig,
+		),
+		wire.NewSet(
+			yaml.NewModerators,
+			yaml.NewRateLimit,
+			yaml.NewAntispam,
+			yaml.NewForms,
+			yaml.NewArchiveCommand,
+			yaml.NewSolvedCommand,
+			yaml.NewCommands,
+		),
+	),
+	// infra/logger
+	logger.NewLogger,
+)
+
+var modules = wire.NewSet(
+	wire.NewSet(
+		wire.Struct(new(cron.Option), "*"),
+		cron.NewCron,
+	),
+)
+
+func InitializeApp() (*app.App, func(), error) {
+	panic(wire.Build(
+		app.NewApp,
 		wire.NewSet(
 			bot.NewBot,
 			bot.ProvideSession,
 			session.ProvideSession,
+			botSet,
 		),
-
-		wire.NewSet(
-			wire.Struct(new(commands.Options), "*"),
-			commands.NewCommands,
-		),
-
-		wire.NewSet(
-			wire.Struct(new(cron.Option), "*"),
-			cron.NewCron,
-		),
-
-		app.NewApp,
+		infra,
+		modules,
 	))
 }

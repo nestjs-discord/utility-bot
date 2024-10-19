@@ -14,6 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer cleanup()
 
 	err = application.Bot.Open()
 	if err != nil {
@@ -24,6 +25,4 @@ func main() {
 	signal.Notify(stop, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	<-stop
 	slog.Info("shutting down")
-	cleanup()
-	slog.Info("shutdown done")
 }

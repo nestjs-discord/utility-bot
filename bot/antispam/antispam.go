@@ -15,17 +15,21 @@ type (
 	userIdType string
 )
 
+type Options struct {
+	Cfg        yaml.Antispam
+	Moderators *moderators.Moderators
+}
+
 type Antispam struct {
+	opts       Options
 	logger     *slog.Logger
-	cfg        yaml.Antispam
 	sync       sync.RWMutex
 	userMap    map[userIdType]map[string]Message
 	denyTTL    time.Duration
 	deniedList *ristretto.Cache[string, bool]
-	moderators *moderators.Moderators
 }
 
-func NewAntispam(cfg yaml.Antispam, moderators *moderators.Moderators) (*Antispam, error) {
+func NewAntispam(opts Options) (*Antispam, error) {
 	cache, err := ristretto.NewCache(&ristretto.Config[string, bool]{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).
 		MaxCost:     1 << 30, // maximum cost of cache (1GB).
@@ -37,21 +41,20 @@ func NewAntispam(cfg yaml.Antispam, moderators *moderators.Moderators) (*Antispa
 
 	a := &Antispam{
 		logger:     logger.NewWithSubsystem("bot", "antispam"),
-		cfg:        cfg,
+		opts:       opts,
 		sync:       sync.RWMutex{},
 		userMap:    make(map[userIdType]map[string]Message),
-		denyTTL:    time.Duration(cfg.DenyTTLSec) * time.Second,
+		denyTTL:    time.Duration(opts.Cfg.DenyTTLSec) * time.Second,
 		deniedList: cache,
-		moderators: moderators,
 	}
 
-	go a.backgroundCleaner(cfg.MessageTTLSec)
+	go a.backgroundCleaner(opts.Cfg.MessageTTLSec)
 
 	return a, nil
 }
 
 func (a *Antispam) Enabled() bool {
-	return a.cfg.Enabled
+	return a.opts.Cfg.Enabled
 }
 
 func (a *Antispam) backgroundCleaner(ttl int) {
@@ -89,5 +92,5 @@ func (a *Antispam) getChannelsLengthByUserId(id userIdType) int {
 }
 
 func (a *Antispam) IsUserWithinMaxChannelsLimit(userId userIdType) bool {
-	return a.getChannelsLengthByUserId(userId) <= a.cfg.MaxChannelsPerUser
+	return a.getChannelsLengthByUserId(userId) <= a.opts.Cfg.MaxChannelsPerUser
 }

@@ -28,7 +28,7 @@ func NewCron(opts Option) (*Cron, func(), error) {
 
 	c := &Cron{
 		opts:      opts,
-		logger:    logger.NewWithSubsystem("bot", "cron"),
+		logger:    logger.NewWithSubsystem("modules", "cron"),
 		scheduler: s,
 	}
 

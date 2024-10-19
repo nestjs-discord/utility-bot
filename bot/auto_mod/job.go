@@ -12,7 +12,7 @@ func (a *AutoMod) ExecuteBackgroundJob() error {
 }
 
 func (a *AutoMod) syncRules() error {
-	rules, err := a.session.AutoModerationRules(a.guildId.String())
+	rules, err := a.opts.Session.AutoModerationRules(a.opts.GuildId.String())
 	if err != nil {
 		return err
 	}

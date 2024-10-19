@@ -96,8 +96,8 @@ func (a *Antispam) generateAlertEmbedDescription() string {
 	return fmt.Sprintf(
 		"Member exceeded channel limit `%d` within `%d` seconds."+"\n"+
 			"Added to the denied list for the next `%d` seconds.",
-		a.cfg.MaxChannelsPerUser,
-		a.cfg.MessageTTLSec,
-		a.cfg.DenyTTLSec,
+		a.opts.Cfg.MaxChannelsPerUser,
+		a.opts.Cfg.MessageTTLSec,
+		a.opts.Cfg.DenyTTLSec,
 	)
 }

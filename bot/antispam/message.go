@@ -84,7 +84,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	}
 
 	// Check if the author is a moderator; if true, skip further processing.
-	if a.cfg.ModeratorsBypass && a.moderators.IsUserModerator(i.Author.ID) {
+	if a.opts.Cfg.ModeratorsBypass && a.opts.Moderators.IsUserModerator(i.Author.ID) {
 		return
 	}
 
@@ -138,7 +138,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	// Add user to the denied list
 	a.AddUserToDeniedList(userId)
 
-	logChannelId := a.cfg.LogChannelId
+	logChannelId := a.opts.Cfg.LogChannelId
 	_, err = s.ChannelMessageSendComplex(logChannelId, a.GenerateAlertMessage(i))
 	if err != nil {
 		a.logger.Error("failed to alert moderators about the ongoing spam",
@@ -170,7 +170,7 @@ func (a *Antispam) Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 
 func (a *Antispam) TrackHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 	content := "### Antispam feature is tracking the following channels: 👇\n"
-	for _, channelId := range a.cfg.TrackedChannelIds {
+	for _, channelId := range a.opts.Cfg.TrackedChannelIds {
 		content += fmt.Sprintf("- <#%s>\n", channelId)
 	}
 

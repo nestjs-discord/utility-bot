@@ -7,6 +7,7 @@
 package ioc
 
 import (
+	"github.com/google/wire"
 	"github.com/nestjs-discord/utility-bot/app"
 	"github.com/nestjs-discord/utility-bot/bot"
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
@@ -18,7 +19,6 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/google_it"
 	"github.com/nestjs-discord/utility-bot/bot/commands/reference"
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
-	"github.com/nestjs-discord/utility-bot/bot/cron"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
@@ -30,6 +30,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
+	"github.com/nestjs-discord/utility-bot/modules/cron"
 )
 
 // Injectors from wire.go:
@@ -61,20 +62,24 @@ func InitializeApp() (*app.App, func(), error) {
 	yamlForms := yaml.NewForms(config)
 	discordgoSession := session.ProvideSession(sessionSession)
 	guildId := env.ProvideGuildId(discordConfig)
-	autoMod, err := auto_mod.NewAutoMod(discordgoSession, guildId)
+	options := auto_mod.Options{
+		Session: discordgoSession,
+		GuildId: guildId,
+	}
+	autoMod, err := auto_mod.NewAutoMod(options)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	yamlCommands := yaml.NewCommands(config)
 	markdownMarkdown := markdown.NewMarkdown(yamlCommands)
-	options := forms.Options{
+	formsOptions := forms.Options{
 		Cfg:      yamlForms,
 		AutoMod:  autoMod,
 		Markdown: markdownMarkdown,
 		Session:  discordgoSession,
 	}
-	formsForms, err := forms.NewForms(options)
+	formsForms, err := forms.NewForms(formsOptions)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -109,7 +114,11 @@ func InitializeApp() (*app.App, func(), error) {
 	}
 	interactionHandler := interaction.NewInteractionHandler(interactionOptions)
 	yamlAntispam := yaml.NewAntispam(config)
-	antispamAntispam, err := antispam.NewAntispam(yamlAntispam, moderatorsModerators)
+	antispamOptions := antispam.Options{
+		Cfg:        yamlAntispam,
+		Moderators: moderatorsModerators,
+	}
+	antispamAntispam, err := antispam.NewAntispam(antispamOptions)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -152,3 +161,17 @@ func InitializeApp() (*app.App, func(), error) {
 var (
 	_wirePathValue = yaml.Path("config.yml")
 )
+
+// wire.go:
+
+var botSet = wire.NewSet(wire.NewSet(wire.Struct(new(antispam.Options), "*"), antispam.NewAntispam), wire.NewSet(wire.Struct(new(auto_mod.Options), "*"), auto_mod.NewAutoMod), wire.NewSet(
+	botCommands, wire.Struct(new(commands.Options), "*"), commands.NewCommands,
+), wire.NewSet(wire.Struct(new(forms.Options), "*"), forms.NewForms), wire.NewSet(wire.NewSet(wire.Struct(new(interaction.Options), "*"), interaction.NewInteractionHandler), handler.NewHandler), markdown.NewMarkdown, moderators.NewModerators, rate_limit.NewRateLimit, status.NewStatus,
+)
+
+var botCommands = wire.NewSet(archive.NewArchive, credits.NewCredits, dont_ping_mods.NewDontPingMods, google_it.NewGoogleIt, reference.NewReference, solved.NewSolved)
+
+var infra = wire.NewSet(wire.NewSet(env.NewStageConfig, env.NewDiscordConfig, env.ProvideGuildId), wire.NewSet(wire.NewSet(wire.Value(yaml.Path("config.yml")), yaml.NewConfig), wire.NewSet(yaml.NewModerators, yaml.NewRateLimit, yaml.NewAntispam, yaml.NewForms, yaml.NewArchiveCommand, yaml.NewSolvedCommand, yaml.NewCommands)), logger.NewLogger,
+)
+
+var modules = wire.NewSet(wire.NewSet(wire.Struct(new(cron.Option), "*"), cron.NewCron))
