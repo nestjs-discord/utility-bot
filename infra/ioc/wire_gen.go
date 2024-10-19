@@ -170,7 +170,14 @@ func InitializeApp() (*app.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	appApp := app.NewApp(botBot, sessionSession, handlerHandler, cronCron, commandsCommands)
+	appOptions := app.Options{
+		Bot:      botBot,
+		Session:  sessionSession,
+		Handler:  handlerHandler,
+		Cron:     cronCron,
+		Commands: commandsCommands,
+	}
+	appApp := app.NewApp(appOptions)
 	return appApp, func() {
 		cleanup2()
 		cleanup()

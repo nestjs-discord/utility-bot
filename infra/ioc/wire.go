@@ -32,7 +32,7 @@ import (
 
 func InitializeApp() (*app.App, func(), error) {
 	panic(w.Build(
-		app.NewApp,
+		w.NewSet(app.NewApp, w.Struct(new(app.Options), "*")),
 
 		// bot
 		w.NewSet(

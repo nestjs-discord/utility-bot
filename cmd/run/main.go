@@ -16,7 +16,7 @@ func main() {
 	}
 	defer cleanup()
 
-	err = application.Bot.Open()
+	err = application.Opts.Bot.Open()
 	if err != nil {
 		log.Fatalf("bot open failed: %v", err)
 	}

@@ -8,20 +8,22 @@ import (
 	"github.com/nestjs-discord/utility-bot/modules/cron"
 )
 
-type App struct {
-	Bot *bot.Bot
+type Options struct {
+	Bot      *bot.Bot
+	Session  *session.Session
+	Handler  *handler.Handler
+	Cron     *cron.Cron
+	Commands *commands.Commands
 }
 
-func NewApp(
-	b *bot.Bot,
-	s *session.Session,
-	h *handler.Handler,
-	c *cron.Cron,
-	_ *commands.Commands,
-) *App {
-	s.ApplyHandler(h)
-	c.Start()
+type App struct {
+	Opts Options
+}
+
+func NewApp(opts Options) *App {
+	opts.Session.ApplyHandler(opts.Handler)
+	opts.Cron.Start()
 	return &App{
-		Bot: b,
+		Opts: opts,
 	}
 }

@@ -10,12 +10,14 @@ import (
 
 func TestTTLMap(t *testing.T) {
 	// Create a new TTLMap with maxTTL 1 second
-	m := rl.NewRateLimit(
-		yaml.RateLimit{
+	opts := rl.Options{
+		Cfg: yaml.RateLimit{
 			TTLSec: 1,
 		},
-		nil,
-	)
+		Moderators: nil,
+	}
+
+	m := rl.NewRateLimit(opts)
 
 	// Test IncrementUsage and Get methods
 	m.IncrementUsage("key1")
