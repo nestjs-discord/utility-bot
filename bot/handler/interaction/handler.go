@@ -30,7 +30,7 @@ type Handler struct {
 	dontPingMods *dont_ping_mods.DontPingMods
 }
 
-func NewHandler(
+func NewInteractionHandler(
 	forms *forms.Forms,
 	moderators *moderators.Moderators,
 	rateLimit *rate_limit.RateLimit,

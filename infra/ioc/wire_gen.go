@@ -43,7 +43,7 @@ func InitializeApp() (*app.App, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	loggerLogger, err := logger.Initialize(stage)
+	loggerLogger, err := logger.NewLogger(stage)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -82,14 +82,14 @@ func InitializeApp() (*app.App, func(), error) {
 	rateLimit := yaml.NewRateLimit(config)
 	rate_limitRateLimit := rate_limit.NewRateLimit(rateLimit, moderatorsModerators)
 	archiveCommand := yaml.NewArchiveCommand(config)
-	archiveArchive := archive.New(archiveCommand, moderatorsModerators)
+	archiveArchive := archive.NewArchive(archiveCommand, moderatorsModerators)
 	creditsCredits := credits.NewCredits()
 	googleIt := google_it.NewGoogleIt()
-	referenceReference := reference.New()
+	referenceReference := reference.NewReference()
 	solvedCommand := yaml.NewSolvedCommand(config)
-	solvedSolved := solved.New(solvedCommand, moderatorsModerators)
+	solvedSolved := solved.NewSolved(solvedCommand, moderatorsModerators)
 	dontPingMods := dont_ping_mods.NewDontPingMods(moderatorsModerators)
-	interactionHandler := interaction.NewHandler(formsForms, moderatorsModerators, rate_limitRateLimit, markdownMarkdown, archiveArchive, creditsCredits, googleIt, referenceReference, solvedSolved, dontPingMods)
+	interactionHandler := interaction.NewInteractionHandler(formsForms, moderatorsModerators, rate_limitRateLimit, markdownMarkdown, archiveArchive, creditsCredits, googleIt, referenceReference, solvedSolved, dontPingMods)
 	yamlAntispam := yaml.NewAntispam(config)
 	antispamAntispam, err := antispam.NewAntispam(yamlAntispam, moderatorsModerators)
 	if err != nil {

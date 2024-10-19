@@ -11,7 +11,7 @@ const QueryOption = "query"
 
 type Reference struct{}
 
-func New() *Reference {
+func NewReference() *Reference {
 	return &Reference{}
 }
 

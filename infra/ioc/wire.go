@@ -39,7 +39,7 @@ func InitializeApp() (*app.App, func(), error) {
 			env.ProvideGuildId,
 		),
 
-		logger.Initialize,
+		logger.NewLogger,
 
 		// infra/config/yaml
 		wire.NewSet(
@@ -68,14 +68,14 @@ func InitializeApp() (*app.App, func(), error) {
 		status.NewStatus,
 
 		// commands
-		archive.New,
+		archive.NewArchive,
 		credits.NewCredits,
-		reference.New,
-		solved.New,
+		reference.NewReference,
+		solved.NewSolved,
 		dont_ping_mods.NewDontPingMods,
 		google_it.NewGoogleIt,
 
-		interaction.NewHandler,
+		interaction.NewInteractionHandler,
 		handler.NewHandler,
 
 		wire.NewSet(

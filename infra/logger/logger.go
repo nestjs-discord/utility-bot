@@ -22,7 +22,7 @@ func NewWithSubsystem(s ...string) *slog.Logger {
 	)
 }
 
-func Initialize(stageCfg env.Stage) (*Logger, error) {
+func NewLogger(stageCfg env.Stage) (*Logger, error) {
 	l := &Logger{}
 	switch stageCfg {
 	case env.StageProd:

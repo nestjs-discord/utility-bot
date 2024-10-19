@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	_, err := logger.Initialize(env.StageDev)
+	_, err := logger.NewLogger(env.StageDev)
 	if err != nil {
 		log.Fatal(err)
 	}

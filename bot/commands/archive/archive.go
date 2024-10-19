@@ -19,7 +19,7 @@ type Archive struct {
 	moderators *moderators.Moderators
 }
 
-func New(cfg yaml.ArchiveCommand, moderators *moderators.Moderators) *Archive {
+func NewArchive(cfg yaml.ArchiveCommand, moderators *moderators.Moderators) *Archive {
 	return &Archive{
 		logger:     logger.NewWithSubsystem("bot", "commands", "archive"),
 		cfg:        cfg,

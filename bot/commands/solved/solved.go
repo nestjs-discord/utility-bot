@@ -22,7 +22,7 @@ type Solved struct {
 	moderators *moderators.Moderators
 }
 
-func New(cfg yaml.SolvedCommand, moderators *moderators.Moderators) *Solved {
+func NewSolved(cfg yaml.SolvedCommand, moderators *moderators.Moderators) *Solved {
 	return &Solved{
 		logger:     logger.NewWithSubsystem("bot", "commands", "solved"),
 		cfg:        cfg,

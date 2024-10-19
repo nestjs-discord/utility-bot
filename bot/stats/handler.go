@@ -18,19 +18,19 @@ func Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		Type: discordgo.EmbedTypeRich,
 		Fields: []*discordgo.MessageEmbedField{
 			{
-				Name:  "Total allocated memory for heap objects",
+				Name:  "Total allocated memory (ever allocated for heap objects)",
 				Value: formatBytes(m.TotalAlloc),
 			},
 			{
-				Name:  "Total memory obtained from the OS",
+				Name:  "Total memory obtained from the OS (includes heap, stack, etc.)",
 				Value: formatBytes(m.Sys),
 			},
 			{
-				Name:  "Allocated heap objects",
+				Name:  "Currently allocated heap memory",
 				Value: formatBytes(m.Alloc),
 			},
 			{
-				Name:  "Heap memory reserved but not allocated",
+				Name:  "Heap memory reserved but not currently used",
 				Value: formatBytes(m.HeapIdle),
 			},
 			{
@@ -42,7 +42,7 @@ func Handler(s *discordgo.Session, i *discordgo.MessageCreate) {
 				Value: formatBytes(m.StackInuse),
 			},
 			{
-				Name:  "Memory obtained from system via mmap",
+				Name:  "Memory obtained from system via mmap (span and cache)",
 				Value: formatBytes(m.MSpanSys + m.MCacheSys),
 			},
 			{
