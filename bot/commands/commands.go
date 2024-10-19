@@ -19,9 +19,10 @@ import (
 )
 
 type Options struct {
+	Stage        env.Stage
+	Commands     yaml.Commands
 	Session      *dgo.Session
 	DiscordCfg   *env.DiscordConfig
-	Commands     yaml.Commands
 	Archive      *archive.Archive
 	Credits      *credits.Credits
 	DontPingMods *dont_ping_mods.DontPingMods
@@ -50,7 +51,7 @@ func NewCommands(opts Options) (*Commands, error) {
 		opts.Solved.Command(),
 	}
 
-	err := c.registerApplicationCommands(staticCommands, opts.Commands)
+	err := c.registerApplicationCommands(staticCommands)
 	if err != nil {
 		return nil, err
 	}
@@ -58,19 +59,20 @@ func NewCommands(opts Options) (*Commands, error) {
 	return c, nil
 }
 
-var (
-	defaultOptions = []*dgo.ApplicationCommandOption{ // TODO: can this be removed?
-		common.TargetOption,
-		common.HideOption,
-	}
-)
-
 // TODO: refactor this file
 
 type subCommandsType = map[string]yaml.Commands
 
-func (c *Commands) registerApplicationCommands(staticCommands []*dgo.ApplicationCommand, cfgCommands yaml.Commands) error { // TODO: make this a private method
-	normalCmd, subCmd := c.generateCommandsToRegister(cfgCommands)
+func (c *Commands) guildId() string {
+	if c.opts.Stage == env.StageProd {
+		return "" // register as global commands
+	}
+	// register as guild commands
+	return c.opts.DiscordCfg.GuildId.String()
+}
+
+func (c *Commands) registerApplicationCommands(staticCommands []*dgo.ApplicationCommand) error {
+	normalCmd, subCmd := c.generateCommandsToRegister(c.opts.Commands)
 
 	commands := staticCommands // TODO: refactor
 
@@ -79,7 +81,7 @@ func (c *Commands) registerApplicationCommands(staticCommands []*dgo.Application
 
 	_, err := c.opts.Session.ApplicationCommandBulkOverwrite(
 		c.opts.DiscordCfg.AppId,
-		c.opts.DiscordCfg.GuildId.String(), // TODO: can we globally register the commands instead? (on production only)
+		c.guildId(),
 		commands,
 	)
 	if err != nil {
@@ -100,13 +102,20 @@ func (c *Commands) generateDynamicCommands(normalCommands yaml.Commands) (comman
 			Name:                     k,
 			Description:              v.Description,
 			DefaultMemberPermissions: &perm,
-			Options:                  defaultOptions,
+			Options:                  c.getDefaultOptions(),
 		}
 
 		commands = append(commands, cmd)
 	}
 
 	return
+}
+
+func (c *Commands) getDefaultOptions() []*dgo.ApplicationCommandOption {
+	return []*dgo.ApplicationCommandOption{
+		common.TargetOption,
+		common.HideOption,
+	}
 }
 
 func (c *Commands) generateDynamicSubcommands(subCommands subCommandsType) (commands []*dgo.ApplicationCommand) {
@@ -123,7 +132,7 @@ func (c *Commands) generateDynamicSubcommands(subCommands subCommandsType) (comm
 				Type:        dgo.ApplicationCommandOptionSubCommand,
 				Name:        s,
 				Description: sd.Description,
-				Options:     defaultOptions,
+				Options:     c.getDefaultOptions(),
 			})
 		}
 

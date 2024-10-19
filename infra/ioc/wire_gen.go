@@ -158,9 +158,10 @@ func InitializeApp() (*app.App, func(), error) {
 		return nil, nil, err
 	}
 	commandsOptions := commands.Options{
+		Stage:        stage,
+		Commands:     yamlCommands,
 		Session:      discordgoSession,
 		DiscordCfg:   discordConfig,
-		Commands:     yamlCommands,
 		Archive:      archiveArchive,
 		Credits:      creditsCredits,
 		DontPingMods: dontPingMods,
