@@ -10,13 +10,17 @@ import (
 	"sync"
 )
 
+type Options struct {
+	Cfg      yaml.Forms
+	AutoMod  *auto_mod.AutoMod
+	Markdown *markdown.Markdown
+	Session  *dgo.Session
+}
+
 type Forms struct {
-	cfg             yaml.Forms
-	autoMod         *auto_mod.AutoMod
-	markdown        *markdown.Markdown
+	opts            Options
 	modActionsCache *ristretto.Cache[string, bool]
 	modActionLock   sync.RWMutex
-	session         *dgo.Session
 }
 
 type userInputType struct {
@@ -26,17 +30,10 @@ type userInputType struct {
 	AutoModCheck error
 }
 
-func NewForms(cfg yaml.Forms,
-	autoMod *auto_mod.AutoMod,
-	markdown *markdown.Markdown,
-	session *dgo.Session,
-) (*Forms, error) {
+func NewForms(opts Options) (*Forms, error) {
 	f := &Forms{
-		cfg:           cfg,
-		autoMod:       autoMod,
-		markdown:      markdown,
+		opts:          opts,
 		modActionLock: sync.RWMutex{},
-		session:       session,
 	}
 
 	err := f.initCacheInstance()
@@ -58,7 +55,7 @@ func (f *Forms) lastChannelMessage(channelId string) (*dgo.Message, error) {
 	afterId := ""
 	aroundId := ""
 
-	messages, err := f.session.ChannelMessages(channelId, limit, beforeId, afterId, aroundId)
+	messages, err := f.opts.Session.ChannelMessages(channelId, limit, beforeId, afterId, aroundId)
 	if err != nil {
 		return nil, fmt.Errorf("unable to get channel messages: %s", err)
 	}
@@ -71,7 +68,7 @@ func (f *Forms) lastChannelMessage(channelId string) (*dgo.Message, error) {
 }
 
 func (f *Forms) synchronizeOpenModalButtons() error {
-	for formId, form := range f.cfg {
+	for formId, form := range f.opts.Cfg {
 		message, err := f.lastChannelMessage(form.ChannelId)
 		if err != nil {
 			return err
@@ -94,7 +91,7 @@ func (f *Forms) synchronizeOpenModalButtons() error {
 }
 
 func (f *Forms) getFormById(id string) (*yaml.Form, error) {
-	form, ok := f.cfg[id]
+	form, ok := f.opts.Cfg[id]
 	if !ok {
 		return nil, fmt.Errorf("form '%s' not found", id)
 	}

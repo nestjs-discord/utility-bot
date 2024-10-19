@@ -68,7 +68,13 @@ func InitializeApp() (*app.App, func(), error) {
 	}
 	yamlCommands := yaml.NewCommands(config)
 	markdownMarkdown := markdown.NewMarkdown(yamlCommands)
-	formsForms, err := forms.NewForms(yamlForms, autoMod, markdownMarkdown, discordgoSession)
+	options := forms.Options{
+		Cfg:      yamlForms,
+		AutoMod:  autoMod,
+		Markdown: markdownMarkdown,
+		Session:  discordgoSession,
+	}
+	formsForms, err := forms.NewForms(options)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -89,7 +95,19 @@ func InitializeApp() (*app.App, func(), error) {
 	solvedCommand := yaml.NewSolvedCommand(config)
 	solvedSolved := solved.NewSolved(solvedCommand, moderatorsModerators)
 	dontPingMods := dont_ping_mods.NewDontPingMods(moderatorsModerators)
-	interactionHandler := interaction.NewInteractionHandler(formsForms, moderatorsModerators, rate_limitRateLimit, markdownMarkdown, archiveArchive, creditsCredits, googleIt, referenceReference, solvedSolved, dontPingMods)
+	interactionOptions := interaction.Options{
+		Forms:        formsForms,
+		Moderators:   moderatorsModerators,
+		RateLimit:    rate_limitRateLimit,
+		Markdown:     markdownMarkdown,
+		Archive:      archiveArchive,
+		Credits:      creditsCredits,
+		GoogleIt:     googleIt,
+		Reference:    referenceReference,
+		Solved:       solvedSolved,
+		DontPingMods: dontPingMods,
+	}
+	interactionHandler := interaction.NewInteractionHandler(interactionOptions)
 	yamlAntispam := yaml.NewAntispam(config)
 	antispamAntispam, err := antispam.NewAntispam(yamlAntispam, moderatorsModerators)
 	if err != nil {
@@ -107,7 +125,18 @@ func InitializeApp() (*app.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	commandsCommands, err := commands.NewCommands(discordgoSession, discordConfig, yamlCommands, archiveArchive, creditsCredits, dontPingMods, googleIt, referenceReference, solvedSolved)
+	commandsOptions := commands.Options{
+		Session:      discordgoSession,
+		DiscordCfg:   discordConfig,
+		Commands:     yamlCommands,
+		Archive:      archiveArchive,
+		Credits:      creditsCredits,
+		DontPingMods: dontPingMods,
+		GoogleIt:     googleIt,
+		Reference:    referenceReference,
+		Solved:       solvedSolved,
+	}
+	commandsCommands, err := commands.NewCommands(commandsOptions)
 	if err != nil {
 		cleanup2()
 		cleanup()

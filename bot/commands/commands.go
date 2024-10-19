@@ -18,39 +18,39 @@ import (
 	"strings"
 )
 
-type Commands struct {
-	logger     *slog.Logger
-	discordCfg *env.DiscordConfig
-	session    *dgo.Session
+type Options struct {
+	Session      *dgo.Session
+	DiscordCfg   *env.DiscordConfig
+	Commands     yaml.Commands
+	Archive      *archive.Archive
+	Credits      *credits.Credits
+	DontPingMods *dont_ping_mods.DontPingMods
+	GoogleIt     *google_it.GoogleIt
+	Reference    *reference.Reference
+	Solved       *solved.Solved
 }
 
-func NewCommands(
-	session *dgo.Session,
-	discordCfg *env.DiscordConfig,
-	commands yaml.Commands,
-	archive *archive.Archive,
-	credits *credits.Credits,
-	dontPingMods *dont_ping_mods.DontPingMods,
-	googleIt *google_it.GoogleIt,
-	reference *reference.Reference,
-	solved *solved.Solved,
-) (*Commands, error) {
+type Commands struct {
+	logger *slog.Logger
+	opts   Options
+}
+
+func NewCommands(opts Options) (*Commands, error) {
 	c := &Commands{
-		logger:     logger.NewWithSubsystem("bot", "commands"),
-		discordCfg: discordCfg,
-		session:    session,
+		logger: logger.NewWithSubsystem("bot", "commands"),
+		opts:   opts,
 	}
 
 	staticCommands := []*dgo.ApplicationCommand{
-		archive.Command(),
-		dontPingMods.Command(),
-		credits.Command(),
-		googleIt.Command(),
-		reference.Command(),
-		solved.Command(),
+		opts.Archive.Command(),
+		opts.DontPingMods.Command(),
+		opts.Credits.Command(),
+		opts.GoogleIt.Command(),
+		opts.Reference.Command(),
+		opts.Solved.Command(),
 	}
 
-	err := c.registerApplicationCommands(staticCommands, commands)
+	err := c.registerApplicationCommands(staticCommands, opts.Commands)
 	if err != nil {
 		return nil, err
 	}
@@ -77,9 +77,9 @@ func (c *Commands) registerApplicationCommands(staticCommands []*dgo.Application
 	commands = append(commands, c.generateDynamicCommands(normalCmd)...)
 	commands = append(commands, c.generateDynamicSubcommands(subCmd)...)
 
-	_, err := c.session.ApplicationCommandBulkOverwrite(
-		c.discordCfg.AppId,
-		c.discordCfg.GuildId.String(), // TODO: can we globally register the commands instead? (on production only)
+	_, err := c.opts.Session.ApplicationCommandBulkOverwrite(
+		c.opts.DiscordCfg.AppId,
+		c.opts.DiscordCfg.GuildId.String(), // TODO: can we globally register the commands instead? (on production only)
 		commands,
 	)
 	if err != nil {

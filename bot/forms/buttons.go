@@ -66,7 +66,7 @@ func (f *Forms) sendOpenModalMessage(channelId string, formId string, openModalM
 		Components: []discordgo.MessageComponent{row},
 	}
 
-	_, err = f.session.ChannelMessageSendComplex(channelId, messageData)
+	_, err = f.opts.Session.ChannelMessageSendComplex(channelId, messageData)
 
 	return err
 }

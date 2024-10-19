@@ -30,11 +30,11 @@ func (h *Handler) MessageComponent(s *dgo.Session, i *dgo.InteractionCreate) {
 	}
 
 	messageComponentHandlers := messageComponentHandlersMap{
-		forms.OpenModalButton:            h.forms.ModalOpenButtonClicked,
-		forms.ModeratorAcceptButton:      h.forms.ModAcceptButtonClicked,
-		forms.ModeratorRejectButton:      h.forms.ModRejectButtonClicked,
-		forms.ModeratorBanButton:         h.forms.ModBanButtonClicked,
-		markdown.AcknowledgeButtonAction: h.markdown.AcknowledgeButtonClicked,
+		forms.OpenModalButton:            h.opts.Forms.ModalOpenButtonClicked,
+		forms.ModeratorAcceptButton:      h.opts.Forms.ModAcceptButtonClicked,
+		forms.ModeratorRejectButton:      h.opts.Forms.ModRejectButtonClicked,
+		forms.ModeratorBanButton:         h.opts.Forms.ModBanButtonClicked,
+		markdown.AcknowledgeButtonAction: h.opts.Markdown.AcknowledgeButtonClicked,
 	}
 
 	handler, ok := messageComponentHandlers[customId.Action]

@@ -16,43 +16,27 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
 )
 
-type Handler struct {
-	logger       *slog.Logger
-	forms        *forms.Forms
-	moderators   *moderators.Moderators
-	rateLimit    *rate_limit.RateLimit
-	markdown     *markdown.Markdown
-	archive      *archive.Archive
-	credits      *credits.Credits
-	googleIt     *google_it.GoogleIt
-	reference    *reference.Reference
-	solved       *solved.Solved
-	dontPingMods *dont_ping_mods.DontPingMods
+type Options struct {
+	Forms        *forms.Forms
+	Moderators   *moderators.Moderators
+	RateLimit    *rate_limit.RateLimit
+	Markdown     *markdown.Markdown
+	Archive      *archive.Archive
+	Credits      *credits.Credits
+	GoogleIt     *google_it.GoogleIt
+	Reference    *reference.Reference
+	Solved       *solved.Solved
+	DontPingMods *dont_ping_mods.DontPingMods
 }
 
-func NewInteractionHandler(
-	forms *forms.Forms,
-	moderators *moderators.Moderators,
-	rateLimit *rate_limit.RateLimit,
-	markdown *markdown.Markdown,
-	archive *archive.Archive,
-	credits *credits.Credits,
-	googleIt *google_it.GoogleIt,
-	reference *reference.Reference,
-	solved *solved.Solved,
-	dontPingMods *dont_ping_mods.DontPingMods,
-) *Handler {
+type Handler struct {
+	logger *slog.Logger
+	opts   Options
+}
+
+func NewInteractionHandler(opts Options) *Handler {
 	return &Handler{
-		logger:       logger.NewWithSubsystem("bot", "handler", "interaction"),
-		forms:        forms,
-		moderators:   moderators,
-		rateLimit:    rateLimit,
-		markdown:     markdown,
-		archive:      archive,
-		credits:      credits,
-		googleIt:     googleIt,
-		reference:    reference,
-		solved:       solved,
-		dontPingMods: dontPingMods,
+		logger: logger.NewWithSubsystem("bot", "handler", "interaction"),
+		opts:   opts,
 	}
 }

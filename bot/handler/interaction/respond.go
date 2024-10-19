@@ -23,7 +23,7 @@ func (h *Handler) respondError(err error, s *dgo.Session, i *dgo.InteractionCrea
 	)
 
 	content := "Something went wrong."
-	if h.moderators.IsUserModerator(i.Member.User.ID) {
+	if h.opts.Moderators.IsUserModerator(i.Member.User.ID) {
 		content += fmt.Sprintf("\nHere's the internal error message: 🪲\n```\n%s\n```", err.Error())
 	}
 

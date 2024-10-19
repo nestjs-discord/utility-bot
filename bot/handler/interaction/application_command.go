@@ -25,18 +25,18 @@ func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 		slog.String("name", data.Name),
 	)
 
-	if h.rateLimit.CheckRateLimit(userID) {
-		h.rateLimit.ForbidInteraction(s, i)
+	if h.opts.RateLimit.CheckRateLimit(userID) {
+		h.opts.RateLimit.ForbidInteraction(s, i)
 		return
 	}
 
 	staticHandlers := applicationCommandHandlersMap{
-		archive.Name:        h.archive.Handler,
-		credits.Name:        h.credits.Handler,
-		dont_ping_mods.Name: h.dontPingMods.Handler,
-		google_it.Name:      h.googleIt.Handler,
-		reference.Name:      h.reference.Handler,
-		solved.Name:         h.solved.Handler,
+		archive.Name:        h.opts.Archive.Handler,
+		credits.Name:        h.opts.Credits.Handler,
+		dont_ping_mods.Name: h.opts.DontPingMods.Handler,
+		google_it.Name:      h.opts.GoogleIt.Handler,
+		reference.Name:      h.opts.Reference.Handler,
+		solved.Name:         h.opts.Solved.Handler,
 		// ...
 	}
 
@@ -50,7 +50,7 @@ func (h *Handler) ApplicationCommand(s *dgo.Session, i *dgo.InteractionCreate) {
 
 	// content handling should happen always at the end
 	// because it automatically responds to the interaction
-	err := h.markdown.ContentHandler(s, i)
+	err := h.opts.Markdown.ContentHandler(s, i)
 	if err != nil {
 		h.respondError(err, s, i)
 	}

@@ -64,7 +64,10 @@ func InitializeApp() (*app.App, func(), error) {
 		markdown.NewMarkdown,
 		moderators.NewModerators,
 		rate_limit.NewRateLimit,
-		forms.NewForms,
+		wire.NewSet(
+			wire.Struct(new(forms.Options), "*"),
+			forms.NewForms,
+		),
 		status.NewStatus,
 
 		// commands
@@ -75,7 +78,10 @@ func InitializeApp() (*app.App, func(), error) {
 		dont_ping_mods.NewDontPingMods,
 		google_it.NewGoogleIt,
 
-		interaction.NewInteractionHandler,
+		wire.NewSet(
+			wire.Struct(new(interaction.Options), "*"),
+			interaction.NewInteractionHandler,
+		),
 		handler.NewHandler,
 
 		wire.NewSet(
@@ -84,7 +90,10 @@ func InitializeApp() (*app.App, func(), error) {
 			session.ProvideSession,
 		),
 
-		commands.NewCommands,
+		wire.NewSet(
+			wire.Struct(new(commands.Options), "*"),
+			commands.NewCommands,
+		),
 
 		wire.NewSet(
 			wire.Struct(new(cron.Option), "*"),

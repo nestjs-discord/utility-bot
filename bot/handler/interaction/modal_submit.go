@@ -28,12 +28,12 @@ func (h *Handler) ModalSubmit(s *discordgo.Session, i *discordgo.InteractionCrea
 
 	switch customId.Action {
 	case forms.Modal:
-		err = h.forms.ModalSubmitted(s, i, customId)
+		err = h.opts.Forms.ModalSubmitted(s, i, customId)
 		if err != nil {
 			h.respondError(err, s, i)
 		}
 	case forms.ModeratorBanConfirmModal:
-		err = h.forms.ModBanModalSubmit(s, i, customId)
+		err = h.opts.Forms.ModBanModalSubmit(s, i, customId)
 		if err != nil {
 			h.respondError(err, s, i)
 		}

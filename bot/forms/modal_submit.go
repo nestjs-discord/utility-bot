@@ -44,12 +44,12 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 				break
 			}
 
-			userInput := strings.TrimSpace(child.Value)                // basic space trim
-			userInput = strings.ReplaceAll(userInput, "\n\n", "\n")    // remove double next lines
-			userInput = strings.ReplaceAll(userInput, "\t", " ")       // replace the tab character
-			userInput = strings.ReplaceAll(userInput, "  ", " ")       // remove double spaces
-			userInput = gomoji.RemoveEmojis(userInput)                 // we don't want emojis
-			userInput = f.markdown.ConvertLinksToHyperlinks(userInput) // improves embed visualization
+			userInput := strings.TrimSpace(child.Value)                     // basic space trim
+			userInput = strings.ReplaceAll(userInput, "\n\n", "\n")         // remove double next lines
+			userInput = strings.ReplaceAll(userInput, "\t", " ")            // replace the tab character
+			userInput = strings.ReplaceAll(userInput, "  ", " ")            // remove double spaces
+			userInput = gomoji.RemoveEmojis(userInput)                      // we don't want emojis
+			userInput = f.opts.Markdown.ConvertLinksToHyperlinks(userInput) // improves embed visualization
 			userInput = security.RemoveDangerousMentions(userInput)
 
 			if userInput == "" {
@@ -65,7 +65,7 @@ func (f *Forms) ModalSubmitted(s *dgo.Session, i *dgo.InteractionCreate, customI
 				InputId:      inputId,
 				InputLabel:   inputLabel,
 				InputValue:   userInput,
-				AutoModCheck: f.autoMod.ValidateUserInputAgainstServerRules(userInput),
+				AutoModCheck: f.opts.AutoMod.ValidateUserInputAgainstServerRules(userInput),
 			})
 		}
 	}
