@@ -28,8 +28,7 @@ rateLimit: # only applies to the application commands
 
 antispam: # flags the users who spam messages on multiple channels in a short timeframe.
   enabled: true
-  # TODO: migrate to the "auto mod messages" channel
-  logChannelId: "918987870197395577" # prod: 918987870197395577 | dev: 1173297424211648512
+  logChannelId: "1028324313180413982" # prod: 1028324313180413982 | dev: 1173297424211648512
   moderatorsBypass: true
   messageTTLSec: 60 # how long the messages should be kept in the memory.
   maxChannelsPerUser: 3 # the maximum number of channels a user can send messages in within the defined TTL timeframe.
