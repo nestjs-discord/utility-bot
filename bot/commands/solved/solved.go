@@ -67,17 +67,11 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		return nil
 	}
 
-	//
-	// Assign solved tag
-	//
 	// Discord doesn't allow responding to an interaction when the thread post is archived or closed.
 	// Hence, editing the channel twice is necessary: first to apply tags, and second to close the thread post.
-	//
-	_, err = s.ChannelEdit(channel.ID, &dgo.ChannelEdit{
-		AppliedTags: &channel.AppliedTags,
-	})
+	err = c.updateChannelTags(s, channel)
 	if err != nil {
-		return fmt.Errorf("failed to edit the channel to apply the solved tag: %w", err)
+		return err
 	}
 
 	err = c.sendCannedResponse(s, i)
@@ -89,8 +83,8 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	archived := false              // aka close
 	autoArchiveDuration := 60 * 24 // a day | unit is minutes
 
-	for _, option := range i.ApplicationCommandData().Options { // Check whether the "auto-close" option is specified
-		if option.Name != AutoClose {
+	for _, option := range i.ApplicationCommandData().Options {
+		if option.Name != AutoClose { // Check whether the "auto-close" option is specified
 			continue
 		}
 
@@ -121,6 +115,16 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 		slog.Int("autoArchiveDuration", autoArchiveDuration),
 		slog.Bool("archived", archived),
 	)
+	return nil
+}
+
+func (c *Solved) updateChannelTags(s *dgo.Session, channel *dgo.Channel) error {
+	_, err := s.ChannelEdit(channel.ID, &dgo.ChannelEdit{
+		AppliedTags: &channel.AppliedTags,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to edit the channel to apply the solved tag: %w", err)
+	}
 	return nil
 }
 

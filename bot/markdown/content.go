@@ -4,6 +4,7 @@ import (
 	"fmt"
 	dgo "github.com/bwmarrin/discordgo"
 	"github.com/nestjs-discord/utility-bot/bot/commands/common"
+	"github.com/nestjs-discord/utility-bot/bot/handler/respond"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 )
 
@@ -27,6 +28,10 @@ func (m *Markdown) ContentHandler(s *dgo.Session, i *dgo.InteractionCreate) erro
 			flags = dgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
 			userIdToMention := opt.UserValue(s)
+			if userIdToMention.Bot {
+				respond.InteractionWithEphemeralMessage(s, i, "You are not allowed to mention bots.")
+				return nil
+			}
 			content = fmt.Sprintf("*Suggestion for:* %s\n\n", userIdToMention.Mention()) + content
 
 			if len(dynamicComponents) > 3 { // Discord limit
