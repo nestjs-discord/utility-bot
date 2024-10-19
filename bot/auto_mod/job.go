@@ -67,7 +67,7 @@ func (a *AutoMod) processTriggerMetadata(metadata *dgo.AutoModerationTriggerMeta
 }
 
 func (a *AutoMod) processTriggerMetadataKeywordFilter(filters []string) {
-	if filters == nil || len(filters) == 0 {
+	if len(filters) == 0 {
 		return
 	}
 
@@ -86,7 +86,7 @@ func (a *AutoMod) processTriggerMetadataKeywordFilter(filters []string) {
 }
 
 func (a *AutoMod) processTriggerMetadataRegexPatterns(patterns []string) {
-	if patterns == nil || len(patterns) == 0 {
+	if len(patterns) == 0 {
 		return
 	}
 
