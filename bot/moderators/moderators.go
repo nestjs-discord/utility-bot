@@ -16,7 +16,7 @@ type Moderators struct {
 func NewModerators(opts Options) (*Moderators, error) {
 	m := &Moderators{}
 	for index := range opts.EncodedUserIds {
-		decStr, err := m.decodeUserId(opts.EncodedUserIds[index])
+		decStr, err := m.DecodeUserId(opts.EncodedUserIds[index])
 		if err != nil {
 			return nil, err
 		}
@@ -27,7 +27,7 @@ func NewModerators(opts Options) (*Moderators, error) {
 	return m, nil
 }
 
-func (mod *Moderators) decodeUserId(encStr string) (string, error) {
+func (mod *Moderators) DecodeUserId(encStr string) (string, error) {
 	data, err := base64.StdEncoding.DecodeString(encStr)
 	if err != nil {
 		return "", err

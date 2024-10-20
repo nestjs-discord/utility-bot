@@ -5,7 +5,7 @@ import (
 )
 
 func (s *Status) ExecuteBackgroundJob() error {
-	s.logger.Debug("executing background job")
+	// s.logger.Debug("executing background job")
 
 	text := randomText()
 	err := s.setCustomActivity(text)
