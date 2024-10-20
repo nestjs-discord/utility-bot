@@ -47,14 +47,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
 
+      - name: Generate
+        run: go generate ./...
+
       - name: Build
-        run: go build
+        run: go build cmd/run/main.go
 
       - name: Copy .env.example to .env
         run: cp .env.example .env
 
       - name: Validate content
-        run: go run . content:validate --debug
+        run: go run cmd/validate/main.go
 
       - name: Test
         run: go test -v ./...

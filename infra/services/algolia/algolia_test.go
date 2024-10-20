@@ -1,0 +1,22 @@
+package algolia_test
+
+import (
+	"github.com/nestjs-discord/utility-bot/infra/services/algolia"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"testing"
+)
+
+func TestSearchNestJS(t *testing.T) {
+	res, err := algolia.Search(algolia.NestJS, "test")
+	require.NoError(t, err)
+	require.NotNil(t, res)
+	assert.GreaterOrEqual(t, len(res), 20)
+}
+
+func TestGetObject(t *testing.T) {
+	res, err := algolia.GetObject(algolia.NestJS, "1-https://docs.nestjs.com/standalone-applications")
+	require.NoError(t, err)
+	require.NotNil(t, res)
+	assert.Equal(t, "https://docs.nestjs.com/standalone-applications", res.URL)
+}

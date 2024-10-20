@@ -1,17 +1,24 @@
-# version: "3.9"
-
 services:
-  utility-bot:
-    container_name: nestjs-discord-utility-bot
+#  redis:
+#    image: redis:7.4.1-alpine
+#    restart: unless-stopped
+#    healthcheck:
+#      test: [ "CMD", "redis-cli","ping" ]
+#    ports:
+#      - "127.0.0.1:6379:6379"
+
+  bot:
     restart: unless-stopped
+#    depends_on:
+#      - redis
     build:
       context: ./
       dockerfile: Dockerfile
-      target: production-stage # Multi-stage Docker build
-    volumes: # In case, we may add the live-reloading feature
-      - ./content:/usr/app/content:ro
+      target: prod
+    volumes:
       - ./config.yml:/usr/app/config.yml:ro
     environment:
+      STAGE: "prod"
       DISCORD_APP_ID: "${DISCORD_APP_ID}"
       DISCORD_BOT_TOKEN: "${DISCORD_BOT_TOKEN}"
       DISCORD_GUILD_ID: "${DISCORD_GUILD_ID}"

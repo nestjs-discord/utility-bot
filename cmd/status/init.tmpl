@@ -1,0 +1,6 @@
+package status
+
+func init() {
+	{{- range . }}
+	Texts = append(Texts, "{{ . }}"){{ end }}
+}

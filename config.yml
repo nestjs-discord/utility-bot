@@ -1,173 +1,308 @@
-#
-# List of members who can bypass ratelimit restriction, and have access to the "protected" commands.
-#
 moderators:
   # Core Team
-  - 492978759918419978 # Kamil
-  - 524281921115652106 # Jay
-  - 225858983632699392 # Brunner Livio
-  - 517170598833553408 # Y Prospect
-  - 132222189209518080 # Micael (micalevisk)
-  - 570354602063691826 # markpieszak
+  - "NDkyOTc4NzU5OTE4NDE5OTc4" # Kamil
+  - "NTI0MjgxOTIxMTE1NjUyMTA2" # jmcdo29
+  - "MjI1ODU4OTgzNjMyNjk5Mzky" # Brunner Livio
+  - "NTE3MTcwNTk4ODMzNTUzNDA4" # Y Prospect
+  - "MTMyMjIyMTg5MjA5NTE4MDgw" # Micael (micalevisk)
+  - "NTcwMzU0NjAyMDYzNjkxODI2" # markpieszak
 
   # Community Mods
-  - 118633408438992896 # wodCZ
-  - 646107453469229056 # Papooch
-  - 267661647785623572 # Scott
-  - 370903700979318784 # Script
-  - 718538147449012245 # Tony
-  - 210984433321246720 # underfisk
-  - 673658728863629360 # Maciej Sikorski (Matthew)
+  - "MTE4NjMzNDA4NDM4OTkyODk2" # wodCZ
+  - "NjQ2MTA3NDUzNDY5MjI5MDU2" # Papooch
+  - "MjY3NjYxNjQ3Nzg1NjIzNTcy" # Scott
+  - "MzcwOTAzNzAwOTc5MzE4Nzg0" # Script
+  - "NzE4NTM4MTQ3NDQ5MDEyMjQ1" # Tony
+  - "MjEwOTg0NDMzMzIxMjQ2NzIw" # underfisk
+  - "NjczNjU4NzI4ODYzNjI5MzYw" # Maciej Sikorski (Matthew)
 
   # MVPs
-  - 211445675701829632 # weshuiz13
+  - "MjExNDQ1Njc1NzAxODI5NjMy" # weshuiz13
 
-#
-# This configuration is for rate limiting usage of slash commands
-#
-# `ttl` specifies the maximum time to live (in seconds) for each usage of a slash command,
-# after which the usage count will reset to 0
-#
-# `usage` specifies the maximum number of times a particular slash command can be used within the `ttl` period
-# before further usage is prevented
-#
-ratelimit:
-  ttl: 60  # Maximum TTL of 60 seconds
-  usage: 8 # Maximum of eight usages within the TTL period
-  message:
-    "Chill out, cowboy!\nYou don't want to overload our poor server."
+rateLimit: # only applies to the application commands
+  ttlSec: 60
+  maxUsage: 8
+  message: >
+    Chill out, cowboy!
+    You don't want to overload our poor server.
 
-#
-# Auto-Moderation Configuration
-#
-autoMod:
-  # Enable or disable the auto-moderation feature.
+antispam: # flags the users who spam messages on multiple channels in a short timeframe.
   enabled: true
-
-  # Indicates whether moderators can bypass certain auto-moderation checks.
+  logChannelId: "1028324313180413982" # prod: 1028324313180413982 | dev: 1173297424211648512
   moderatorsBypass: true
+  messageTTLSec: 60 # how long the messages should be kept in the memory.
+  maxChannelsPerUser: 3 # the maximum number of channels a user can send messages in within the defined TTL timeframe.
+  denyTTLSec: 120 # how long a spammer user ID should be kept in the memory (to delete their future messages).
+  trackedChannelIds:
+    # Information (read-only)
+    # - "527853342152458287" # welcome
+    # - "525389275769077771" # resources
+    # - "669488633228558339" # roles
+    # - "669642626001010709" # partners
 
-  # The Discord channel ID where auto-mod log messages will be sent.
-  logChannelId: "918987870197395577"
+    # Core Team (private)
+    # - "808120635682586644" # moderator-mvp-exchange
+    # - "918987870197395577" # bot-test
+    # - "1028324313180413982" # auto mod messages
+    # - "1294488503744204860" # mod-profiles
+    # - "1294488539500777472" # mod-opportunities
+    # - "598294041150619662" # marketing
+    # - "523471550104731659" # general (archived)
+    # - "613075872915783682" # core-team-devops (archived)
 
-  # The role ID to mention when auto-mod log messages are sent.
-  # This role will be pinged in log messages to alert specific users about auto-moderation actions.
-  logMentionRoleId: ""
+    # Community Modules
+    - "626341204442742784" # community-packages
 
-  # Time-to-live for caching each message in memory (in seconds).
-  # Messages older than this duration will be removed from the cache.
-  messageTTL: 60 # Seconds
+    # Community
+    - "523472945205608454" # showcase
+    - "523473854694424576" # media
+    - "585224763513765937" # hangout
+    - "679231901109714945" # share-your-pet
 
-  # The maximum number of text channels a user can send messages to within the defined messageTTL.
-  maxChannelsLimitPerUser: 3
+    # Development
+    - "939229065527820369" # contributing-to-nest
+    # - "610578507579392153" # code-review (read-only)
 
-  # Time-to-live for keeping a user ID in memory after being recognized as spamming (in seconds).
-  # This option might be useful for temporary actions, such as deleting ongoing messages.
-  denyTTL: 120 # Seconds
+    # Languages
+    - "810948706902736918" # German
+    - "744635201690533956" # Spanish
+    - "810948689295048714" # French
+    - "810948655846260766" # Polish
+    - "811732928517767179" # Portuguese
+    - "815841356894306304" # Russian
+    - "1208424317285830686" # Romanian
+    - "975075877274660865" # Turkish
+    - "934100953324466186" # Korean
+    - "1068390891489874010" # Korean
+    - "1099202167484719194" # Persian
+    - "1155462622251073656" # Arabic
 
+    # Discord
+    - "524255662545305600" # server-suggestions
 
-# Text input documentation:
-# https://discord.com/developers/docs/interactions/message-components#text-inputs
-#
-# If the destination of the form submission (form.foo.channelId) is an announcement channel,
+    # Bots
+    # - "926544704034734111" # bots-info (read-only)
+    - "926544725606035527" # bot-commands
+
+    ############################### Dev channels
+    - "1173300675917135912" # 1
+    - "1173300686667120640" # 2
+    - "1173300694766334123" # 3
+    - "1173300701863084082" # 4
+    - "1173300709307994214" # 5
+
+# When the destination of the form submission (form.foo.channelId) is an announcement channel,
 # ensure the bot *explicitly* has the following permissions:
 #   - Send Messages
 #   - Manage Messages
 #   - Read Message History
 # Otherwise, the bot will panic and the container will enter a restart loop.
-# More details on announcement channels:
+#
+# See:
 # https://support.discord.com/hc/en-us/articles/360032008192-Announcement-Channels
+# https://discord.com/developers/docs/interactions/message-components#text-inputs
 forms:
-  job-profiles: # Self-promotion
-    buttonLabel: "Post a new profile"
+  jp: # job-profiles announcement channel (for self-promotion)
+    channelId: "1294483543623335986" # prod: 1294483543623335986 | dev: 1294446757370925147
+    modChannelId: "1294488503744204860" # prod: 1294488503744204860 | dev: 1292911145883275356
     modalTitle: "Post a new profile"
-    channelId: 1294483543623335986 # prod: 1294483543623335986 | dev: 1294446757370925147
-    modChannelId: 1294488503744204860 # prod: 1294488503744204860 | dev: 1292911145883275356
     modSkipApproval: false
     color: 2600544 # dark green (#27ae60)
+    minimumAccountAgeDays: 30 # minimum age of the user's Discord account (in days) required open the modal
+    minimumServerJoinDays: 10 # minimum number of days the user must have been a member of the server to open the modal
+    openModalMessage:
+      buttonLabel: "Post a new profile"
+      embedColor: 14689102 # same as the official NestJS logo (#e0234e)
+      embedTitle: "Rules ⭐️"
+      embedDescription: >
+        - Be cautious of scams! We do not verify profile details; please conduct your own due diligence.
+        
+        - Make sure your [Discord privacy settings](<https://support.discord.com/hc/articles/217916488>) enable you
+        to receive private messages from others on this server.
+        
+        - Nobody enjoys spam, so let's maintain a clean and relevant server.
+        
+        - Please be patient after submitting. It may take a short while for moderators to review your application.
+        
+        - Keep in mind that any data you submit
+        will be shared with the followers of this channel (other Discord servers),
+        so please avoid sharing personal information or anything you might regret in the future.
+        
+        - If you have any questions, don't hesitate to reach out to one of the friendly moderators on this server.
+        They're here to help!
+        
+        -# [github.com/nestjs-discord/utility-bot](<https://github.com/nestjs-discord/utility-bot>)
     footer: "Details of this profile have not been verified, please do your own due diligence."
     inputs:
       - id: "about"
+        label: "About"
         placeholder: "Shortly describe yourself!"
         multiline: false
         min: 15
         max: 100
         required: true
       - id: "skills"
+        label: "Skills"
         placeholder: "NestJS, Node.js, TypeScript, Golang, ..."
         multiline: true
         min: 2
         max: 400
         required: true
       - id: "experiences"
+        label: "Experiences"
         placeholder: "Use bullet points (-) for better formatting."
         multiline: true
         min: 2
         max: 600
       - id: "location"
-        placeholder: "USA, New York - Remote"
+        label: "Location"
+        placeholder: "Germany, Berlin - Remote, willing to relocate within EU"
         min: 2
-        max: 50
+        max: 150
         required: true
         multiline: false
       - id: "links"
+        label: "Links"
         placeholder: "https://github.com/foo/bar\nhttps://your.personal-website.com/"
         min: 0
         max: 200
         required: false
         multiline: true
+#      - id: "email"
+#        label: "Email"
+#        placeholder: "your.email.address@example.com"
+#        min: 5
+#        max: 60
+#        required: false
+#        multiline: false
 
-  job-opportunities: # Job listing
-    buttonLabel: "Post a new opportunity"
+  jo: # job-opportunities announcement channel (for job listing)
+    channelId: "1294483759189725265" # prod: 1294483759189725265 | dev: 1294446864036528231
+    modChannelId: "1294488539500777472" # prod: 1294488539500777472 | dev: 1292911220197953558
     modalTitle: "Post a new opportunity"
-    channelId: 1294483759189725265 # prod: 1294483759189725265 | dev: 1294446864036528231
-    modChannelId: 1294488539500777472 # prod: 1294488539500777472 | dev: 1292911220197953558
     modSkipApproval: false
-    color: 14689102 # same as the official nestjs logo (#e0234e)
+    color: 14689102 # same as the official NestJS logo (#e0234e)
+    minimumAccountAgeDays: 30 # minimum age of the user's Discord account (in days) required open the modal
+    minimumServerJoinDays: 10 # minimum number of days the user must have been a member of the server to open the modal
+    openModalMessage:
+      buttonLabel: "Post a new opportunity"
+      embedTitle: "Rules ⭐️"
+      embedColor: 14689102 # same as the official NestJS logo (#e0234e)
+      embedDescription: >
+        - Be cautious of scams! We do not verify job details; please conduct your own due diligence.
+        
+        - Make sure your [Discord privacy settings](<https://support.discord.com/hc/articles/217916488>) enable you
+        to receive private messages from others on this server.
+        
+        - Nobody enjoys spam, so let's maintain a clean and relevant server.
+        
+        - Please be patient after submitting. It may take a short while for moderators to review your application.
+        
+        - Keep in mind that any data you submit
+        will be shared with the followers of this channel (other Discord servers),
+        so please avoid sharing personal information or anything you might regret in the future.
+        
+        - If you have any questions, don't hesitate to reach out to one of the friendly moderators on this server.
+        They're here to help!
+        
+        -# [github.com/nestjs-discord/utility-bot](<https://github.com/nestjs-discord/utility-bot>)
     footer: "Details of this opportunity have not been verified, please do your own due diligence."
     inputs:
       - id: "title"
+        label: "Title"
         placeholder: "Senior Software Engineer"
         min: 10
         max: 100
         required: true
         multiline: false
       - id: "compensation"
+        label: "Compensation"
         placeholder: "$50 per hour"
         min: 5
-        max: 100
+        max: 150
         required: true
         multiline: false
       - id: "location"
-        placeholder: "USA, New York - Remote"
+        label: "Location"
+        placeholder: "Germany, Berlin - Remote, willing to relocate within EU"
         min: 5
-        max: 100
+        max: 150
         required: true
         multiline: false
       - id: "description"
+        label: "Description"
         placeholder: "We are seeking an engineer to assist with back-end development and server management."
         min: 50
         max: 1000
         required: true
         multiline: true
       - id: "links"
+        label: "Links"
         placeholder: "https://company.com/jobs\nhttps://github.com/organization"
         min: 10
         max: 200
         required: true
         multiline: true
+#      - id: "email"
+#        label: "Email"
+#        placeholder: "address@company.com"
+#        min: 5
+#        max: 70
+#        required: true
+#        multiline: false
 
-#
-# This configuration block defines dynamic slash commands to be displayed to Discord users.
-#
-commands:
-  #
+archiveCommand:
+  description: "Close and lock a forum post."
+  response: >
+    This post has been marked as archived.
+    
+    Please use it as a reference, but do not re-open it.
+    If you have a similar issue and cannot resolve it after reading this thread, please open a new post.
+
+solvedCommand:
+  description: "Close and mark a forum post as solved."
+  response: >
+    This post has been marked as resolved. ✅
+    
+    Please read through the conversation and resolution, if you are having the same issue.
+    
+    If you were the original author of the post and the issue is still fresh (within a few days)
+    and you are still have having trouble, continue to reply here. If you are not the original
+    author of the post or the post has aged, start a new thread linking this one as relevant to
+    your problem, providing as much additional information as possible.
+  channelSolvedTag: # Map of the forum channel IDs against their "✅ solved" tag ID
+    # Support
+    1025199348096700476: "1130941763679432884" # nestjs-help
+    1025200803239166012: "1130941861696127137" # connectivity
+    1216805074504777749: "1216806068579995688" # graphql
+    1025201603843719200: "1130941907644719145" # database
+    1025207636599250954: "1130941954998411395" # utilities
+
+    # Community Modules
+    1058053453433282570: "1130942460017770506" # golevelup-nestjs
+    1197293125434093701: "1197661679530557490" # brocoders-nestjs-boilerplate
+    1085231189541011576: "1130942436617748610" # necord
+    1058054786060124201: "1130942397296169000" # nest-commander
+    1181877086797967420: "1197661857427755128" # nestia
+    1058054362062143648: "1130942375020199996" # nestjs-otel
+    1058055360994353172: "1130942337732857946" # ogma
+
+    # Development
+    1053041658343723099: "1130942302391652473" # architecture-and-design
+    1057417995707748482: "1130942277280333917" # security
+    1053044251052740729: "1130942250080280717" # devops
+    1075555694587162704: "1198098430514446457" # code-review
+    1056608823219081266: "1130942218560081970" # typescript
+
+    ############################### Dev channels
+    1130894004398084126: "1130894217506463765" # forum-channel
+
   # For each command, use a key to define the command name.
   # If a key contains a single space character, it becomes a sub-command.
   #
   #   example sub-command:
   #     description: "This is my command"
-  #     content: "./content/my-command.md"
+  #     content: "And this is my awesome respond! 😎"
   #     protected: false
   #     buttons:
   #       -
@@ -183,239 +318,661 @@ commands:
   #   description (required, max 100 characters):
   #     A short description of the command.
   #
-  #   content (required):
-  #     The path to the markdown file containing detailed information about the command.
-  #     The file should be located in the "content" folder, as the Docker volume relies on this.
+  #   content (required, max 3000 characters):
+  #     What will be the response of this command when executed.
   #
   #   protected (optional, default is false):
-  #     If set to true, only moderators will be able to "see" and "use" this command.
+  #     If set to true, only moderators will be able to see and use this command.
   #
   #   buttons (optional, max eight rows and four columns):
   #     An array of arrays representing rows and columns of Discord message components, specifically link buttons.
-  #     Each link button has a "label", "url", and optional "emoji" field which are string.
+  #     Each link button has label, url, and an optional emoji string field.
   #     See https://discord.com/developers/docs/interactions/message-components for more information on message components.
-
-  #
-  # Mods commands
-  #
+commands:
   mods cross-post:
     description: "Warn users not to cross-post, ask in relevant channels, and be patient."
-    content: "./content/mods/cross-post.md"
     protected: true
-
-  mods spam:
-    description: "A friendly warning to prevent spamming in the chat"
-    content: "./content/mods/spam.md"
-    protected: true
-
+    content: >
+      **Please do not cross post.**
+      
+      Please refrain from posting your question in multiple channels, or linking the channel elsewhere.
+      
+      If someone knew topic A, they would be in the topic A channel. Asking in irrelevant channels is just spam.
+      
+      Please be patient waiting for an answer,
+      it may take time for someone with adequate knowledge to answer your question,
+      furthermore, make sure that your question is well-structured.
   mods elaborate:
     description: "Please provide more context so we can better assist you with your inquiry."
-    content: "./content/mods/elaborate.md"
+    content: >
+      Hey there! 👋
+
+
+      Thanks for reaching out. Please elaborate further on your problem.
+      The more details you can provide, the better we'll be able to help you.
+      
+      
+      If applicable, please share any relevant code snippets or error messages you've encountered.
+      Please provide a minimal reproduction repository or steps to reproduce the issue.
+      It would greatly assist us in understanding and resolving the problem.
+
+
+      We're here to help, so feel free to provide more context, and we'll do our best to assist you further!
     buttons:
-      -
-        - label: "What is a reproduction repository?"
+      - - label: "What is a reproduction repository?"
           url: "https://minimum-reproduction.wtf/"
           emoji: "🔗"
-
-  #
-  # Public commands
-  # Only users with "Use Application Commands" permission can "see" and "use" these commands.
-  #
   community awesome:
     description: "A curated list of awesome things related to NestJS"
-    content: "./content/community/awesome.md"
+    content: >
+      Hey there!
+      
+      Check out this awesome repository that has a fantastic collection of resources for NestJS.
+      You'll find all sorts of goodies like modules, examples, articles,
+      and tools that can really come in handy for developers using NestJS.
+      
+      
+      This repository is designed to be a one-stop shop for developers
+      who want to dive into the NestJS ecosystem and make the most of its features
+      to build strong and scalable applications.
     buttons:
-      -
-        - label: "View repository on GitHub"
+      - - label: "View repository on GitHub"
           url: "https://github.com/nestjs/awesome-nestjs"
           emoji: "🔗"
-
+        - label: "Popular GitHub projects"
+          url: "https://github.com/topics/nestjs?o=desc&s=stars"
+          emoji: "🔗"
   community testing:
     description: "A GitHub repository to show off to the community methods of testing NestJS"
-    content: "./content/community/testing.md"
+    content: >
+      There's a large repository of samples managed by the community.
     buttons:
-      -
-        - label: "View repository on GitHub"
+      - - label: "View repository on GitHub"
           url: "https://github.com/jmcdo29/testing-nestjs"
           emoji: "🔗"
-
   docs behind-proxy:
     description: "How to enable the trust proxy option when NestJS app is behind a reverse proxy"
-    content: "./content/docs/behind-proxy.md"
+    content: >
+      When your NestJS application is behind a reverse proxy, you may need to enable the `trust proxy` option in Express or Fastify, depending on your server.
+      
+      
+      In Express, you can enable the `trust proxy` option using the `app.set()` method.
+      
+      ```typescript
+      
+      async function bootstrap() {
+        const app = await NestFactory.create(AppModule);
+
+        app.set('trust proxy', true); // <----
+
+        await app.listen(3000);
+      }
+      ```
+      
+      If you're using Fastify, you can enable the `trustProxy` option in `FastifyAdapter`.
+      
+      ```typescript
+      
+      import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+      
+      
+      async function bootstrap() {
+        const app = await NestFactory.create<NestFastifyApplication>(
+          AppModule,
+
+          new FastifyAdapter({
+            trustProxy: true, // <----
+          }),
+        );
+      }
+      ```
+      
+      > By enabling the `trust proxy` option, Express/Fastify will trust the `X-Forwarded-For` header and consider it the client's IP address.
+      
+      
+      Suppose you use the `@nestjs/throttler` module to rate-limit users and protect applications from brute-force attacks.
+      
+      In that case, besides enabling the `trust proxy` option, you should override the `getTracker()` method to pull the value from the header rather than from `req.ip`.
+      
+      ```ts
+      
+      // throttler-behind-proxy.guard.ts
+      
+      import { ThrottlerGuard } from '@nestjs/throttler';
+      
+      import { Injectable } from '@nestjs/common';
+      
+      
+      @Injectable()
+      export class ThrottlerBehindProxyGuard extends ThrottlerGuard {
+        protected getTracker(req: Record<string, any>): string {
+          return req.ips.length ? req.ips[0] : req.ip; // individualize IP extraction to meet your own needs
+        }
+      }
+      
+      
+      // app.controller.ts
+      
+      import { ThrottlerBehindProxyGuard } from './throttler-behind-proxy.guard';
+
+      @UseGuards(ThrottlerBehindProxyGuard)
+      ```
     buttons:
-      -
-        - label: "Express trust proxy docs"
+      - - label: "Express trust proxy docs"
           url: "https://expressjs.com/en/guide/behind-proxies.html"
           emoji: "🔗"
         - label: "Fastify trustProxy docs"
           url: "https://fastify.dev/docs/latest/Reference/Server#trustproxy"
           emoji: "🔗"
-      -
-        - label: "@nestjs/throttler docs"
+      - - label: "@nestjs/throttler docs"
           url: "https://docs.nestjs.com/security/rate-limiting#proxies"
           emoji: "📖"
-
   docs circular-dependency:
     description: "Circular dependencies in NestJS and how to avoid them"
-    content: "./content/docs/circular-dependency.md"
+    content: >
+      Occasionally you'll find it difficult to avoid circular dependencies in your application.
+      
+      You'll need to take some steps to help Nest resolve these.
+      Errors that arise from circular dependencies look like this:
+      
+      ```text
+      
+      Nest cannot create the <module> instance.
+      
+      The module at index [<index>] of the <module> "imports" array is undefined.
+
+
+      Potential causes:
+      
+      - A circular dependency between modules. Use forwardRef() to avoid it.
+      
+      - The module at index [<index>] is of type "undefined". Check your import statements and the type of the module.
+
+
+      Scope [<module_import_chain>]
+      
+      # example chain AppModule -> FooModule
+      
+      ```
+      
+      A circular dependency occurs when two classes depend on each other.
+      
+      For example, class A needs class B, and class B also needs class A.
+      
+      Circular dependencies can arise in Nest between modules and between providers.
+
+
+      While circular dependencies should be avoided where possible, you can't always do so.
+      
+      In such cases, Nest enables resolving circular dependencies between providers in two ways.
+      
+      In this chapter, we describe using **forward referencing** as one technique, and using the **ModuleRef** class to retrieve a provider instance from the DI container as another.
     buttons:
-      -
-        - label: "Read rest of the documentation"
+      - - label: "Read rest of the documentation"
           url: "https://docs.nestjs.com/fundamentals/circular-dependency"
           emoji: "📖"
-      -
-        - label: "How to avoid circular dependencies"
+      - - label: "How to avoid circular dependencies"
           url: "https://trilon.io/blog/avoiding-circular-dependencies-in-nestjs"
           emoji: "📝"
-
-  docs file-change-detected:
-    description: "How to fix when TypeScript 4.9+ on Windows causes infinite loop in watch mode"
-    content: "./content/docs/file-change-detected.md"
-    buttons:
-      -
-        - label: "TypeScript documentation"
-          url: "https://www.typescriptlang.org/tsconfig#watch-watchDirectory"
-          emoji: "🔗"
-      -
-        - label: "New strategy for detecting file changes"
-          url: "https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#file-watching-now-uses-file-system-events"
-          emoji: "📝"
-
   docs hybrid-app:
     description: "Create hybrid apps with NestJS and microservices"
-    content: "./content/docs/hybrid-app.md"
+    content: >
+      A hybrid application is one that both listens for HTTP requests, and makes use of connected microservices.
+      
+      The `INestApplication` instance can be connected with `INestMicroservice` instances
+      through the `connectMicroservice()` method.
+
+      ```typescript
+      
+      const app = await NestFactory.create(AppModule);
+      
+      const microservice = app.connectMicroservice<MicroserviceOptions>({
+        transport: Transport.TCP,
+      });
+
+      await app.startAllMicroservices();
+      
+      await app.listen(3001);
+      
+      ```
     buttons:
-      -
-        - label: "Read more"
+      - - label: "Documentation"
           url: "https://docs.nestjs.com/faq/hybrid-application"
           emoji: "📖"
-
   docs nest-debug:
     description: "Debug NestJS dependencies with environment variable"
-    content: "./content/docs/nest-debug.md"
+    content: >
+      Along with just manually verifying your dependencies are correct,
+      as of Nest 8.1.0 you can set the `NEST_DEBUG` environment variable to a string that resolves as truthy,
+      and get extra logging information while Nest is resolving all the dependencies for the application
+      [.](https://docs.nestjs.com/assets/injector_logs.png)
+      
+
+      The string in yellow is the host class of the dependency being injected,
+      the string in blue is the name of the injected dependency,
+      or its injection token, and the string in purple is the module in which the dependency is being searched for.
+      Using this, you can usually trace back the dependency resolution for what's happening
+      and why you're getting dependency injection problems.
 
   docs process-env-population:
     description: "What to do when process.env is not populated"
-    content: "./content/docs/process-env-population.md"
+    content: >
+      When you use the `ConfigModule` from the `@nestjs/config` package,
+      and you need to access the `process.env.FOO` variable in another module's registration function or constructors,
+      you might encounter issues where `process.env.FOO` is undefined,
+      even though it has the correct value when the application is fully bootstrapped.
+      
+      
+      This occurs because `process.env` is not populated when you are accessing it.
+      In such a situation, there are generally two solutions:
+
+      ## **Solution 1.** ✅
+      
+      If the module provides an asynchronous way to set its options using the `forRootAsync()` or `registerAsync()` method, it's better to use this along with the `ConfigService` instead of directly reading `process.env`.
+      
+      ```ts
+      
+      import { JwtModule } from '@nestjs/jwt';
+
+      @Module({
+        imports: [
+          JwtModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+              secretOrPrivateKey: configService.get<string>('jwt.secret'),
+            }),
+            inject: [ConfigService],
+          }),
+        ]
+      })
+      
+      export class FooModule {}
+      
+      ```
+      
+      ## **Solution 2.** ✅
+      
+      In the `main.ts`, the **very first** lines must be
+      
+      ```ts
+      
+      import 'dotenv/config';
+      
+      // or, the line below:
+      
+      // import { config } from 'dotenv'; config();
+      
+      ```
+      
+      It should also be __before__ **all other imports**. This will populate `process.env` for you.
+
+      ### Side note: ⚠️
+      
+      When using the `@nestjs/jwt` package,
+      avoid registering the `JwtService` in a `providers` array.
+      It's not necessary because of the import of the `JwtModule`.
+      
+      Only import the `JwtModule` in the `imports` array
+      and remove the `JwtService` from the `providers` array when defining the modules.
+      
+      ```diff
+      
+      import {
+      
+      +  JwtModule,
+      
+      -  JwtService
+      
+      } from '@nestjs/jwt';
+
+
+      @Module({
+        imports: [
+      +   JwtModule.registerAsync({
+      
+      +     // ...
+      
+      +   }),
+        ],
+        providers: [
+      -   JwtService,
+        ],
+      })
+      
+      export class FooModule {}
+      
+      ```
     buttons:
-      -
-        - label: "How to use the ConfigService"
+      - - label: "How to use the ConfigService"
           url: "https://docs.nestjs.com/techniques/configuration#using-the-configservice"
           emoji: "📖"
-
   docs providers-vs-imports:
     description: "Ensure accurate service/module listings"
-    content: "./content/docs/providers-vs-imports.md"
+    content: >
+      Don't list a service in `providers` array of a module unless the module really *provides* the service.
+      
+      If your `ServiceA` depends on a `ServiceB` from different module `ModuleB`, add `ServiceB` to `ModuleB`'s `exports` array, 
+      then add `ModuleB` to `imports` array in your module.
+      
+      ```ts
+      
+      @Module({
+        providers: [ServiceB],
+        exports: [
+          ServiceB // <-- export the "ServiceB" provider by adding it to the module's exports array
+        ], 
+      })
+      
+      export class ModuleB {}
+      
+      ```
+      
+      ```ts
+      
+      @Module({
+        imports: [
+          ModuleB // <-- modules that wish to inject the "ServiceB" will need to import the "ModuleB" in their imports array
+        ],  
+        providers: [ServiceA],
+      })
+      
+      export class ModuleA {}
+      ```
+      
+      ```ts
+      
+      import { ServiceB } from '../module-b/service-b.service'
+      
+      
+      @Injectable()
+      export class ServiceA {
+        constructor(private readonly serviceB: ServiceB) {}
+
+        // async foo() {
+        //   this.serviceB.bar();
+        // }
+      }
+      ```
     buttons:
-      -
-        - label: "Read more"
+      - - label: "Read more"
           url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
           emoji: "📖"
-
   docs request-lifecycle:
     description: "Get a grip on NestJS' request lifecycle for smooth coding"
-    content: "./content/docs/request-lifecycle.md"
+    content: >
+      Nest applications handle requests and produce responses in a sequence we refer to as the **request lifecycle**.
+      
+      With the use of middleware, pipes, guards, and interceptors, it can be challenging to track down where a particular piece of code executes during the request lifecycle, especially as global, controller level, and route level components come into play.
+      
+      ### In general, the request lifecycle looks like the following:
+
+      1. Incoming request
+      
+      2. [Middleware](<https://docs.nestjs.com/middleware>)
+         - Globally bound middleware
+         - Module bound middleware
+      3. [Guards](<https://docs.nestjs.com/guards>)
+         - Global guards
+         - Controller guards
+         - Route guards
+      4. [Interceptors](<https://docs.nestjs.com/interceptors>) _(pre-controller)_
+         - Global interceptors
+         - Controller interceptors
+         - Route interceptors
+      5. [Pipes](<https://docs.nestjs.com/pipes>)
+         - Global pipes
+         - Controller pipes
+         - Route pipes
+         - Route parameter pipes
+      6. [Controller](<https://docs.nestjs.com/controllers>) _(method handler)_
+      
+      7. [Service](<https://docs.nestjs.com/providers>) _(if exists)_
+      
+      8. [Interceptors](<https://docs.nestjs.com/interceptors>) _(post-request)_
+         - Route interceptor
+         - Controller interceptor
+         - Global interceptor
+      9. [Exception filters](<https://docs.nestjs.com/exception-filters>)
+         - Route
+         - Controller
+         - Global
+      10. Server response
     buttons:
-      -
-        - label: "Documentation reference"
+      - - label: "Documentation reference"
           url: "https://docs.nestjs.com/faq/request-lifecycle"
           emoji: "🔗"
-
   docs resolve-dependencies:
     description: "Nest not being able to resolve dependencies of something"
-    content: "./content/docs/resolve-dependencies.md"
+    content: >
+      The most common error in Nest is failing to resolve provider dependencies.
+      
+      The error message usually looks something like this:
+      
+      ```text
+      
+      Nest can't resolve dependencies of the <provider> (?). Please make sure that the argument <unknown_token> at index [<index>] is available in the <module> context.
+
+
+      Potential solutions:
+      
+      - Is <module> a valid NestJS module?
+      
+      - If <unknown_token> is a provider, is it part of the current <module>?
+      
+      - If <unknown_token> is exported from a separate @Module, is that module imported within <module>?
+        @Module({
+          imports: [ /* the Module containing <unknown_token> */ ]
+        })
+      ```
+      
+      The most common culprit of the error, is not having the `<provider>` in the module's `providers` array.
+      
+      Please make sure that the provider is indeed in the `providers` array and following standard NestJS provider practices.
+
+
+      There are a few gotchas, that are common. One is putting a provider in an `imports` array.
+      
+      If this is the case, the error will have the provider's name where `<module>` should be.
     buttons:
-      -
-        - label: "Read more about this error"
+      - - label: "Read more about this error"
           url: "https://docs.nestjs.com/faq/common-errors#cannot-resolve-dependency-error"
           emoji: "📖"
-      -
-        - label: "Standard NestJS provider practices"
+      - - label: "Standard NestJS provider practices"
           url: "https://docs.nestjs.com/fundamentals/custom-providers#di-fundamentals"
           emoji: "🔗"
-      -
-        - label: "Circular dependency"
+      - - label: "Circular dependency"
           url: "https://docs.nestjs.com/faq/common-errors#circular-dependency-error"
           emoji: "🔗"
         - label: "Custom providers"
           url: "https://docs.nestjs.com/fundamentals/custom-providers"
           emoji: "🔗"
-
   rules codeblocks:
     description: "Letting people know how to share their code in a Markdown code block"
-    content: "./content/rules/codeblocks.md"
+    content: >
+      Please format your question or answer with Markdown formatting[.](https://i.sstatic.net/ETTnT.jpg)
+
+      It leads to better readability and an easier time to spot problems.
+
+      For code blocks, you can wrap your block with three back ticks before and after the block, and after the first three back ticks you can add a language (like `ts`) to add syntax highlighting.
+
+
+      \`\`\`ts
+
+      @Injectable()
+
+      export class MySuperAwesomeService {
+
+        constructor(@Inject('InjectionToken') private readonly dep: SomeDependency) {}
+
+        getRandomNumber(): number {
+          return Math.round(Math.random() * 1000);
+        }
+      }
+
+      \`\`\`
+
+
+      That ☝️, becomes this 👇
+
+
+      ```ts
+
+      @Injectable()
+
+      export class MySuperAwesomeService {
+
+        constructor(@Inject('InjectionToken') private readonly dep: SomeDependency) {}
+
+        getRandomNumber(): number {
+          return Math.round(Math.random() * 1000);
+        }
+      }
+
+      ```
 
   rules dm:
     description: "Use server to get help on NestJS; don't DM other members."
-    content: "./content/rules/dm.md"
+    content: >
+      Do not DM any other members of NestJS server when it comes to helping you with your question.
+
+      By sending your questions in the server, you maximize the number of people that see them and therefore maximize your chances of getting an answer.
 
   rules dont-ask-to-ask:
-    description: "Telling people to just ask their question with a link explaining why"
-    content: "./content/rules/dont-ask-to-ask.md"
+    description: "Tell them to just ask their question with a link explaining why"
+    content: "Please don't ask to ask. Just ask your question."
     buttons:
-      -
-        - label: "Learn more about asking to ask"
+      - - label: "Learn more about asking to ask"
           url: "https://dontasktoask.com"
           emoji: "❓"
-
   rules no-hello:
-    description: "Telling people not to say just 'hello' in the chat"
-    content: "./content/rules/no-hello.md"
+    description: "Tell them not to say just 'hello' in the chat"
+    content: "Please don't say just hello in chat."
     buttons:
-      -
-        - label: "Why is this a thing"
+      - - label: "Why is this a thing"
           url: "https://nohello.net/en/"
           emoji: "❓"
-
   rules reproduction:
     description: "Request for a minimum reproduction of the issue"
-    content: "./content/rules/reproduction.md"
+    content: >
+      From conversation only, it seems that we won't be able to determine the root cause of the issue.
+      
+      Please provide a minimum reproduction repository that reduces the issue to only the most basic components
+      while still producing the same error that you're facing.
+      
+      By doing this, we will be better able to help you resolve your issue.
     buttons:
-      -
-        - label: "Learn more about minimum reproductions"
+      - - label: "Learn more about minimum reproductions"
           url: "https://minimum-reproduction.wtf"
           emoji: "📖"
-      -
-        - label: "SO Minimum Reproduction Description"
+      - - label: "SO Minimum Reproduction Description"
           url: "https://stackoverflow.com/help/minimal-reproducible-example"
           emoji: "🔗"
-
-  rules screenshot:
+  rules no-screenshot:
     description: "When someone posts a screenshot instead of sharing their code"
-    content: "./content/rules/screenshot.md"
+    content: >
+      Please **do not screenshot code** as it causes a number of issues: ⚠️
+
+      - Ease of assistance: if someone wants to copy your code and correct it, they cannot. Making it easy for people to help you is in your best interests.
+      
+      - Editorializing: it's common to try to make images small, which means you're likely to crop out code relevant to your issue
+      
+      - Accessibility: wide images can be hard to read on mobile devices, and are impossible for screen readers.
+      
+      - Legibility: you cannot read screenshots of code directly, instead you have to open them in an enlarged context.
+      
+      - Bandwidth usage/clutter: some of our members use metered connections, and it is wasteful for them to download images of a text.
+
+      For a small amount of code, please use Markdown code blocks.
     buttons:
-      -
-        - label: "Learn more about code-blocks"
+      - - label: "Learn more about code blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"
-
-  javascript floating-promise:
+  js floating-promise:
     description: "Introduction to floating Promises in JavaScript"
-    content: "./content/javascript/floating-promise.md"
+    content: >
+      A _floating Promise_ is a type of `Promise` that is created
+      without any code set up to handle any errors it might throw.
+      Floating promises can cause several issues,
+      such as improperly sequenced operations and ignored Promise rejections.
+
+
+      In the example below, a `Promise` is created and executed.
+      However, since there is no `await` keyword to wait for its resolution,
+      the program continues to run without waiting for the Promise to complete.
+      
+      ```ts
+
+      async function someAsyncFunction() {
+        throw new Error('Whoops! 😥');
+      }
+
+
+      try {
+        someAsyncFunction(); // no await
+      } catch (e) {
+        // It won't catch the error
+      }
+
+
+      // Uncaught (in promise) Error: Whoops! 😥
+      // at someAsyncFunction (<anonymous>:2:9)
+      // at <anonymous>:6:3
+      
+      ```
+
+      The `Promise` returned by `someAsyncFunction()` starts executing,
+      but the code execution continues immediately without waiting for the `Promise` to resolve.
+      
+      
+      As a result, any error or thrown exception inside `someAsyncFunction()` will not be caught
+      by the `try/catch` block because the Promise is not being awaited.
+      This can lead to unexpected behavior or unhandled rejections,
+      as the code does not handle the asynchronous operation correctly.
+
+
+      To ensure that the Promise is awaited and its result is properly handled,
+      you should use the `await` keyword when invoking an asynchronous function:
+
+      ```ts
+
+      try {
+        await someAsyncFunction(); // properly awaited
+      } catch (e) {
+        // It will catch the error
+        console.log(e.message); // Whoops! 😥
+      }
+      
+      ```
+
     buttons:
-      -
-        - label: "Learn more about Promises, async/await"
+      - - label: "Learn more about Promises, async/await"
           url: "https://javascript.info/async"
           emoji: "📖"
-      -
-        - label: "Eslint rule to prevent async code errors"
+      - - label: "Eslint rule to prevent async code errors"
           url: "https://typescript-eslint.io/rules/no-floating-promises/"
           emoji: "🔗"
-
   request-info:
     description: "Ask them to run the \"npx @nestjs/cli info\" and paste the output in a code block."
-    content: "./content/request-info.md"
+    content: >
+      Please run the command `npx -y @nestjs/cli info` and paste the output in a code block.
+      This will help us determine if there is a version issue in your packages
+      and which version of nest we are triaging.
     buttons:
-      -
-        - label: "Learn more about code-blocks"
+      - - label: "Learn more about code-blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"
-
   show-the-error:
     description: "Telling people to be specific when seeking help. Share errors, and provide the code if possible."
-    content: "./content/show-the-error.md"
+    content: >
+      When asking for help with a problem,
+      don't just say, "X doesn't work" or "Y did not fix it" actually describe the error.
+      
+      If there is an error message, share it. If it did not function as expected,
+      describe how it behaved and how you expected it to behave.
+      
+      If you haven't already, or haven't recently,
+      share the code that is not working and any code we may need to help diagnose the error.
     buttons:
-      -
-        - label: "Learn more about code-blocks"
+      - - label: "Learn more about code-blocks"
           url: "https://discord.com/channels/520622812742811698/527853342152458287/935939213512298576"
           emoji: "🔗"

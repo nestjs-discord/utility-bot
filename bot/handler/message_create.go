@@ -1,0 +1,36 @@
+package handler
+
+import (
+	dgo "github.com/bwmarrin/discordgo"
+	"github.com/nestjs-discord/utility-bot/bot/stats"
+
+	"log/slog"
+)
+
+func (h *Handler) MessageCreate(s *dgo.Session, i *dgo.MessageCreate) {
+	if i.Message.Author.Bot {
+		return
+	}
+
+	h.logger.Debug("message create",
+		slog.String("id", i.Message.ID),
+		slog.String("content", i.Message.Content),
+	)
+
+	if h.opts.Antispam.Enabled() {
+		h.opts.Antispam.Handler(s, i)
+	}
+
+	if !h.opts.Moderators.IsUserModerator(i.Author.ID) {
+		return
+	}
+
+	switch i.Content {
+	case "!antispam":
+		h.opts.Antispam.TrackHandler(s, i)
+		return
+	case "!stats":
+		stats.Handler(s, i)
+		return
+	}
+}
