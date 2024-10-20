@@ -41,6 +41,10 @@ go run cmd/run/main.go
 
 # cleans the registered application commands
 go run cmd/clean/main.go
+
+# generates the bot status texts (just for fun 🙂)
+cd cmd/status/
+go run .
 ```
 
 # Donations

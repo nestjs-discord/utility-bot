@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	maxCustomStatusLength = 60
+	MaxCustomStatusLength = 60
 )
 
 type Options struct {
@@ -28,7 +28,7 @@ func NewStatus(opts Options) *Status {
 }
 
 func (s *Status) setCustomActivity(text string) error {
-	if len(text) > maxCustomStatusLength {
+	if len(text) > MaxCustomStatusLength {
 		return errors.New("text too long")
 	}
 
