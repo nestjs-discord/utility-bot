@@ -10,23 +10,46 @@ import (
 )
 
 type response struct {
-	Jokes []struct {
-		Category string `json:"category"`
-		Type     string `json:"type"`
-		Joke     string `json:"joke,omitempty"`
-		Flags    struct {
-			Nsfw      bool `json:"nsfw"`
-			Religious bool `json:"religious"`
-			Political bool `json:"political"`
-			Racist    bool `json:"racist"`
-			Sexist    bool `json:"sexist"`
-			Explicit  bool `json:"explicit"`
-		} `json:"flags"`
-		Id       int    `json:"id"`
-		Safe     bool   `json:"safe"`
-		Setup    string `json:"setup,omitempty"`
-		Delivery string `json:"delivery,omitempty"`
-	} `json:"jokes"`
+	Jokes []responseJoke `json:"jokes"`
+}
+
+type responseJoke struct {
+	Category string `json:"category"`
+	Type     string `json:"type"`
+	Joke     string `json:"joke,omitempty"`
+	Flags    struct {
+		Nsfw      bool `json:"nsfw"`
+		Religious bool `json:"religious"`
+		Political bool `json:"political"`
+		Racist    bool `json:"racist"`
+		Sexist    bool `json:"sexist"`
+		Explicit  bool `json:"explicit"`
+	} `json:"flags"`
+	Id       int    `json:"id"`
+	Safe     bool   `json:"safe"`
+	Setup    string `json:"setup,omitempty"`
+	Delivery string `json:"delivery,omitempty"`
+}
+
+func isJokeSafeToUse(j *responseJoke) bool {
+	if !j.Safe {
+		return false
+	}
+	f := j.Flags
+	if f.Nsfw || f.Religious || f.Political || f.Racist || f.Sexist || f.Explicit {
+		return false
+	}
+	return true
+}
+
+func extractJokeText(j *responseJoke) string {
+	switch j.Type {
+	case "single":
+		return tidy.Text(j.Joke)
+	case "twopart":
+		return tidy.Text(j.Setup + " " + j.Delivery)
+	}
+	return ""
 }
 
 func Fetch() []string {
@@ -53,21 +76,13 @@ func Fetch() []string {
 	uniqueTexts := make(map[string]bool)
 
 	for _, joke := range data.Jokes {
-		if !joke.Safe {
-			continue
-		}
-		f := joke.Flags
-		if f.Nsfw || f.Religious || f.Political || f.Racist || f.Sexist || f.Explicit {
+		if !isJokeSafeToUse(&joke) {
 			continue
 		}
 
-		switch joke.Type {
-		case "single":
-			key := tidy.Text(joke.Joke)
-			uniqueTexts[key] = true
-		case "twopart":
-			key := tidy.Text(joke.Setup + " " + joke.Delivery)
-			uniqueTexts[key] = true
+		text := extractJokeText(&joke)
+		if text != "" {
+			uniqueTexts[text] = true
 		}
 	}
 
