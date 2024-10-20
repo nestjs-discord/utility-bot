@@ -1,23 +1,23 @@
-package oja
+package cf
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/nestjs-discord/utility-bot/bot/status"
 	"github.com/nestjs-discord/utility-bot/cmd/status/tidy"
 	"io"
 	"log"
 	"net/http"
-	"strings"
 )
 
-type ojaResponse []struct {
-	Type      string `json:"type"`
-	Setup     string `json:"setup"`
-	Punchline string `json:"punchline"`
+type response struct {
+	Data []struct {
+		Fact string `json:"fact"`
+	} `json:"data"`
 }
 
 func Fetch() []string {
-	u := "https://raw.githubusercontent.com/15Dkatz/official_joke_api/refs/heads/master/jokes/index.json"
+	u := fmt.Sprintf("https://catfact.ninja/facts?limit=1000&max_length=%d", status.MaxCustomStatusLength)
 	res, err := http.Get(u)
 	if err != nil {
 		log.Fatal(err)
@@ -31,24 +31,19 @@ func Fetch() []string {
 		log.Fatal(err)
 	}
 
-	var ojaRes ojaResponse
-	err = json.Unmarshal(body, &ojaRes)
+	var bodyData response
+	err = json.Unmarshal(body, &bodyData)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	uniqueTexts := make(map[string]bool)
-
-	for _, v := range ojaRes {
-		if v.Type == "" || v.Setup == "" || v.Punchline == "" {
+	for _, v := range bodyData.Data {
+		if v.Fact == "" {
 			continue
 		}
 
-		text := strings.Join([]string{
-			tidy.Text(v.Setup),
-			tidy.Text(v.Punchline),
-		}, " ")
-		text = tidy.Text(text)
+		text := tidy.Text(v.Fact)
 		uniqueTexts[text] = true
 	}
 	texts := make([]string, 0, len(uniqueTexts))

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/nestjs-discord/utility-bot/cmd/status/cf"
 	"github.com/nestjs-discord/utility-bot/cmd/status/ja"
 	"github.com/nestjs-discord/utility-bot/cmd/status/oja"
 	"github.com/nestjs-discord/utility-bot/cmd/status/pqa"
@@ -26,6 +27,7 @@ func main() {
 	}
 
 	dataProviders := map[string]func() []string{
+		"../../bot/status/texts_cf.go":  cf.Fetch,
 		"../../bot/status/texts_ja.go":  ja.Fetch,
 		"../../bot/status/texts_oja.go": oja.Fetch,
 		"../../bot/status/texts_pqa.go": pqa.Fetch,
