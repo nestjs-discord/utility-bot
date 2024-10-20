@@ -3,6 +3,7 @@ package oja
 import (
 	"encoding/json"
 	"github.com/nestjs-discord/utility-bot/bot/status"
+	"github.com/nestjs-discord/utility-bot/cmd/status/tidy"
 	"io"
 	"log"
 	"net/http"
@@ -43,10 +44,7 @@ func Fetch() []string {
 		}
 
 		text := strings.Join([]string{v.Setup, v.Punchline}, " ")
-		text = strings.ReplaceAll(text, "\n", "")
-		text = strings.ReplaceAll(text, "  ", " ")
-		text = strings.ReplaceAll(text, `"`, `\"`)
-		text = strings.TrimSpace(text)
+		text = tidy.Text(text)
 		if len(text) > status.MaxCustomStatusLength {
 			continue
 		}

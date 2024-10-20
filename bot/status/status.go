@@ -21,10 +21,14 @@ type Status struct {
 }
 
 func NewStatus(opts Options) *Status {
-	return &Status{
+	s := &Status{
 		opts:   opts,
 		logger: logger.NewWithSubsystem("bot", "status"),
 	}
+	s.logger.Debug("loaded texts",
+		slog.Int("len", len(Texts)),
+	)
+	return s
 }
 
 func (s *Status) setCustomActivity(text string) error {
