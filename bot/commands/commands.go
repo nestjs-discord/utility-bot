@@ -1,5 +1,7 @@
 package commands
 
+// TODO: refactor this file
+
 import (
 	"fmt"
 	dgo "github.com/bwmarrin/discordgo"
@@ -19,7 +21,6 @@ import (
 )
 
 type Options struct {
-	Stage        env.Stage
 	Commands     yaml.Commands
 	Session      *dgo.Session
 	DiscordCfg   *env.DiscordConfig
@@ -59,17 +60,7 @@ func NewCommands(opts Options) (*Commands, error) {
 	return c, nil
 }
 
-// TODO: refactor this file
-
 type subCommandsType = map[string]yaml.Commands
-
-func (c *Commands) guildId() string {
-	if c.opts.Stage == env.StageProd {
-		return "" // register as global commands
-	}
-	// register as guild commands
-	return c.opts.DiscordCfg.GuildId.String()
-}
 
 func (c *Commands) registerApplicationCommands(staticCommands []*dgo.ApplicationCommand) error {
 	normalCmd, subCmd := c.generateCommandsToRegister(c.opts.Commands)
@@ -79,18 +70,29 @@ func (c *Commands) registerApplicationCommands(staticCommands []*dgo.Application
 	commands = append(commands, c.generateDynamicCommands(normalCmd)...)
 	commands = append(commands, c.generateDynamicSubcommands(subCmd)...)
 
-	_, err := c.opts.Session.ApplicationCommandBulkOverwrite(
-		c.opts.DiscordCfg.AppId,
-		c.guildId(),
-		commands,
-	)
+	//guildId := c.opts.DiscordCfg.GuildId.String()
+
+	// Clear any registered guild commands (for backward compatibility)
+	//_, err := c.opts.Session.ApplicationCommandBulkOverwrite(
+	//	c.opts.DiscordCfg.AppId,
+	//	guildId,
+	//	make([]*dgo.ApplicationCommand, 0),
+	//)
+	//if err != nil {
+	//	return fmt.Errorf("failed to bulk overwrite guild commands: %s", err)
+	//}
+
+	// Register global commands (we don't want to use guild commands anymore)
+	guildId := ""
+	_, err := c.opts.Session.ApplicationCommandBulkOverwrite(c.opts.DiscordCfg.AppId, guildId, commands)
 	if err != nil {
-		return fmt.Errorf("failed to bulk overwrite application commands: %s", err)
+		return fmt.Errorf("failed to bulk overwrite global commands: %s", err)
 	}
 
-	c.logger.Info("registered application commands",
+	c.logger.Info("registered global commands",
 		slog.Int("len", len(commands)),
 	)
+
 	return nil
 }
 
