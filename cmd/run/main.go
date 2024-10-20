@@ -16,10 +16,14 @@ func main() {
 	}
 	defer cleanup()
 
+	application.Opts.Session.ApplyHandler(application.Opts.Handler)
+
 	err = application.Opts.Bot.Open()
 	if err != nil {
 		log.Fatalf("bot open failed: %v", err)
 	}
+
+	application.Opts.Cron.Start()
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
