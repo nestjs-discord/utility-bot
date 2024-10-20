@@ -17,7 +17,8 @@ type ojaResponse []struct {
 }
 
 func Fetch() []string {
-	res, err := http.Get("https://raw.githubusercontent.com/15Dkatz/official_joke_api/refs/heads/master/jokes/index.json")
+	u := "https://raw.githubusercontent.com/15Dkatz/official_joke_api/refs/heads/master/jokes/index.json"
+	res, err := http.Get(u)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,16 +44,19 @@ func Fetch() []string {
 			continue
 		}
 
-		text := strings.Join([]string{v.Setup, v.Punchline}, " ")
+		text := strings.Join([]string{
+			tidy.Text(v.Setup),
+			tidy.Text(v.Punchline),
+		}, " ")
 		text = tidy.Text(text)
-		if len(text) > status.MaxCustomStatusLength {
-			continue
-		}
-
 		uniqueTexts[text] = true
 	}
 	texts := make([]string, 0, len(uniqueTexts))
 	for k := range uniqueTexts {
+		if len(k) > status.MaxCustomStatusLength {
+			continue
+		}
+
 		texts = append(texts, k)
 	}
 

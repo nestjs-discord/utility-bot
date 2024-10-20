@@ -181,5 +181,4 @@ func init() {
 	Texts = append(Texts, "Why was the font always tired? It was always bold.")
 	Texts = append(Texts, "You see, mountains aren't just funny. They are hill areas.")
 	Texts = append(Texts, "['hip', 'hip'] (hip hip array)")
-
 }

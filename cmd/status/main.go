@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/nestjs-discord/utility-bot/cmd/status/ja"
 	"github.com/nestjs-discord/utility-bot/cmd/status/oja"
 	"log"
 	"os"
@@ -17,6 +18,7 @@ func main() {
 
 	dataProviders := map[string]func() []string{
 		"../../bot/status/texts_oja.go": oja.Fetch,
+		"../../bot/status/texts_ja.go":  ja.Fetch,
 	}
 
 	for fileName, dataProvider := range dataProviders {
