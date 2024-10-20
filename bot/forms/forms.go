@@ -74,12 +74,10 @@ func (f *Forms) synchronizeOpenModalButtons() error {
 			return err
 		}
 
-		if message == nil {
-			continue
-		}
-
-		if f.doesHaveButtonComponentWithLabel(message, form.OpenModalMessage) {
-			continue
+		if message != nil {
+			if f.doesHaveButtonComponentWithLabel(message, form.OpenModalMessage) {
+				continue
+			}
 		}
 
 		if err = f.sendOpenModalMessage(form.ChannelId, formId, form.OpenModalMessage); err != nil {

@@ -21,8 +21,6 @@ type App struct {
 }
 
 func NewApp(opts Options) *App {
-	opts.Session.ApplyHandler(opts.Handler)
-	opts.Cron.Start()
 	return &App{
 		Opts: opts,
 	}
