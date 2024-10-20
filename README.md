@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/logo.png?raw=true" alt="Utility Bot" height="250px" /></p>
+
 # Utility Bot
 
 [![tag](https://img.shields.io/github/tag/nestjs-discord/utility-bot.svg)](https://github.com/nestjs-discord/utility-bot/releases)
