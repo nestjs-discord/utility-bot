@@ -85,11 +85,11 @@ antispam: # flags the users who spam messages on multiple channels in a short ti
     - "926544725606035527" # bot-commands
 
     ############################### Dev channels
-    - "1173300675917135912" # 1
-    - "1173300686667120640" # 2
-    - "1173300694766334123" # 3
-    - "1173300701863084082" # 4
-    - "1173300709307994214" # 5
+    # - "1173300675917135912" # 1
+    # - "1173300686667120640" # 2
+    # - "1173300694766334123" # 3
+    # - "1173300701863084082" # 4
+    # - "1173300709307994214" # 5
 
 # When the destination of the form submission (form.foo.channelId) is an announcement channel,
 # ensure the bot *explicitly* has the following permissions:
@@ -295,7 +295,7 @@ solvedCommand:
     1056608823219081266: "1130942218560081970" # typescript
 
     ############################### Dev channels
-    1130894004398084126: "1130894217506463765" # forum-channel
+    # 1130894004398084126: "1130894217506463765" # forum-channel
 
   # For each command, use a key to define the command name.
   # If a key contains a single space character, it becomes a sub-command.
