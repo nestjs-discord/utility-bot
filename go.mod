@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/dgraph-io/ristretto v1.0.0
 	github.com/forPelevin/gomoji v1.2.0
-	github.com/go-co-op/gocron/v2 v2.14.1
+	github.com/go-co-op/gocron/v2 v2.14.2
 	github.com/google/wire v0.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lmittmann/tint v1.0.6
