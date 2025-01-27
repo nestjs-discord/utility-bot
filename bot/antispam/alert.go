@@ -101,3 +101,54 @@ func (a *Antispam) generateAlertEmbedDescription() string {
 		a.opts.Cfg.DenyTTLSec,
 	)
 }
+func (a *Antispam) GenerateRepeatedMessagesFoundAlertMessage(i *dgo.MessageCreate, repeatedMessages []Message) *dgo.MessageSend {
+	return &dgo.MessageSend{
+		Content:    "",
+		Embed:      a.GenerateRepeatedMessagesFoundAlertEmbed(i, repeatedMessages),
+		Components: a.generateAlertComponents(i),
+	}
+}
+
+func (a *Antispam) GenerateRepeatedMessagesFoundAlertEmbed(i *dgo.MessageCreate, repeatedMessages []Message) *dgo.MessageEmbed {
+	embed := &dgo.MessageEmbed{
+		Title: "Repeated messages found! 🚨",
+		Color: 0xff0000, // Red
+	}
+
+	embed.Fields = append(embed.Fields, &dgo.MessageEmbedField{
+		Name:   "Username",
+		Value:  "`" + i.Author.String() + "`",
+		Inline: true,
+	})
+
+	authorAccCreatedAt, err := dgo.SnowflakeTimestamp(i.Author.ID)
+	if err == nil {
+		embed.Fields = append(embed.Fields, &dgo.MessageEmbedField{
+			Name: "Account created",
+			//Value: humanize.Time(authorAccCreatedAt),
+			Value:  fmt.Sprintf("<t:%d:R>", authorAccCreatedAt.UTC().Unix()),
+			Inline: true,
+		})
+	}
+
+	embed.Fields = append(embed.Fields, &dgo.MessageEmbedField{
+		Name:  "Search query",
+		Value: "`from: " + i.Author.ID + "`",
+	})
+
+	for _, msg := range repeatedMessages {
+		// Sanitize userMsg to avoid breaking the code block
+		msg.Content = strings.ReplaceAll(msg.Content, "```", "")
+
+		// If sanitizedMsg is longer than 350 characters, truncate it and add three dots
+		if len(msg.Content) > 350 {
+			msg.Content = msg.Content[:347] + "..."
+		}
+
+		embed.Fields = append(embed.Fields, &dgo.MessageEmbedField{
+			Value: "```text\n" + msg.Content + "\n```",
+		})
+	}
+
+	return embed
+}

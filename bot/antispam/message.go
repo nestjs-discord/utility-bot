@@ -8,32 +8,30 @@ import (
 
 type Message struct {
 	ID        string `json:"id"`
+	ChannelID string `json:"channelId"`
 	CreatedAt int64  `json:"createdAt"` // Unix timestamp
 	Content   string `json:"content"`
 }
 
-func NewMessage(ID string, content string) (Message, error) {
-	msgTimestamp, err := dgo.SnowflakeTimestamp(ID)
+func NewMessage(messageCreateEvent *dgo.MessageCreate) (Message, error) {
+	msgTimestamp, err := dgo.SnowflakeTimestamp(messageCreateEvent.ID)
 	if err != nil {
 		return Message{}, fmt.Errorf("failed to get snowflake timestamp: %s", err)
 	}
 
 	return Message{
-		ID:        ID,
+		ID:        messageCreateEvent.ID,
+		ChannelID: messageCreateEvent.ChannelID,
 		CreatedAt: msgTimestamp.UTC().Unix(),
-		Content:   content,
+		Content:   messageCreateEvent.Content,
 	}, nil
 }
 
-func (a *Antispam) StoreMessage(userId userIdType, channelId string, message Message) {
+func (a *Antispam) StoreMessage(userId userIdType, message Message) {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
-	if _, ok := a.userMap[userId]; !ok {
-		a.userMap[userId] = make(map[string]Message)
-	}
-
-	a.userMap[userId][channelId] = message
+	a.userToMessagesMap[userId] = append(a.userToMessagesMap[userId], message)
 }
 
 func (a *Antispam) GetUserUniqueMessages(userId userIdType) map[string]string {
@@ -41,7 +39,7 @@ func (a *Antispam) GetUserUniqueMessages(userId userIdType) map[string]string {
 	defer a.sync.Unlock()
 
 	uniqueMap := map[string]string{}
-	for _, message := range a.userMap[userId] {
+	for _, message := range a.userToMessagesMap[userId] {
 		uniqueMap[message.Content] = message.ID
 	}
 
@@ -58,17 +56,11 @@ func (a *Antispam) GetUserUniqueMessages(userId userIdType) map[string]string {
 //
 // Returns:
 //   - map[string]string: A map where keys are channel IDs, and values are message IDs.
-func (a *Antispam) GetUserMessages(userId userIdType) map[string]string {
+func (a *Antispam) GetUserMessages(userId userIdType) []Message {
 	a.sync.Lock()
 	defer a.sync.Unlock()
 
-	res := map[string]string{}
-
-	for channelId, message := range a.userMap[userId] {
-		res[string(channelId)] = message.ID
-	}
-
-	return res
+	return a.userToMessagesMap[userId]
 }
 
 func (a *Antispam) Handler(s *dgo.Session, i *dgo.MessageCreate) {
@@ -96,76 +88,86 @@ func (a *Antispam) Handler(s *dgo.Session, i *dgo.MessageCreate) {
 		_ = s.ChannelMessageDelete(i.ChannelID, i.ID)
 
 		// Try to ban them again
-		_ = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "The antispam feature flagged this user!", 7)
+		// _ = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "The antispam feature flagged this user!", 7)
 
 		return
 	}
 
-	message, err := NewMessage(i.ID, i.Content)
+	message, err := NewMessage(i)
 	if err != nil {
 		a.logger.Error(fmt.Sprintf("failed to create message: %s", err))
 		return
 	}
 
 	// Cache the message.
-	a.StoreMessage(userId, channelId, message)
+	a.StoreMessage(userId, message)
 
 	// Check if the user has sent messages to an excessive number of channels within the defined maximum channels limit.
 	// If true, further processing is skipped.
-	if a.IsUserWithinMaxChannelsLimit(userId) {
-		return
-	}
+	if !a.IsUserWithinMaxChannelsLimit(userId) {
+		// Delete their previous messages in another go routine
+		go func() {
+			userMessages := a.GetUserMessages(userId)
+			for _, usrMsg := range userMessages {
 
-	// Delete their previous messages in another go routine
-	go func() {
-		userMessages := a.GetUserMessages(userId)
-		for chId, msgId := range userMessages {
-			err = s.ChannelMessageDelete(chId, msgId)
-			if err != nil {
-				a.logger.Error(fmt.Sprintf("failed to delete message: %s", err),
-					slog.String("channelId", chId),
-					slog.String("messageId", msgId),
+				err = s.ChannelMessageDelete(usrMsg.ChannelID, usrMsg.ID)
+				if err != nil {
+					a.logger.Error(fmt.Sprintf("failed to delete message: %s", err),
+						slog.String("channelId", usrMsg.ChannelID),
+						slog.String("messageId", usrMsg.ID),
+					)
+					return
+				}
+				a.logger.Debug("deleted message",
+					slog.String("channelId", usrMsg.ChannelID),
+					slog.String("messageId", usrMsg.ID),
 				)
-				return
 			}
-			a.logger.Debug("deleted message",
-				slog.String("channelId", chId),
-				slog.String("messageId", msgId),
+		}()
+
+		// Add user to the denied list
+		a.AddUserToDeniedList(userId)
+
+		logChannelId := a.opts.Cfg.LogChannelId
+		_, err = s.ChannelMessageSendComplex(logChannelId, a.GenerateAlertMessage(i))
+		if err != nil {
+			a.logger.Error("failed to alert moderators about the ongoing spam",
+				slog.Any("err", err),
 			)
 		}
-	}()
 
-	// Add user to the denied list
-	a.AddUserToDeniedList(userId)
+		// Ban their account
+		err = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "spam", 7)
+		if err != nil {
+			a.logger.Error("failed to ban the spammer",
+				slog.String("userId", i.Author.ID),
+				slog.Any("err", err),
+			)
+			_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("🔨 Failed to ban the spammer: `%s`", err.Error()))
+			return
+		}
 
-	logChannelId := a.opts.Cfg.LogChannelId
-	_, err = s.ChannelMessageSendComplex(logChannelId, a.GenerateAlertMessage(i))
-	if err != nil {
-		a.logger.Error("failed to alert moderators about the ongoing spam",
-			slog.Any("err", err),
-		)
-	}
-
-	// Ban their account
-	err = s.GuildBanCreateWithReason(i.GuildID, i.Author.ID, "spam", 7)
-	if err != nil {
-		a.logger.Error("failed to ban the spammer",
+		a.logger.Info("banned a user",
 			slog.String("userId", i.Author.ID),
-			slog.Any("err", err),
 		)
-		_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("🔨 Failed to ban the spammer: `%s`", err.Error()))
-		return
+
+		_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("🔨 Member banned: `%s`", i.Author.ID))
+
+		// for debugging purposes only
+		// jsonStr, _ := json.MarshalIndent(cache.Antispam, "", "  ")
+		// _, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("```json\n%s\n```", string(jsonStr)))
 	}
 
-	a.logger.Info("banned a user",
-		slog.String("userId", i.Author.ID),
-	)
+	if repeatedMessages := a.GetUserRepeatedMessages(userId); len(repeatedMessages) > 0 {
+		// Add user to the denied list
+		a.AddUserToDeniedList(userId)
 
-	_, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("🔨 Member banned: `%s`", i.Author.ID))
+		a.logger.Info("repeated messages", slog.Any("messages", repeatedMessages))
 
-	// for debugging purposes only
-	// jsonStr, _ := json.MarshalIndent(cache.Antispam, "", "  ")
-	// _, _ = s.ChannelMessageSend(logChannelId, fmt.Sprintf("```json\n%s\n```", string(jsonStr)))
+		logChannelId := a.opts.Cfg.LogChannelId
+		alertMsg := a.GenerateRepeatedMessagesFoundAlertMessage(i, repeatedMessages)
+		_, _ = s.ChannelMessageSendComplex(logChannelId, alertMsg)
+	}
 }
 
 func (a *Antispam) TrackHandler(s *dgo.Session, i *dgo.MessageCreate) {
