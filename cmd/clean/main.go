@@ -19,14 +19,14 @@ func main() {
 		log.Fatalf("unable to create the session: %v", err)
 	}
 
-	err = commands.CleanApplicationCommands(
-		session,
-		discordCfg.AppId,
-		discordCfg.GuildId.String(),
-	)
+	appId := discordCfg.AppId
+	guildId := discordCfg.GuildId.String()
+	//guildId = ""
+
+	err = commands.CleanApplicationCommands(session, appId, guildId)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("cleaned application commands")
+	fmt.Println("cleaned commands")
 }
