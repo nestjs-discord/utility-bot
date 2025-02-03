@@ -9,7 +9,7 @@ require (
 	github.com/go-co-op/gocron/v2 v2.15.0
 	github.com/google/wire v0.6.0
 	github.com/joho/godotenv v1.5.1
-	github.com/lmittmann/tint v1.0.6
+	github.com/lmittmann/tint v1.0.7
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
 	gopkg.in/yaml.v3 v3.0.1
