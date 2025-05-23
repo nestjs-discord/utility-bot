@@ -17,8 +17,9 @@ const (
 )
 
 type Options struct {
-	Cfg        yaml.SolvedCommand
-	Moderators *moderators.Moderators
+	Cfg           yaml.SolvedCommand
+	CfgPrivileged yaml.PrivilegedForChannel
+	Moderators    *moderators.Moderators
 }
 
 type Solved struct {
@@ -43,8 +44,14 @@ func (c *Solved) Handler(s *dgo.Session, i *dgo.InteractionCreate) error {
 	}
 
 	if !c.validateChannelType(s, i, channel) ||
-		!c.validateThreadLock(s, i, channel) ||
-		!c.validateChannelOwner(s, i, channel) {
+		!c.validateThreadLock(s, i, channel) {
+		return nil
+	}
+	if !c.validateChannelOwner(i, channel) {
+		respond.InteractionWithEphemeralMessage(s, i,
+			"⚠️ Only the forum post owner, moderators, or privileged users can use this command.",
+		)
+
 		return nil
 	}
 

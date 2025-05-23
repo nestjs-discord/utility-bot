@@ -83,6 +83,7 @@ func InitializeApp() (*app.App, func(), error) {
 				),
 				w.NewSet(
 					yaml.NewModerators,
+					yaml.NewPrivilegedForChannel,
 					yaml.NewRateLimit,
 					yaml.NewAntispam,
 					yaml.NewForms,

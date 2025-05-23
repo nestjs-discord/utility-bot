@@ -107,9 +107,11 @@ func InitializeApp() (*app.App, func(), error) {
 	googleIt := google_it.NewGoogleIt()
 	referenceReference := reference.NewReference()
 	solvedCommand := yaml.NewSolvedCommand(config)
+	privilegedForChannel := yaml.NewPrivilegedForChannel(config)
 	solvedOptions := solved.Options{
-		Cfg:        solvedCommand,
-		Moderators: moderatorsModerators,
+		Cfg:           solvedCommand,
+		CfgPrivileged: privilegedForChannel,
+		Moderators:    moderatorsModerators,
 	}
 	solvedSolved := solved.NewSolved(solvedOptions)
 	dontPingMods := dont_ping_mods.NewDontPingMods(moderatorsModerators)

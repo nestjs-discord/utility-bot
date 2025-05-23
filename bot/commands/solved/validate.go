@@ -28,7 +28,7 @@ func (c *Solved) validateThreadLock(s *dgo.Session, i *dgo.InteractionCreate, ch
 	return false
 }
 
-func (c *Solved) validateChannelOwner(s *dgo.Session, i *dgo.InteractionCreate, channel *dgo.Channel) bool {
+func (c *Solved) validateChannelOwner(i *dgo.InteractionCreate, channel *dgo.Channel) bool {
 	postOwnerId := channel.OwnerID
 	executedById := i.Member.User.ID
 	if postOwnerId == executedById ||
@@ -36,9 +36,5 @@ func (c *Solved) validateChannelOwner(s *dgo.Session, i *dgo.InteractionCreate, 
 		return true
 	}
 
-	respond.InteractionWithEphemeralMessage(s, i,
-		"⚠️ Only the forum post owner and the moderators can use this command",
-	)
-
-	return false
+	return c.opts.CfgPrivileged.IsUserPrivilegedInChannel(executedById, channel.ParentID)
 }
