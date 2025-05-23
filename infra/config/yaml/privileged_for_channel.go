@@ -4,10 +4,15 @@ import "errors"
 
 type PrivilegedForChannel map[string][]string
 
-func (p PrivilegedForChannel) IsUserPrivilegedInChannel(userID, channelID string) bool {
-	if users, ok := p[channelID]; ok {
-		for _, user := range users {
-			if user == userID {
+func (p PrivilegedForChannel) IsUserRolesPrivilegedInChannel(userRoleIDs []string, channelID string) bool {
+	roles, ok := p[channelID]
+	if !ok {
+		return false
+	}
+
+	for _, role := range roles {
+		for _, roleIDs := range userRoleIDs {
+			if role == roleIDs {
 				return true
 			}
 		}
@@ -17,7 +22,7 @@ func (p PrivilegedForChannel) IsUserPrivilegedInChannel(userID, channelID string
 
 func (p PrivilegedForChannel) validate() error {
 	if len(p) == 0 {
-		return errors.New("at least 1 privileged user is required")
+		return errors.New("at least 1 privileged role is required")
 	}
 
 	return nil

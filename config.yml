@@ -19,22 +19,21 @@ moderators:
   # MVPs
   - "MjExNDQ1Njc1NzAxODI5NjMy" # weshuiz13
 
-# List of users who can use the `/solved` command in a specific channel.
+# List of roles that can use the `/solved` command in a specific channel.
+# Map of the channel IDs against their role IDs.
 privilegedForChannel:
-  1085231189541011576: # necord
-    - "235413185639874561" # socket someone
-  1058054362062143648: # nestjs-otel
-    - "171650290200608768" # pragmaticivan (Ivan Santos)
-  1181877086797967420: # nestia
-    - "893069680049258536" # samchon
-  1197293125434093701: # brocoders-nestjs-boilerplate
-    - "974569353154547722"  # rodik_rs
-    - "1197808792629411931" # olena_vlass
-    - "846377362777309184"  # shchepotin.
+  1085231189541011576:      # necord
+    - "1085231849674129408"
+  1058054362062143648:      # nestjs-otel
+    - "879480218115522631"
+  1181877086797967420:      # nestia
+    - "1181877136089436160"
+  1197293125434093701:      # brocoders-nestjs-boilerplate
+    - "1197290890369187860"
 
   ### dev channels
-  # 1130894004398084126: # forum-channel
-  #   - "foo-bar"
+  # 1130894004398084126:      # forum-channel
+  #   - "1375549739507908710" # privileged-tester
 
 rateLimit: # only applies to the application commands
   ttlSec: 60

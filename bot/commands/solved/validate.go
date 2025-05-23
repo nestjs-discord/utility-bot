@@ -36,5 +36,5 @@ func (c *Solved) validateChannelOwner(i *dgo.InteractionCreate, channel *dgo.Cha
 		return true
 	}
 
-	return c.opts.CfgPrivileged.IsUserPrivilegedInChannel(executedById, channel.ParentID)
+	return c.opts.CfgPrivileged.IsUserRolesPrivilegedInChannel(i.Member.Roles, channel.ParentID)
 }
