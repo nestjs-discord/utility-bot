@@ -11,8 +11,8 @@ github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 h1:fAjc9m62+UWV/WA
 github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13/go.mod h1:SqUrOPUnsFjfmXRMNPybcSiG0BgUW2AuFH8PAnS2iTw=
 github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkpeCY=
 github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
-github.com/forPelevin/gomoji v1.2.0 h1:9k4WVSSkE1ARO/BWywxgEUBvR/jMnao6EZzrql5nxJ8=
-github.com/forPelevin/gomoji v1.2.0/go.mod h1:8+Z3KNGkdslmeGZBC3tCrwMrcPy5GRzAD+gL9NAwMXg=
+github.com/forPelevin/gomoji v1.3.0 h1:WPIOLWB1bvRYlKZnSSEevLt3IfKlLs+tK+YA9fFYlkE=
+github.com/forPelevin/gomoji v1.3.0/go.mod h1:mM6GtmCgpoQP2usDArc6GjbXrti5+FffolyQfGgPboQ=
 github.com/go-co-op/gocron/v2 v2.15.0 h1:Kpvo71VSihE+RImmpA+3ta5CcMhoRzMGw4dJawrj4zo=
 github.com/go-co-op/gocron/v2 v2.15.0/go.mod h1:ZF70ZwEqz0OO4RBXE1sNxnANy/zvwLcattWEFsqpKig=
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
