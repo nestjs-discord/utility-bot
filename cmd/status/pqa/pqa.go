@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/nestjs-discord/utility-bot/bot/status"
 	"github.com/nestjs-discord/utility-bot/cmd/status/tidy"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -29,7 +30,9 @@ func Scrape() error {
 	if err != nil {
 		return fmt.Errorf("http get failed: %s", err)
 	}
-	defer res.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(res.Body)
 	if res.StatusCode != 200 {
 		return fmt.Errorf("status code error: %d %s", res.StatusCode, res.Status)
 	}

@@ -61,7 +61,7 @@ func (f *Forms) sendOpenModalMessage(channelId string, formId string, openModalM
 	}
 
 	messageData := &dgo.MessageSend{
-		Content:    "‎", // empty character to space out the previous message https://emptycharacter.com/
+		Content:    "\u200e", // empty character to space out the previous message https://emptycharacter.com/
 		Embeds:     []*dgo.MessageEmbed{embed},
 		Components: []dgo.MessageComponent{row},
 	}
