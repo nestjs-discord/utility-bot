@@ -8,13 +8,14 @@ import (
 )
 
 func (h *Handler) MessageCreate(s *dgo.Session, i *dgo.MessageCreate) {
-	if i.Message.Author.Bot {
+	message := i.Message
+	if message.Author.Bot {
 		return
 	}
 
 	h.logger.Debug("message create",
-		slog.String("id", i.Message.ID),
-		slog.String("content", i.Message.Content),
+		slog.String("id", message.ID),
+		slog.String("content", message.Content),
 	)
 
 	if h.opts.Antispam.Enabled() {

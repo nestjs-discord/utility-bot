@@ -50,7 +50,9 @@ func (g *Google) Search(keyword string) ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("http get failed: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("google returned non-ok status code: %d", resp.StatusCode)

@@ -85,7 +85,7 @@ func parseReferenceOptions(option *dgo.ApplicationCommandInteractionDataOption, 
 		if opt.Name == common.OptionHide && opt.Value == true {
 			flags = dgo.MessageFlagsEphemeral
 		} else if opt.Name == common.OptionTarget && opt.Value != "" {
-			content.WriteString(fmt.Sprintf("*Suggestion for <@%v>:*\n", opt.Value))
+			_, _ = fmt.Fprintf(content, "*Suggestion for <@%v>:*\n", opt.Value)
 		}
 	}
 
