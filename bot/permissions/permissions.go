@@ -10,7 +10,7 @@ const (
 		dgo.PermissionSendMessagesInThreads |
 		dgo.PermissionAttachFiles |
 		dgo.PermissionEmbedLinks |
-		dgo.PermissionUseSlashCommands |
+		dgo.PermissionUseApplicationCommands |
 		dgo.PermissionAddReactions |
 		dgo.PermissionUseExternalEmojis |
 		dgo.PermissionManageThreads |
@@ -18,8 +18,7 @@ const (
 		dgo.PermissionReadMessageHistory |
 		dgo.PermissionKickMembers |
 		dgo.PermissionBanMembers
-	DefaultCommands   = dgo.PermissionUseSlashCommands
-	ProtectedCommands = dgo.PermissionManageMessages |
-		dgo.PermissionUseSlashCommands
+	DefaultCommands   = dgo.PermissionUseApplicationCommands
+	ProtectedCommands = dgo.PermissionManageMessages | dgo.PermissionUseApplicationCommands
 	BotIntents = dgo.IntentsGuildMessages | dgo.IntentsMessageContent | dgo.IntentAutoModerationExecution
 )
