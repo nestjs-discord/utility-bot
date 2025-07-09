@@ -267,6 +267,12 @@ forms:
 #        required: true
 #        multiline: false
 
+ai:
+  enabled: true
+  forums:
+    - "1392342895247229008" # prod (#ai-ask)
+    # - "1391873467791704104" # dev (#ai-ask)
+
 archiveCommand:
   description: "Close and lock a forum post."
   response: >

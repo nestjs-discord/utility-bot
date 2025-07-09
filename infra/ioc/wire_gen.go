@@ -20,6 +20,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
+	"github.com/nestjs-discord/utility-bot/bot/handler/ai"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
@@ -29,6 +30,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
+	"github.com/nestjs-discord/utility-bot/infra/services/gemini"
 	"github.com/nestjs-discord/utility-bot/modules/cron"
 )
 
@@ -138,12 +140,25 @@ func InitializeApp() (*app.App, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
+	yamlAI := yaml.NewAI(config)
+	geminiConfig, err := env.NewGeminiConfig()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	geminiGemini, err := gemini.NewGemini(geminiConfig)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	forums := ai.NewForums(yamlAI, geminiGemini)
 	handlerOptions := handler.Options{
 		InteractionHandler: interactionHandler,
 		Antispam:           antispamAntispam,
 		Forms:              formsForms,
 		Markdown:           markdownMarkdown,
 		Moderators:         moderatorsModerators,
+		AIForums:           forums,
 	}
 	handlerHandler := handler.NewHandler(handlerOptions)
 	statusOptions := status.Options{

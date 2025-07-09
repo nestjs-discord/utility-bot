@@ -18,6 +18,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/bot/commands/solved"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
 	"github.com/nestjs-discord/utility-bot/bot/handler"
+	"github.com/nestjs-discord/utility-bot/bot/handler/ai"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
@@ -27,6 +28,7 @@ import (
 	"github.com/nestjs-discord/utility-bot/infra/config/env"
 	"github.com/nestjs-discord/utility-bot/infra/config/yaml"
 	"github.com/nestjs-discord/utility-bot/infra/logger"
+	"github.com/nestjs-discord/utility-bot/infra/services/gemini"
 	"github.com/nestjs-discord/utility-bot/modules/cron"
 )
 
@@ -55,6 +57,7 @@ func InitializeApp() (*app.App, func(), error) {
 				),
 				w.NewSet(forms.NewForms, w.Struct(new(forms.Options), "*")),
 				w.NewSet(
+					ai.NewForums,
 					w.NewSet(interaction.NewInteractionHandler, w.Struct(new(interaction.Options), "*")),
 					w.NewSet(handler.NewHandler, w.Struct(new(handler.Options), "*")),
 				),
@@ -67,10 +70,10 @@ func InitializeApp() (*app.App, func(), error) {
 
 		// infra
 		w.NewSet(
-
 			// infra/config/env
 			w.NewSet(
 				env.NewStageConfig,
+				env.NewGeminiConfig,
 				env.NewDiscordConfig,
 				env.ProvideGuildId,
 			),
@@ -82,6 +85,7 @@ func InitializeApp() (*app.App, func(), error) {
 					yaml.NewConfig,
 				),
 				w.NewSet(
+					yaml.NewAI,
 					yaml.NewModerators,
 					yaml.NewPrivilegedForChannel,
 					yaml.NewRateLimit,
@@ -95,6 +99,9 @@ func InitializeApp() (*app.App, func(), error) {
 
 			// infra/logger
 			logger.NewLogger,
+
+			// infra/services
+			gemini.NewGemini,
 		),
 
 		// modules

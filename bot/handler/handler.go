@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/nestjs-discord/utility-bot/bot/antispam"
 	"github.com/nestjs-discord/utility-bot/bot/forms"
+	"github.com/nestjs-discord/utility-bot/bot/handler/ai"
 	"github.com/nestjs-discord/utility-bot/bot/handler/interaction"
 	"github.com/nestjs-discord/utility-bot/bot/markdown"
 	"github.com/nestjs-discord/utility-bot/bot/moderators"
@@ -16,6 +17,7 @@ type Options struct {
 	Forms              *forms.Forms
 	Markdown           *markdown.Markdown
 	Moderators         *moderators.Moderators
+	AIForums           *ai.Forums
 }
 
 type Handler struct {

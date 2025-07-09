@@ -14,6 +14,7 @@ type Config struct {
 	Antispam             Antispam             `yaml:"antispam"`
 	RateLimit            RateLimit            `yaml:"rateLimit"`
 	Forms                Forms                `yaml:"forms"`
+	AI                   AI                   `yaml:"ai"`
 	ArchiveCommand       ArchiveCommand       `yaml:"archiveCommand"`
 	SolvedCommand        SolvedCommand        `yaml:"solvedCommand"`
 	Commands             Commands             `yaml:"commands"`

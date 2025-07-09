@@ -22,6 +22,10 @@ func (h *Handler) MessageCreate(s *dgo.Session, i *dgo.MessageCreate) {
 		h.opts.Antispam.Handler(s, i)
 	}
 
+	if check := h.opts.AIForums.Handle(s, i); check {
+		return
+	}
+
 	if !h.opts.Moderators.IsUserModerator(i.Author.ID) {
 		return
 	}
