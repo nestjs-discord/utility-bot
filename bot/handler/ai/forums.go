@@ -33,11 +33,17 @@ func (f *Forums) IsChannelAllowedToUseAIFeatures(channel *dgo.Channel) (bool, er
 		return false, nil
 	}
 
+	// We only allow the first message in a thread to use AI features
+	if channel.MessageCount > 0 {
+		return false, nil
+	}
+
 	for _, forum := range f.cfg.Forums {
 		if channel.ParentID == forum {
 			return true, nil
 		}
 	}
+
 	return false, nil
 }
 
