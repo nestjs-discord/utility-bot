@@ -59,9 +59,9 @@ func (f Form) validate() error {
 	if f.MinimumAccountAgeDays < 3 {
 		return errors.New("minimumAccountAgeDays must be greater than 3")
 	}
-	if f.MinimumServerJoinDays < 3 {
-		return errors.New("minimumServerJoinDays must be greater than 3")
-	}
+	// if f.MinimumServerJoinDays < 3 {
+	// 	return errors.New("minimumServerJoinDays must be greater than 3")
+	// }
 
 	err := f.OpenModalMessage.validate()
 	if err != nil {
