@@ -125,7 +125,7 @@ forms:
     modSkipApproval: false
     color: 2600544 # dark green (#27ae60)
     minimumAccountAgeDays: 30 # minimum age of the user's Discord account (in days) required open the modal
-    minimumServerJoinDays: 10 # minimum number of days the user must have been a member of the server to open the modal
+    minimumServerJoinDays: 0 # minimum number of days the user must have been a member of the server to open the modal
     openModalMessage:
       buttonLabel: "Post a new profile"
       embedColor: 14689102 # same as the official NestJS logo (#e0234e)
@@ -199,7 +199,7 @@ forms:
     modSkipApproval: false
     color: 14689102 # same as the official NestJS logo (#e0234e)
     minimumAccountAgeDays: 30 # minimum age of the user's Discord account (in days) required open the modal
-    minimumServerJoinDays: 10 # minimum number of days the user must have been a member of the server to open the modal
+    minimumServerJoinDays: 0 # minimum number of days the user must have been a member of the server to open the modal
     openModalMessage:
       buttonLabel: "Post a new opportunity"
       embedTitle: "Rules ⭐️"
